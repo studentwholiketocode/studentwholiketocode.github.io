@@ -1,204 +1,710 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hadal Blacksite Terminal</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: black;
-      color: red;
-      font-family: monospace;
-      overflow-x: hidden;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    #terminal {
-      flex-grow: 1;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      overflow-y: auto;
-    }
-    .line {
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-    #input-line {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    #prompt {
-      margin-right: 5px;
-    }
-    #input {
-      background: none;
-      border: none;
-      color: red;
-      outline: none;
-      flex-grow: 1;
-      min-width: 100px;
-    }
-    .autocomplete {
-      color: grey;
-    }
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 22%, 24%, 55% {
-        opacity: 0.4;
-      }
-    }
-    .flicker {
-      animation: flicker 1.5s infinite;
-    }
-    @media (max-width: 600px) {
-      #terminal {
-        padding: 0.5rem;
-        font-size: 14px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadal Blacksite Terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #000808 0%, #001a1a 25%, #000a0a 50%, #1a0000 75%, #0a0a0a 100%);
+            color: #ff3333;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animated background grid with underwater effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 51, 51, 0.08) 1px, transparent 1px),
+                radial-gradient(circle at 20% 50%, rgba(0, 100, 100, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(100, 0, 0, 0.1) 0%, transparent 50%);
+            background-size: 25px 25px, 25px 25px, 200px 200px, 300px 300px;
+            animation: underwaterGrid 15s linear infinite, depthPulse 8s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+        
+        @keyframes underwaterGrid {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(25px, 25px) rotate(0.5deg); }
+        }
+        
+        @keyframes depthPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+        
+        .terminal {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            padding: 20px;
+            background: rgba(0, 8, 8, 0.85);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.15),
+                0 0 80px rgba(255, 51, 51, 0.1),
+                inset 0 0 40px rgba(0, 20, 20, 0.8);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, rgba(0, 100, 100, 0.15) 0%, rgba(100, 0, 0, 0.15) 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 255, 0.8),
+                0 0 20px rgba(0, 255, 255, 0.4);
+            animation: deepGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 2;
+        }
+        
+        @keyframes deepGlow {
+            0% { 
+                text-shadow: 
+                    0 0 10px rgba(0, 255, 255, 0.8),
+                    0 0 20px rgba(0, 255, 255, 0.4);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 20px rgba(0, 255, 255, 1),
+                    0 0 40px rgba(0, 255, 255, 0.6),
+                    0 0 60px rgba(255, 51, 51, 0.2);
+            }
+        }
+        
+        .status {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .status-item {
+            padding: 5px 10px;
+            background: rgba(0, 100, 100, 0.2);
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #66ffff;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.6);
+            animation: statusFlicker 4s ease-in-out infinite;
+        }
+        
+        @keyframes statusFlicker {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.7; }
+        }
+        
+        .content {
+            height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0, 10, 10, 0.6);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 255, 0.5), 
+                transparent);
+            animation: topScan 2s linear infinite;
+        }
+        
+        @keyframes topScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .output::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .output::-webkit-scrollbar-track {
+            background: rgba(0, 100, 100, 0.1);
+            border-radius: 4px;
+        }
+        
+        .output::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(0, 255, 255, 0.5), rgba(255, 51, 51, 0.3));
+            border-radius: 4px;
+        }
+        
+        .output::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(0, 255, 255, 0.7), rgba(255, 51, 51, 0.5));
+        }
+        
+        .line {
+            margin-bottom: 10px;
+            animation: fadeInDepth 0.8s ease-in;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        @keyframes fadeInDepth {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-20px) translateY(10px);
+                filter: blur(2px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0) translateY(0);
+                filter: blur(0);
+            }
+        }
+        
+        .prompt-symbol {
+            color: #00ffff;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+        }
+        
+        .path {
+            color: #66cccc;
+            text-shadow: 0 0 5px rgba(102, 204, 204, 0.5);
+        }
+        
+        .command {
+            color: #ffcccc;
+        }
+        
+        .result {
+            color: #ff6666;
+            margin-left: 20px;
+            opacity: 0.9;
+        }
+        
+        .error {
+            color: #ff4444;
+            text-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+        }
+        
+        .success {
+            color: #44ff88;
+            text-shadow: 0 0 8px rgba(68, 255, 136, 0.6);
+        }
+        
+        .warning {
+            color: #ffaa44;
+            text-shadow: 0 0 8px rgba(255, 170, 68, 0.6);
+        }
+        
+        .info {
+            color: #44aaff;
+            text-shadow: 0 0 8px rgba(68, 170, 255, 0.6);
+        }
+        
+        .flicker {
+            animation: terminalFlicker 2s infinite;
+        }
+        
+        @keyframes terminalFlicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+            }
+            20%, 22%, 24%, 55% {
+                opacity: 0.4;
+                text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+            }
+        }
+        
+        #input-line {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(0, 100, 100, 0.15), rgba(100, 0, 0, 0.05));
+            border-radius: 8px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #input-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: inputScan 4s linear infinite;
+        }
+        
+        @keyframes inputScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        #input-line:focus-within {
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                0 0 40px rgba(0, 255, 255, 0.1);
+        }
+        
+        #prompt {
+            color: #00ffff;
+            font-weight: 700;
+            margin-right: 10px;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+        
+        #input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffcccc;
+            font-family: inherit;
+            font-size: 14px;
+            caret-color: #00ffff;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 5px rgba(255, 204, 204, 0.3);
+        }
+        
+        .autocomplete {
+            color: rgba(102, 255, 255, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            animation: deepFloat 8s infinite ease-in-out;
+        }
+        
+        .particle.cyan {
+            background: #00ffff;
+            box-shadow: 0 0 6px rgba(0, 255, 255, 0.8);
+        }
+        
+        .particle.red {
+            background: #ff3333;
+            box-shadow: 0 0 6px rgba(255, 51, 51, 0.8);
+        }
+        
+        @keyframes deepFloat {
+            0%, 100% { 
+                transform: translateY(100vh) translateX(0px) scale(0);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 1;
+                transform: translateY(90vh) translateX(20px) scale(1);
+            }
+            90% { 
+                opacity: 1;
+                transform: translateY(10vh) translateX(-20px) scale(0.5);
+            }
+            100% { 
+                transform: translateY(-10px) translateX(50px) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .terminal {
+                padding: 10px;
+            }
+            .header {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            .title {
+                font-size: 16px;
+            }
+            .status {
+                gap: 10px;
+                font-size: 11px;
+            }
+            .output {
+                padding: 15px;
+                font-size: 13px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="terminal">
-    <div class="line flicker">Booting NAVI Terminal...</div>
-  </div>
-  <form id="cmd-form" onsubmit="handleCommand(event)">
-    <div id="input-line">
-      <span id="prompt">C:\Blacksite&gt;</span>
-      <input id="input" type="text" autocomplete="off" autofocus />
-      <span id="autocomplete" class="autocomplete"></span>
+    <div class="particles"></div>
+    
+    <div class="terminal">
+        <div class="header">
+            <div class="title">◉ HADAL BLACKSITE TERMINAL v3.14.159</div>
+            <div class="status">
+                <div class="status-item">DEPTH: 11,034m</div>
+                <div class="status-item">PRESSURE: 1,100atm</div>
+                <div class="status-item">O2: 23.1%</div>
+                <div class="status-item" id="time">00:00:00</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="output" id="terminal">
+                <div class="line flicker">Booting NAVI Terminal...</div>
+                <div class="line">Initializing deep-sea protocols...</div>
+                <div class="line success">✓ Pressure systems: STABLE</div>
+                <div class="line success">✓ Life support: ACTIVE</div>
+                <div class="line warning">⚠ Hull integrity: 94%</div>
+                <div class="line info">⚡ Quantum neural networks: ONLINE</div>
+                <div class="line">System ready. Type "help" for available commands.</div>
+            </div>
+            
+            <form id="cmd-form" onsubmit="handleCommand(event)">
+                <div id="input-line">
+                    <span id="prompt">C:\Blacksite></span>
+                    <input id="input" type="text" autocomplete="off" autofocus />
+                    <span id="autocomplete" class="autocomplete"></span>
+                </div>
+            </form>
+        </div>
     </div>
-  </form>
 
-  <script>
-    const terminal = document.getElementById('terminal');
-    const input = document.getElementById('input');
-    const auto = document.getElementById('autocomplete');
-    const prompt = document.getElementById('prompt');
-
-    const commands = [
-      'help', 'dir', 'cd', 'cls', 'echo', 'exit', 'type', 'copy', 'del', 'rename', 'md', 'rd', 'ver', 'whoami',
-      'ipconfig', 'tree', 'color', 'date', 'time', 'shutdown', 'restart', 'navi', 'val', 'imaginary', 'nomi',
-      'sseal', 'john', 'l', 'grader', 'lore', 'log', 'core', 'blacksite'
-    ];
-
-    const loreData = {
-      val: 'Val was a deep-level systems engineer who disappeared post-breach. Reports claim her signal still pings within the Trenchbleeder Tunnels.',
-      imaginary: 'Imaginary was a failed AI experiment. NAVI absorbed portions of its neural routines after shutdown.',
-      nomi: 'Nomi handled cryo logistics. She vanished after taking control of a ventilation sector alone.',
-      sseal: "Sseal's ID badge was found in the flooded Oxygen Gardens. Logs suggest she locked herself in willingly.",
-      john: 'John was the last recorded technician to speak with NAVI. His voice remains stored in hidden logs.',
-      l: 'No full records for "L" exist. Anomalous file timestamps show recent activity despite his termination in 1997.',
-      grader: 'Grader is rumored to be the failsafe architect. Some say he built NAVI to observe Urbanshade, not assist it.'
-    };
-
-    let history = [];
-    let historyIndex = -1;
-
-    function bootTerminal() {
-      setTimeout(() => {
-        appendLine('System ready. Type "help" for available commands.');
-      }, 1500);
-    }
-
-    function appendLine(text) {
-      const line = document.createElement('div');
-      line.className = 'line';
-      line.textContent = text;
-      terminal.appendChild(line);
-      terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    function handleCommand(e) {
-      e.preventDefault();
-      const value = input.value.trim();
-      const lower = value.toLowerCase();
-      if (!value) return;
-
-      appendLine(`${prompt.textContent}${value}`);
-      history.push(value);
-      historyIndex = history.length;
-      input.value = '';
-      auto.textContent = '';
-
-      if (commands.includes(lower)) {
-        switch(lower) {
-          case 'help':
-            appendLine('Available commands:\n' + commands.join(', '));
-            break;
-          case 'cls':
-            terminal.innerHTML = '';
-            break;
-          case 'exit':
-            appendLine('Exiting NAVI...');
-            break;
-          case 'val':
-          case 'imaginary':
-          case 'nomi':
-          case 'sseal':
-          case 'john':
-          case 'l':
-          case 'grader':
-            appendLine(loreData[lower]);
-            break;
-          case 'navi':
-            appendLine('NAVI Core Aware. Awaiting your query. Access to restricted sectors is unauthorized.');
-            break;
-          default:
-            appendLine(`Executed: ${value}`);
+    <script>
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = `particle ${Math.random() > 0.5 ? 'cyan' : 'red'}`;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (8 + Math.random() * 6) + 's';
+            document.querySelector('.particles').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 14000);
         }
-      } else {
-        appendLine(`Unknown command: ${value}`);
-      }
-    }
-
-    input.addEventListener('input', () => {
-      const current = input.value.trim().toLowerCase();
-      const match = commands.find(cmd => cmd.startsWith(current));
-      if (match && current !== match) {
-        auto.textContent = match.slice(current.length);
-      } else {
-        auto.textContent = '';
-      }
-    });
-
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        const match = commands.find(cmd => cmd.startsWith(input.value.trim().toLowerCase()));
-        if (match) {
-          input.value = match;
-          auto.textContent = '';
+        
+        // Generate particles
+        setInterval(createParticle, 800);
+        
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('time').textContent = time;
         }
-      } else if (e.key === 'ArrowUp') {
-        if (historyIndex > 0) {
-          historyIndex--;
-          input.value = history[historyIndex];
-          auto.textContent = '';
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (historyIndex < history.length - 1) {
-          historyIndex++;
-          input.value = history[historyIndex];
-          auto.textContent = '';
-        } else {
-          historyIndex = history.length;
-          input.value = '';
-        }
-      }
-    });
+        setInterval(updateTime, 1000);
+        updateTime();
 
-    bootTerminal();
-  </script>
+        // Terminal functionality
+        const terminal = document.getElementById('terminal');
+        const input = document.getElementById('input');
+        const auto = document.getElementById('autocomplete');
+        const prompt = document.getElementById('prompt');
+
+        // User management
+        let userProfiles = {};
+
+        const commands = [
+            'help', 'dir', 'cd', 'cls', 'echo', 'exit', 'type', 'copy', 'del', 'rename', 
+            'md', 'rd', 'ver', 'whoami', 'ipconfig', 'tree', 'color', 'date', 'time', 
+            'shutdown', 'restart', 'navi', 'val', 'imaginary', 'nomi', 'sseal', 'john', 
+            'l', 'grader', 'lore', 'log', 'core', 'blacksite', 'depth', 'pressure', 
+            'systems', 'breach', 'lockdown', 'emergency', 'cu', 'createuser', 'authorize', 'users'
+        ];
+
+        const loreData = {
+            val: 'Val was a deep-level systems engineer who disappeared post-breach. Reports claim her signal still pings within the Trenchbleeder Tunnels.',
+            imaginary: 'Imaginary was a failed AI experiment. NAVI absorbed portions of its neural routines after shutdown.',
+            nomi: 'Nomi handled cryo logistics. She vanished after taking control of a ventilation sector alone.',
+            sseal: "Sseal's ID badge was found in the flooded Oxygen Gardens. Logs suggest she locked herself in willingly.",
+            john: 'John was the last recorded technician to speak with NAVI. His voice remains stored in hidden logs.',
+            l: 'No full records for "L" exist. Anomalous file timestamps show recent activity despite his termination in 1997.',
+            grader: 'Grader is rumored to be the failsafe architect. Some say he built NAVI to observe Urbanshade, not assist it.',
+            blacksite: 'Hadal Blacksite: A deep-sea research facility operating at extreme depths. Current status: PARTIALLY COMPROMISED.',
+            depth: 'Current depth: 11,034 meters below sea level. Mariana Trench sector 7.',
+            pressure: 'External pressure: 1,100 atmospheres. Hull integrity holding at 94%.',
+            breach: 'Security breach detected 72 hours ago. Lockdown protocols partially effective.',
+            navi: 'NAVI Core Aware. Deep-sea monitoring active. Access to restricted sectors requires authorization.'
+        };
+
+        let history = [];
+        let historyIndex = -1;
+
+        function generateUserID() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let id = '';
+            for (let i = 0; i < 8; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+
+        function appendLine(text, className = '') {
+            const line = document.createElement('div');
+            line.className = `line ${className}`;
+            line.textContent = text;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function handleCommand(e) {
+            if (e) e.preventDefault();
+            const value = input.value.trim();
+            const lower = value.toLowerCase();
+            const parts = value.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+            
+            if (!value) return;
+
+            appendLine(`${prompt.textContent}${value}`);
+            history.push(value);
+            historyIndex = history.length;
+            input.value = '';
+            auto.textContent = '';
+
+            setTimeout(() => {
+                if (cmd === 'cu' || cmd === 'createuser') {
+                    if (args.length === 0) {
+                        appendLine('Usage: cu <username> [clearance_level]', 'warning');
+                        appendLine('Example: cu researcher_nova 3', '');
+                        return;
+                    }
+                    
+                    const username = args[0];
+                    const clearanceLevel = args[1] || '1';
+                    
+                    if (userProfiles[username]) {
+                        appendLine(`User "${username}" already exists.`, 'error');
+                        return;
+                    }
+                    
+                    const userID = generateUserID();
+                    userProfiles[username] = {
+                        id: userID,
+                        clearance: clearanceLevel,
+                        created: new Date().toISOString(),
+                        authorized: false
+                    };
+                    
+                    appendLine('Creating user profile...', 'info');
+                    appendLine(`User: ${username}`, 'success');
+                    appendLine(`ID: ${userID}`, 'success');
+                    appendLine(`Clearance Level: ${clearanceLevel}`, 'success');
+                    appendLine('User created successfully. Requires authorization for system access.', 'warning');
+                } 
+                else if (cmd === 'authorize') {
+                    if (args.length === 0) {
+                        appendLine('Usage: authorize <username>', 'warning');
+                        appendLine('Example: authorize researcher_nova', '');
+                        return;
+                    }
+                    
+                    const username = args[0];
+                    
+                    if (!userProfiles[username]) {
+                        appendLine('Invalid user.', 'error');
+                        return;
+                    }
+                    
+                    const user = userProfiles[username];
+                    if (user.authorized) {
+                        appendLine(`User "${username}" is already authorized.`, 'warning');
+                        return;
+                    }
+                    
+                    user.authorized = true;
+                    user.authorizedAt = new Date().toISOString();
+                    
+                    appendLine('Verifying credentials...', 'info');
+                    appendLine('Checking clearance level...', 'info');
+                    appendLine('Updating access permissions...', 'info');
+                    appendLine(`User "${username}" (ID: ${user.id}) authorized successfully.`, 'success');
+                    appendLine(`Clearance Level ${user.clearance} access granted.`, 'success');
+                }
+                else if (cmd === 'users') {
+                    if (Object.keys(userProfiles).length === 0) {
+                        appendLine('No user profiles found.', 'warning');
+                        return;
+                    }
+                    
+                    appendLine('Current User Profiles:', 'info');
+                    appendLine('─'.repeat(60), '');
+                    
+                    Object.entries(userProfiles).forEach(([username, user]) => {
+                        const status = user.authorized ? 'AUTHORIZED' : 'PENDING';
+                        const statusClass = user.authorized ? 'success' : 'warning';
+                        appendLine(`${username.toUpperCase().padEnd(20)} | ID: ${user.id} | LVL: ${user.clearance} | ${status}`, statusClass);
+                    });
+                    
+                    appendLine('─'.repeat(60), '');
+                }
+                else if (commands.includes(lower) || commands.includes(cmd)) {
+                    switch(cmd) {
+                        case 'help':
+                            appendLine('Available commands:', 'info');
+                            appendLine('System: help, dir, cls, exit, ver, whoami', '');
+                            appendLine('Personnel: val, imaginary, nomi, sseal, john, l, grader', '');
+                            appendLine('Facility: navi, blacksite, depth, pressure, systems, breach', '');
+                            appendLine('Users: cu/createuser, authorize, users', '');
+                            break;
+                        case 'cls':
+                            terminal.innerHTML = '';
+                            break;
+                        case 'exit':
+                            appendLine('Terminating NAVI connection...', 'warning');
+                            appendLine('Connection severed. Emergency protocols engaged.', 'error');
+                            break;
+                        case 'systems':
+                            appendLine('Life Support: ACTIVE', 'success');
+                            appendLine('Hull Integrity: 94% - Minor breach detected', 'warning');
+                            appendLine('Pressure Systems: STABLE', 'success');
+                            appendLine('Neural Networks: ONLINE', 'info');
+                            appendLine('Emergency Power: 67%', 'warning');
+                            break;
+                        case 'lockdown':
+                            appendLine('Initiating lockdown protocols...', 'warning');
+                            appendLine('Sealing blast doors... COMPLETE', 'success');
+                            appendLine('Isolating contaminated sectors... PARTIAL', 'warning');
+                            appendLine('Emergency beacon: ACTIVE', 'info');
+                            break;
+                        case 'emergency':
+                            appendLine('EMERGENCY STATUS: ACTIVE', 'error');
+                            appendLine('Time since breach: 72:14:37', 'warning');
+                            appendLine('Personnel unaccounted: 23', 'error');
+                            appendLine('Rescue ETA: UNKNOWN', 'error');
+                            break;
+                        default:
+                            if (loreData[lower]) {
+                                appendLine(loreData[lower], 'info');
+                            } else {
+                                appendLine(`Executed: ${value}`, '');
+                            }
+                    }
+                } else {
+                    appendLine(`Unknown command: ${value}`, 'error');
+                }
+            }, 150);
+        }
+
+        input.addEventListener('input', () => {
+            const current = input.value.trim().toLowerCase();
+            const match = commands.find(cmd => cmd.startsWith(current));
+            if (match && current !== match) {
+                auto.textContent = match.slice(current.length);
+            } else {
+                auto.textContent = '';
+            }
+        });
+
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                handleCommand();
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                const match = commands.find(cmd => cmd.startsWith(input.value.trim().toLowerCase()));
+                if (match) {
+                    input.value = match;
+                    auto.textContent = '';
+                }
+            } else if (e.key === 'ArrowUp') {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    input.value = history[historyIndex];
+                    auto.textContent = '';
+                }
+            } else if (e.key === 'ArrowDown') {
+                if (historyIndex < history.length - 1) {
+                    historyIndex++;
+                    input.value = history[historyIndex];
+                    auto.textContent = '';
+                } else {
+                    historyIndex = history.length;
+                    input.value = '';
+                }
+            }
+        });
+
+        // Focus input on click
+        document.addEventListener('click', () => {
+            input.focus();
+        });
+    </script>
 </body>
 </html>
