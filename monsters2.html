@@ -1,305 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Monsters - N.A.V.I Database</title>
+  <meta charset="UTF-8">
+  <title>Main Monsters - N.A.V.I Database</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap & icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
   <style>
-    :root {
-      --bg-light: #f5f5f5;
-      --text-light: #111;
-      --bg-dark: #0f0f0f;
-      --text-dark: #f5f5f5;
-      --accent: #00bfff;
-      --card-light: #ffffff;
-      --card-dark: #1e1e1e;
-    }
-
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
-      transition: background 0.3s, color 0.3s;
-      overflow-x: hidden;
-    }
-
-    #starfield {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      width: 100vw;
-      height: 100vh;
-      background: black;
-    }
-
-    html, body {
-      height: 100%;
-      width: 100%;
-    }
-
-    header {
-      background-color: #151515;
-      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      min-height: 100vh;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      z-index: 1;
+      justify-content: center;
+      transition: background 0.5s;
       position: relative;
+      z-index: 0;
     }
-
-    header h1 {
-      font-size: 1.6rem;
-      color: var(--accent);
+    body.dark {
+      background: #0a0a0a;
     }
-
-    .toggle-buttons select {
-      padding: 0.4rem 1rem;
-      margin-left: 0.5rem;
+    #starfield {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw !important;
+      height: 100vh !important;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body.dark #starfield {
+      display: block;
+    }
+    .glass-card {
+      background: rgba(255,255,255,0.18);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid rgba(255,255,255,0.18);
+      max-width: 900px;
+      margin: 2rem 0;
+      padding: 2.5rem 2rem 3.5rem 2rem;
+      position: relative;
+      transition: background 0.5s, color 0.5s;
+      width: 100%;
+      z-index: 1;
+    }
+    .glass-card.dark {
+      background: rgba(34, 40, 49, 0.65);
+      color: #f5f6fa;
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+    .monster-title {
+      font-weight: 700;
+      color: #00bfff;
+      margin-bottom: 1.3rem;
+      letter-spacing: 0.03em;
+    }
+    .glass-card.dark .monster-title {
+      color: #7df9ff;
+    }
+    .glass-lang-switcher {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2rem;
+      padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+      box-shadow: 0 2px 8px 0 rgba(31,38,135,0.07);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .glass-lang-switcher select {
+      background: transparent;
       border: none;
-      background-color: #333;
-      color: white;
-      border-radius: 8px;
+      color: #222;
+      font-weight: 500;
+      outline: none;
       cursor: pointer;
+      padding: 0.15rem 0.5rem;
+      font-size: 1rem;
     }
-
-    main {
-      padding: 2rem;
+    .glass-card.dark .glass-lang-switcher {
+      background: rgba(44,62,80,0.28);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .glass-card.dark .glass-lang-switcher select {
+      color: #f5f6fa;
+    }
+    .fi {
+      font-size: 1.25rem;
+      vertical-align: text-bottom;
+    }
+    .monster-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.3rem;
+      margin-bottom: 2rem;
+    }
+    .monster-card {
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 1rem;
+      box-shadow: 0 4px 16px 0 rgba(31,38,135,0.13);
+      padding: 1.3rem 0.7rem 1.1rem 0.7rem;
+      text-align: center;
+      color: #222;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+      min-height: 150px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 1;
-      position: relative;
+      justify-content: center;
+      font-weight: 500;
     }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      width: 100%;
-      max-width: 1100px;
-      margin-top: 2rem;
+    .monster-card:hover {
+      background: #e0f7fa;
+      color: #00bfff;
+      box-shadow: 0 8px 20px 0 #00bfff44;
+      transform: translateY(-4px) scale(1.04);
     }
-
-    /* Glassmorphism & border for feature-box */
-    .feature-box {
-      background: rgba(30, 30, 30, 0.45);
-      border: 2.5px solid rgba(0, 191, 255, 0.55);
-      border-radius: 20px;
-      backdrop-filter: blur(13px) saturate(180%);
-      -webkit-backdrop-filter: blur(13px) saturate(180%);
-      box-shadow: 0 0 32px 0 rgba(0, 191, 255, 0.22);
-      color: var(--text-dark);
-      transition: transform 0.3s, box-shadow 0.3s;
-      opacity: 0;
-      transform: translateY(40px);
-      text-decoration: none;
+    .glass-card.dark .monster-card {
+      background: rgba(40,60,80,0.21);
+      color: #f5f6fa;
+      border-color: rgba(255,255,255,0.07);
+    }
+    .glass-card.dark .monster-card:hover {
+      background: #223148;
+      color: #7df9ff;
+    }
+    .monster-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .monster-svg {
+      width: 48px;
+      height: 48px;
       display: block;
+      margin: 0 auto 0.3rem auto;
     }
-
-    .feature-box:hover {
-      transform: rotateX(6deg) rotateY(6deg) scale(1.03);
-      box-shadow: 0 0 30px rgba(0, 191, 255, 0.7);
+    .theme-switch {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-
-    .feature-box.visible {
-      opacity: 1;
-      transform: none;
-      transition: all 0.6s ease-out;
+    .monster-label {
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.01em;
     }
-
-    .feature-box h3 {
-      font-size: 1.4rem;
-      margin-top: 0.5rem;
+    @media (max-width: 900px) {
+      .glass-card { padding: 1.2rem 0.3rem 2.5rem 0.3rem; }
     }
-
-    .feature-box span {
-      font-size: 2rem;
-      display: block;
-      margin-bottom: 0.3rem;
+    @media (max-width: 800px) {
+      .monster-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
-    /* Light Mode */
-    .light-mode {
-      background-color: var(--bg-light);
-      color: var(--text-light);
-    }
-
-    .light-mode header {
-      background-color: #ddd;
-    }
-
-    .light-mode .feature-box {
-      background: rgba(255,255,255,0.55);
-      color: var(--text-light);
-      border: 2.5px solid rgba(0,191,255,0.33);
-      backdrop-filter: blur(13px) saturate(170%);
-      -webkit-backdrop-filter: blur(13px) saturate(170%);
-    }
-
-    .light-mode .toggle-buttons select {
-      background-color: #ccc;
-      color: #111;
+    @media (max-width: 600px) {
+      .glass-card {
+        padding: 1.1rem 0.1rem 2.2rem 0.1rem;
+      }
+      .theme-switch {
+        bottom: 0.7rem;
+        right: 0.7rem;
+      }
+      .monster-grid {
+        grid-template-columns: 1fr;
+        gap: .7rem;
+      }
     }
   </style>
 </head>
 <body>
   <canvas id="starfield"></canvas>
-  <header>
-    <h1>N.A.V.I Database</h1>
-    <div class="toggle-buttons">
-      <button onclick="toggleTheme()">🌗</button>
-      <select id="language-select" onchange="changeLanguage(this.value)">
-        <option value="en">🇬🇧 English</option>
-        <option value="vi">🇻🇳 Tiếng Việt</option>
-        <option value="th">🇹🇭 ไทย</option>
-        <option value="zh">🇨🇳 中文</option>
-      </select>
+  <div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="glass-card position-relative" id="glassCard">
+      <div class="glass-lang-switcher" id="langSwitcher">
+        <span class="fi fi-gb"></span>
+        <select class="form-select form-select-sm d-inline border-0 shadow-0" id="languageSelect" aria-label="Select language">
+          <option value="en" data-flag="gb">English</option>
+          <option value="vi" data-flag="vn">Tiếng Việt</option>
+          <option value="zh" data-flag="cn">中文</option>
+          <option value="th" data-flag="th">ไทย</option>
+        </select>
+      </div>
+      <!-- Main Content -->
+      <h2 class="monster-title text-center" id="monsterTitle">Main Monsters</h2>
+      <div class="monster-grid">
+        <a href="#" class="monster-card" tabindex="0" title="Access Nomi info">
+          <span class="monster-icon">❓</span>
+          <span class="monster-label">Nomi</span>
+        </a>
+        <a href="#" class="monster-card" tabindex="0" title="Access Val info">
+          <span class="monster-icon">🛠️</span>
+          <span class="monster-label">Val</span>
+        </a>
+        <a href="#" class="monster-card" tabindex="0" title="Access North info">
+          <span class="monster-icon">❓</span>
+          <span class="monster-label">North</span>
+        </a>
+        <a href="#" class="monster-card" tabindex="0" title="Access Iki info">
+          <span class="monster-icon">❓</span>
+          <span class="monster-label">Iki</span>
+        </a>
+        <a href="#" class="monster-card" tabindex="0" title="Access Imaginary info">
+          <span class="monster-svg">
+            <svg width="48" height="48" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="96" height="96" rx="20" fill="#0F0F0F" />
+              <circle cx="48" cy="38" r="18" stroke="#6FC3DF" stroke-width="3"/>
+              <circle cx="42" cy="35" r="3" fill="#6FC3DF"/>
+              <circle cx="54" cy="35" r="3" fill="#6FC3DF"/>
+              <path d="M40 48c4 5 12 5 16 0" stroke="#6FC3DF" stroke-width="2" stroke-linecap="round"/>
+              <rect x="22" y="70" width="52" height="4" rx="2" fill="#222"/>
+              <rect x="28" y="70" width="12" height="4" rx="2" fill="#6FC3DF"/>
+              <text x="48%" y="91%" fill="#444" font-size="7" text-anchor="middle" font-family="monospace" letter-spacing="0.5">IMAGINARY</text>
+            </svg>
+          </span>
+          <span class="monster-label">Imaginary</span>
+        </a>
+        <a href="#" class="monster-card" tabindex="0" title="Access Illusions info">
+          <span class="monster-icon">❓</span>
+          <span class="monster-label">Illusions</span>
+        </a>
+      </div>
+      <div class="theme-switch">
+        <label class="form-check-label" for="themeSwitch" id="themeLabel">🌙</label>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" type="checkbox" id="themeSwitch">
+        </div>
+      </div>
     </div>
-  </header>
-
-  <main>
-    <h2 id="monster-title">Main Monsters</h2>
-    <div class="feature-grid">
-      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Nomi">
-        <span>❓</span>
-        <h3>Nomi</h3>
-      </a>
-      <a class="feature-box" href="val.html" title="Access to N.A.V.I's information about Val">
-        <span>🛠️</span>
-        <h3>Val</h3>
-      </a>
-      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about North">
-        <span>❓</span>
-        <h3>North</h3>
-      </a>
-      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Iki">
-        <span>❓</span>
-        <h3>Iki</h3>
-      </a>
-      <a class="feature-box" href="imaginary.html" title="Access to N.A.V.I's information about Imaginary">
-        <span>
-          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="96" height="96" rx="20" fill="#0F0F0F" />
-            <circle cx="48" cy="38" r="18" stroke="#6FC3DF" stroke-width="3"/>
-            <circle cx="42" cy="35" r="3" fill="#6FC3DF"/>
-            <circle cx="54" cy="35" r="3" fill="#6FC3DF"/>
-            <path d="M40 48c4 5 12 5 16 0" stroke="#6FC3DF" stroke-width="2" stroke-linecap="round"/>
-            <rect x="22" y="70" width="52" height="4" rx="2" fill="#222"/>
-            <rect x="28" y="70" width="12" height="4" rx="2" fill="#6FC3DF"/>
-            <path d="M5 5L15 5L5 15Z" fill="#6FC3DF" opacity="0.4">
-              <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite" />
-            </path>
-            <text x="48%" y="91%" fill="#444" font-size="7" text-anchor="middle" font-family="monospace" letter-spacing="0.5">IMAGINARY</text>
-          </svg>
-        </span>
-        <h3>Imaginary</h3>
-      </a>
-      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Illusions">
-        <span>❓</span>
-        <h3>Illusions</h3>
-      </a>
-    </div>
-  </main>
-
+  </div>
   <script>
-    window.toggleTheme = function () {
-      const isLight = document.body.classList.toggle("light-mode");
-      localStorage.setItem("theme", isLight ? "light" : "dark");
+    // Monster title translations
+    const translations = {
+      en: { title: 'Main Monsters' },
+      vi: { title: 'Quái Vật Chính' },
+      zh: { title: '主要怪物' },
+      th: { title: 'สัตว์ประหลาดหลัก' }
     };
 
-    function changeLanguage(lang) {
-      document.documentElement.lang = lang;
-      let titles = {
-        en: "Main Monsters",
-        vi: "Quái Vật Chính",
-        th: "สัตว์ประหลาดหลัก",
-        zh: "主要怪物"
-      };
-      document.getElementById("monster-title").textContent = titles[lang] || titles.en;
-      localStorage.setItem("language", lang);
+    function setLanguage(lang) {
+      document.getElementById('monsterTitle').textContent = translations[lang].title;
+      // Set flag
+      const select = document.getElementById('languageSelect');
+      const flag = select.options[select.selectedIndex].getAttribute('data-flag');
+      document.querySelector('.glass-lang-switcher .fi').className = `fi fi-${flag}`;
+      localStorage.setItem('monster-lang', lang);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("theme") === "light") {
-        document.body.classList.add("light-mode");
-      }
-      const savedLang = localStorage.getItem("language");
-      if (savedLang) {
-        document.getElementById("language-select").value = savedLang;
-        changeLanguage(savedLang);
-      }
-
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.2 });
-
-      document.querySelectorAll('.feature-box').forEach(box => {
-        observer.observe(box);
-      });
+    document.getElementById('languageSelect').addEventListener('change', function() {
+      setLanguage(this.value);
     });
 
+    // STARFIELD BACKGROUND (stars fly outward from center)
     const canvas = document.getElementById("starfield");
     const ctx = canvas.getContext("2d");
     let stars = [];
-    const starCount = 200;
+    const starCount = 180;
+    let animationId;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
 
     function initStars() {
       stars = [];
+      const w = canvas.width;
+      const h = canvas.height;
       for (let i = 0; i < starCount; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const radius = Math.random() * 4;
         stars.push({
-          x: Math.random() * canvas.width - canvas.width / 2,
-          y: Math.random() * canvas.height - canvas.height / 2,
-          z: Math.random() * canvas.width,
-          o: Math.random()
+          x: w/2 + Math.cos(angle) * radius,
+          y: h/2 + Math.sin(angle) * radius,
+          dx: Math.cos(angle) * (Math.random() * 1.3 + 0.7),
+          dy: Math.sin(angle) * (Math.random() * 1.3 + 0.7),
+          o: Math.random() * 0.7 + 0.3,
+          size: Math.random() * 1.2 + 0.5
         });
       }
     }
 
     function drawStars() {
-      ctx.fillStyle = "black";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+      if (canvas.style.display === 'none' || !document.body.classList.contains('dark')) {
+        return;
+      }
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const w = canvas.width;
+      const h = canvas.height;
+      
       for (let star of stars) {
-        const k = 128.0 / star.z;
-        const px = star.x * k + canvas.width / 2;
-        const py = star.y * k + canvas.height / 2;
-
-        if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
-          const size = (1 - star.z / canvas.width) * 2;
-          ctx.beginPath();
-          ctx.arc(px, py, size, 0, 2 * Math.PI);
-          ctx.fillStyle = `rgba(255, 255, 255, ${star.o})`;
-          ctx.fill();
-        }
-
-        star.z -= 1;
-        if (star.z <= 0) {
-          star.z = canvas.width;
-          star.x = Math.random() * canvas.width - canvas.width / 2;
-          star.y = Math.random() * canvas.height - canvas.height / 2;
-          star.o = Math.random();
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255,255,255,${star.o})`;
+        ctx.shadowColor = "#00bfff";
+        ctx.shadowBlur = 10 * star.o;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        star.x += star.dx;
+        star.y += star.dy;
+        
+        // If star moves outside the view, respawn at center
+        if (star.x < -20 || star.x > w + 20 || star.y < -20 || star.y > h + 20) {
+          const angle = Math.random() * 2 * Math.PI;
+          const radius = Math.random() * 6;
+          star.x = w/2 + Math.cos(angle) * radius;
+          star.y = h/2 + Math.sin(angle) * radius;
+          star.dx = Math.cos(angle) * (Math.random() * 1.3 + 0.7);
+          star.dy = Math.sin(angle) * (Math.random() * 1.3 + 0.7);
+          star.o = Math.random() * 0.7 + 0.3;
+          star.size = Math.random() * 1.2 + 0.5;
         }
       }
-      requestAnimationFrame(drawStars);
+      
+      if (document.body.classList.contains('dark')) {
+        animationId = requestAnimationFrame(drawStars);
+      }
     }
 
-    initStars();
-    drawStars();
+    function startStarfield() {
+      resizeCanvas();
+      initStars();
+      if (animationId) cancelAnimationFrame(animationId);
+      drawStars();
+    }
+
+    function stopStarfield() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    // Theme switcher
+    const themeSwitch = document.getElementById('themeSwitch');
+    function setTheme(isDark) {
+      document.body.classList.toggle('dark', isDark);
+      document.getElementById('glassCard').classList.toggle('dark', isDark);
+      localStorage.setItem('monster-theme', isDark ? 'dark' : 'light');
+      
+      if (isDark) {
+        startStarfield();
+      } else {
+        stopStarfield();
+      }
+    }
+
+    themeSwitch.addEventListener('change', function() {
+      setTheme(this.checked);
+    });
+
+    // Window resize handler
+    window.addEventListener('resize', () => {
+      if (document.body.classList.contains('dark')) {
+        startStarfield();
+      }
+    });
+
+    // Restore preferences on load
+    window.addEventListener('DOMContentLoaded', function() {
+      const lang = localStorage.getItem('monster-lang') || 'en';
+      document.getElementById('languageSelect').value = lang;
+      setLanguage(lang);
+
+      const theme = localStorage.getItem('monster-theme') || 'light';
+      const isDark = theme === 'dark';
+      themeSwitch.checked = isDark;
+      setTheme(isDark);
+    });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
