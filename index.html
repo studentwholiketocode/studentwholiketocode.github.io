@@ -7,211 +7,250 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --bg: #0e0f1a;
-      --glass: rgba(255, 255, 255, 0.05);
-      --border: rgba(255, 255, 255, 0.1);
-      --white: #ffffff;
-      --accent: #7aa2f7;
+      --bg: #191724;
+      --glass: rgba(36, 37, 46, 0.7);
+      --glass-light: rgba(255,255,255,0.10);
+      --glass-hover: rgba(255,255,255,0.16);
+      --white: #f7f7fa;
+      --accent: linear-gradient(90deg, #8eaefc 0%, #a6c1ee 100%);
+      --accent-solid: #8eaefc;
+      --danger: #ff3d68;
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+      --border: rgba(255,255,255,0.13);
     }
 
     body {
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(145deg, #0c0d18, #1a1b2d);
+      font-family: "Segoe UI", "Inter", Arial, sans-serif;
+      background: linear-gradient(135deg, #232946 0%, #191724 100%);
       color: var(--white);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      transition: background 0.4s;
+      overflow-x: hidden;
     }
 
     .container {
-      width: 90%;
+      width: 95%;
       max-width: 1000px;
-      border-radius: 20px;
+      border-radius: 28px;
       background: var(--glass);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(20px);
-      padding: 30px;
-      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+      border: 1.2px solid var(--border);
+      backdrop-filter: blur(28px) saturate(140%);
+      padding: 38px 30px 34px 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: fadein 0.7s cubic-bezier(.57,-0.03,.44,1.05);
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 32px;
     }
 
     .top-left {
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 1.5rem;
+      font-weight: 700;
       letter-spacing: 1px;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .top-right {
       display: flex;
-      gap: 10px;
+      gap: 14px;
       align-items: center;
     }
 
+    /* Neomorphic Toggle */
     .toggle-btn {
-      width: 40px;
-      height: 22px;
-      border-radius: 12px;
-      background: #555;
+      width: 48px; height: 26px; border-radius: 14px;
+      background: var(--glass-light);
       position: relative;
       cursor: pointer;
+      border: 1.5px solid var(--border);
+      transition: background 0.3s;
+      box-shadow: 0 2px 8px rgba(36, 37, 46, 0.1);
+      display: flex; align-items: center;
     }
-
-    .toggle-btn::after {
-      content: "";
+    .toggle-btn:focus { outline: 2px solid var(--accent-solid); }
+    .toggle-switch {
       position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 16px;
-      height: 16px;
-      background: white;
+      top: 2.4px; left: 3px;
+      width: 22px; height: 22px;
+      background: var(--white);
       border-radius: 50%;
-      transition: 0.3s;
+      transition: 0.32s cubic-bezier(.63,1.57,.51,.99);
+      box-shadow: 0 2px 10px rgba(31,38,135,0.18);
     }
-
-    body.dark .toggle-btn::after {
-      transform: translateX(18px);
+    body.dark .toggle-switch { transform: translateX(20px); background: #232946;}
+    .toggle-btn .fa-sun, .toggle-btn .fa-moon {
+      position: absolute; font-size: 1rem; top: 4px;
+      opacity: 0.7;
+      transition: color 0.2s;
     }
+    .toggle-btn .fa-sun { left: 7px; color: #ffd86b; }
+    .toggle-btn .fa-moon { right: 7px; color: #8eaefc; }
 
-    .flags {
-      display: flex;
-      gap: 5px;
-    }
-
+    /* Flags */
+    .flags { display: flex; gap: 6px; }
     .flags img {
-      width: 20px;
-      height: 14px;
-      border-radius: 3px;
+      width: 24px; height: 16px; border-radius: 3px; cursor: pointer;
+      border: 1.2px solid transparent; transition: border 0.2s, transform 0.2s;
+      box-shadow: 0 1.5px 5px rgba(31,38,135,0.08);
+    }
+    .flags img.active, .flags img:focus {
+      border: 1.5px solid var(--accent-solid);
+      transform: scale(1.08);
+    }
+
+    .terminal-btn {
+      background: linear-gradient(90deg, #ff3d68 0%, #ff6a88 100%);
+      color: var(--white);
+      border: none;
+      border-radius: 9px;
+      padding: 7px 22px;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-weight: 600;
+      letter-spacing: 1px;
       cursor: pointer;
+      box-shadow: 0 2px 14px #ff3d6840;
+      transition: background 0.25s, box-shadow 0.2s, color 0.15s;
+      margin-left: 10px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .terminal-btn:hover, .terminal-btn:focus {
+      background: #ff3355;
+      color: #fff;
+      box-shadow: 0 4px 24px #ff3d68a2;
     }
 
     .main-title {
       text-align: center;
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin-bottom: 30px;
+      font-size: 2.7rem;
+      font-weight: 800;
+      margin-bottom: 36px;
+      letter-spacing: 1px;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .features {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      gap: 28px;
     }
 
     .feature-box {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 25px 20px;
+      background: var(--glass-light);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 18px 28px 18px;
       text-align: center;
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.28s cubic-bezier(.63,1.57,.51,.99);
+      box-shadow: 0 2px 20px rgba(31,38,135,0.10);
+      position: relative;
+      overflow: hidden;
+      will-change: transform, box-shadow;
+      outline: none;
     }
-
-    .feature-box:hover {
-      background: rgba(255,255,255,0.12);
-      transform: scale(1.05);
+    .feature-box:focus, .feature-box:hover {
+      background: var(--glass-hover);
+      box-shadow: 0 8px 32px rgba(138,174,252,0.16);
+      border: 2px solid #8eaefc;
+      transform: translateY(-6px) scale(1.038);
     }
+    .feature-box:active { transform: scale(0.98); }
 
     .feature-box i {
-      font-size: 32px;
-      margin-bottom: 12px;
-      color: #ccc;
+      font-size: 2.3rem;
+      margin-bottom: 15px;
+      color: #a6c1ee;
+      display: block;
+      text-shadow: 0 2px 8px #8eaefc44;
+      transition: color 0.22s;
     }
-
     .feature-box h3 {
       margin: 0;
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: 1.17rem;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 0.7px;
+      text-shadow: 0 2px 8px #23294622;
+      transition: color 0.22s;
     }
 
-    .terminal-btn {
-      background: rgba(255, 0, 60, 0.15);
-      color: #ff0033;
-      border: 1px solid #ff3355;
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-family: 'Courier New', monospace;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      transition: 0.3s ease;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 10px #ff0033aa;
-      margin-left: 10px;
+    /* Responsive */
+    @media screen and (max-width: 900px) {
+      .features { grid-template-columns: repeat(2, 1fr); }
+      .main-title { font-size: 2.05rem; }
+      .container { padding: 22px 8px 16px 8px;}
     }
-
-    .terminal-btn:hover {
-      background: rgba(255, 0, 60, 0.3);
-      box-shadow: 0 0 15px #ff0044;
-    }
-
-    @media screen and (max-width: 700px) {
-      .features {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .main-title {
-        font-size: 2rem;
-      }
-    }
-
-    @media screen and (max-width: 400px) {
-      .features {
-        grid-template-columns: 1fr;
-      }
+    @media screen and (max-width: 650px) {
+      .features { grid-template-columns: 1fr; gap: 18px; }
+      .main-title { font-size: 1.35rem;}
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" role="main">
     <div class="top-bar">
       <div class="top-left" id="header-title">N.A.V.I Database</div>
       <div class="top-right">
-        <div class="toggle-btn" onclick="toggleDark()"></div>
-        <div class="flags">
-          <img src="https://flagcdn.com/w40/vn.png" onclick="switchLanguage('vn')" />
-          <img src="https://flagcdn.com/w40/no.png" onclick="switchLanguage('en')" />
-          <img src="https://flagcdn.com/w40/cn.png" onclick="switchLanguage('zh')" />
-          <img src="https://flagcdn.com/w40/jp.png" onclick="switchLanguage('ja')" />
+        <div class="toggle-btn" tabindex="0" onclick="toggleDark()" aria-label="Toggle dark mode">
+          <i class="fa fa-sun"></i>
+          <i class="fa fa-moon"></i>
+          <div class="toggle-switch"></div>
         </div>
-        <button class="terminal-btn" onclick="window.location.href='terminal.html'">Terminal</button>
+        <div class="flags">
+          <img src="https://flagcdn.com/w40/vn.png" onclick="switchLanguage('vn')" tabindex="0" title="Vietnamese" id="flag-vn"/>
+          <img src="https://flagcdn.com/w40/no.png" onclick="switchLanguage('en')" tabindex="0" title="English" id="flag-en"/>
+          <img src="https://flagcdn.com/w40/cn.png" onclick="switchLanguage('zh')" tabindex="0" title="Chinese" id="flag-zh"/>
+          <img src="https://flagcdn.com/w40/jp.png" onclick="switchLanguage('ja')" tabindex="0" title="Japanese" id="flag-ja"/>
+        </div>
+        <button class="terminal-btn" onclick="window.location.href='terminal.html'"><i class="fa fa-terminal"></i>Terminal</button>
       </div>
     </div>
 
     <div class="main-title" id="main-title">Main Menu</div>
 
     <div class="features">
-      <div class="feature-box" id="box-home" onclick="location.href='index.html'">
+      <div class="feature-box" id="box-home" tabindex="0" onclick="location.href='index.html'">
         <i class="fas fa-home"></i>
         <h3>Home</h3>
       </div>
-      <div class="feature-box" id="box-monsters" onclick="location.href='monsters2.html'">
+      <div class="feature-box" id="box-monsters" tabindex="0" onclick="location.href='monsters2.html'">
         <i class="fas fa-mask"></i>
         <h3>Monsters</h3>
       </div>
-      <div class="feature-box" id="box-characters" onclick="location.href='nopermission.html'">
+      <div class="feature-box" id="box-characters" tabindex="0" onclick="location.href='nopermission.html'">
         <i class="fas fa-user"></i>
         <h3>Characters</h3>
       </div>
-      <div class="feature-box" id="box-items" onclick="location.href='nopermission.html'">
+      <div class="feature-box" id="box-items" tabindex="0" onclick="location.href='nopermission.html'">
         <i class="fas fa-cube"></i>
         <h3>Items</h3>
       </div>
-      <div class="feature-box" id="box-hazards" onclick="location.href='nopermission.html'">
+      <div class="feature-box" id="box-hazards" tabindex="0" onclick="location.href='nopermission.html'">
         <i class="fas fa-exclamation-triangle"></i>
         <h3>Hazards</h3>
       </div>
-      <div class="feature-box" id="box-mechanics" onclick="location.href='nopermission.html'">
+      <div class="feature-box" id="box-mechanics" tabindex="0" onclick="location.href='nopermission.html'">
         <i class="fas fa-gear"></i>
         <h3>Mechanics</h3>
       </div>
@@ -223,7 +262,6 @@
       document.body.classList.toggle('dark');
       localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
     }
-
     if (localStorage.getItem("theme") === "dark") {
       document.body.classList.add("dark");
     }
@@ -282,7 +320,20 @@
           el.textContent = text[id];
         }
       }
+      // Highlight active flag
+      document.querySelectorAll('.flags img').forEach(img => img.classList.remove('active'));
+      let flag = document.getElementById('flag-' + lang);
+      if(flag) flag.classList.add('active');
     }
+
+    // Keyboard accessibility for flags
+    document.querySelectorAll('.flags img').forEach(img => {
+      img.addEventListener('keydown', function(e) {
+        if(e.key === 'Enter' || e.key === ' ') {
+          img.click();
+        }
+      });
+    });
 
     const savedLang = localStorage.getItem("language") || "en";
     switchLanguage(savedLang);
