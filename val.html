@@ -4,305 +4,939 @@
   <meta charset="UTF-8">
   <title>N.A.V.I Database - Val</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&subset=latin,vietnamese&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d1117;
-      --text: #ffffff;
-      --card-bg: #161b22;
-      --border: #30363d;
-      --accent: #2563eb;
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #151520;
+      --bg-tertiary: #1a1a2e;
+      --text-primary: #ffffff;
+      --text-secondary: #b8bcc8;
+      --text-muted: #6b7280;
+      --accent-primary: #6366f1;
+      --accent-secondary: #8b5cf6;
+      --accent-tertiary: #06b6d4;
+      --border-primary: #2d2d44;
+      --border-secondary: #3f3f56;
+      --shadow-primary: rgba(99, 102, 241, 0.15);
+      --shadow-secondary: rgba(0, 0, 0, 0.8);
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --glow: 0 0 20px rgba(99, 102, 241, 0.3);
     }
 
     [data-theme="light"] {
-      --bg: #ffffff;
-      --text: #000000;
-      --card-bg: #f0f0f0;
-      --border: #cccccc;
-      --accent: #2563eb;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --border-primary: #e2e8f0;
+      --border-secondary: #cbd5e1;
+      --shadow-secondary: rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      opacity: 0;
-      transition: opacity 0.8s ease;
+      font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    body.fade-in {
-      opacity: 1;
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(600px circle at 20% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(800px circle at 80% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(400px circle at 40% 60%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundShift 20s ease-in-out infinite;
     }
 
-    .topbar {
+    @keyframes backgroundShift {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      33% { transform: translateX(-10px) translateY(-20px); }
+      66% { transform: translateX(10px) translateY(10px); }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-primary);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-secondary);
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-primary);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .header.scrolled {
+      background: rgba(10, 10, 15, 0.95);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 1rem 2rem;
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border);
-      border-radius: 0 0 16px 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    .topbar h1 {
-      margin: 0;
-      font-size: 1.4rem;
-      font-weight: bold;
-      animation: logoFadeIn 1s ease forwards;
-      transform: scale(0.95);
-      opacity: 0;
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
     }
 
-    @keyframes logoFadeIn {
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transition: width 0.3s ease;
     }
 
-    .left-nav {
+    .logo:hover::after {
+      width: 100%;
+    }
+
+    .nav-buttons {
       display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
 
     .nav-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.45rem;
-      background-color: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
+      width: 44px;
+      height: 44px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      color: var(--text-secondary);
       text-decoration: none;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-primary);
+      transition: left 0.3s ease;
+      z-index: -1;
     }
 
     .nav-btn:hover {
-      background-color: var(--accent);
       color: white;
+      border-color: var(--accent-primary);
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
     }
 
-    .toggles button {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.4rem 0.7rem;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-left: 0.5rem;
-      transition: background 0.3s ease;
+    .nav-btn:hover::before {
+      left: 0;
     }
 
-    .toggles button:hover {
-      background: var(--accent);
-      color: white;
-    }
-
-    .sidebar-nav {
-      position: fixed;
-      top: 100px;
-      left: 20px;
-      background: var(--card-bg);
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    .controls {
       display: flex;
-      flex-direction: column;
       gap: 0.5rem;
-      z-index: 100;
     }
 
-    .main {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 2rem;
-      max-width: 1100px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      flex-wrap: wrap;
+    .control-btn {
+      padding: 0.7rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .control-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+      transition: all 0.4s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .control-btn:hover {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .control-btn:hover::before {
+      width: 200px;
+      height: 200px;
+    }
+
+    /* Main Content */
+    .main-container {
+      margin-top: 100px;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+      align-items: start;
     }
 
     .content {
-      flex: 1 1 60%;
-      min-width: 300px;
+      position: relative;
     }
 
-    .content h2 {
-      margin-top: 0;
-      border-bottom: 2px solid var(--accent);
-      padding-bottom: 0.3rem;
-    }
-
-    .sidebar-card {
-      flex: 1 1 300px;
-      max-width: 300px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+    .quote-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quote-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: transform 0.6s ease;
+    }
+
+    .quote-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-primary);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .quote-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .quote-text {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .quote-author {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 3rem 0 1.5rem 0;
+      background: var(--gradient-primary);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+    }
+
+    .content-text {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+
+    .discord-image {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 16px;
+      border: 1px solid var(--border-primary);
+      margin-top: 2rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .discord-image:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Character Card */
+    .character-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 24px;
+      overflow: hidden;
+      position: sticky;
+      top: 120px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .character-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+      border-color: var(--accent-primary);
     }
 
     .card-header {
-      background: var(--accent);
-      padding: 0.8rem;
+      background: var(--gradient-primary);
+      padding: 1.5rem;
       text-align: center;
-      font-weight: bold;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      font-weight: 700;
       color: white;
+      position: relative;
     }
 
-    .card-image img {
+    .card-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 60px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .card-image-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-image {
       width: 100%;
-      display: block;
-      border-bottom: 1px solid var(--border);
+      height: 280px;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .character-card:hover .card-image {
+      transform: scale(1.1);
+    }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .character-card:hover .image-overlay {
+      opacity: 1;
     }
 
     .card-caption {
-      font-style: italic;
+      padding: 1rem;
       text-align: center;
-      color: gray;
-      padding: 0.5rem;
-      font-size: 0.9rem;
-      border-bottom: 1px solid var(--border);
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border-primary);
     }
 
     .card-body {
-      padding: 1rem;
+      padding: 2rem;
     }
 
-    .card-body p {
-      margin: 0.7rem 0;
+    .stat-row {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
     }
 
-    .label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 0.2rem;
+    .stat-row:hover {
+      transform: translateX(5px);
     }
 
+    .stat-label {
+      font-weight: 600;
+      color: var(--accent-primary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Scroll Animations */
     .scroll-reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      transform: translateY(60px) scale(0.95);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .scroll-reveal.active {
       opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .scroll-reveal:nth-child(even) {
+      transform: translateY(60px) translateX(-30px) scale(0.95);
+    }
+
+    .scroll-reveal:nth-child(even).active {
+      transform: translateY(0) translateX(0) scale(1);
+    }
+
+    /* Floating Elements */
+    .floating-orb {
+      position: fixed;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.1), transparent);
+      pointer-events: none;
+      z-index: -1;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .floating-orb:nth-child(1) { top: 20%; right: 10%; animation-delay: 0s; }
+    .floating-orb:nth-child(2) { bottom: 30%; left: 5%; animation-delay: 2s; }
+    .floating-orb:nth-child(3) { top: 60%; right: 20%; animation-delay: 4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(5deg); }
+      66% { transform: translateY(10px) rotate(-3deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .character-card {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 1rem;
+      }
+      
+      .main-container {
+        padding: 1rem;
+        margin-top: 80px;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .nav-buttons {
+        gap: 0.25rem;
+      }
+      
+      .control-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Loading Animation */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--border-primary);
+      border-top: 3px solid var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Enhanced Interaction States */
+    .interactive {
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .interactive:hover {
+      transform: translateY(-2px);
+    }
+
+    .interactive:active {
       transform: translateY(0);
+    }
+
+    /* Glitch Effect for Special Elements */
+    .glitch {
+      position: relative;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+
+    .glitch:hover::before {
+      animation: glitch-1 0.3s;
+      color: #ff0080;
+      z-index: -1;
+    }
+
+    .glitch:hover::after {
+      animation: glitch-2 0.3s;
+      color: #00ffff;
+      z-index: -2;
+    }
+
+    @keyframes glitch-1 {
+      0%, 100% { transform: translateX(0); opacity: 0; }
+      50% { transform: translateX(-2px); opacity: 0.8; }
+    }
+
+    @keyframes glitch-2 {
+      0%, 100% { transform: translateX(0); opacity: 0; }
+      50% { transform: translateX(2px); opacity: 0.8; }
     }
   </style>
 </head>
 <body data-theme="dark">
-
-  <div class="topbar scroll-reveal">
-    <div class="left-nav">
-      <a href="index.html" class="nav-btn" title="Home">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6.5 6.5.708.708L2 7.707V14.5a.5.5 0 0 0 .5.5H6v-5h4v5h3.5a.5.5 0 0 0 .5-.5V7.707l.146.147.708-.708-6.5-6.5z"/>
-        </svg>
-      </a>
-      <a href="monsters2.html" class="nav-btn" title="Monsters">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M1 2a1 1 0 0 1 1-1h3.5v2H2v10h3.5v2H2a1 1 0 0 1-1-1V2zm13 0a1 1 0 0 0-1-1h-3.5v2H14v10h-3.5v2H13a1 1 0 0 0 1-1V2zM6.5 1.5h3v13h-3v-13z"/>
-        </svg>
-      </a>
-    </div>
-    <h1>N.A.V.I Database</h1>
-    <div class="toggles">
-      <button onclick="toggleTheme()">🌙/☀️</button>
-      <button onclick="toggleLanguage()">🇬🇧/🇻🇳</button>
-    </div>
+  <!-- Page Loader -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
   </div>
 
-  <div class="main">
-    <div class="content scroll-reveal">
-      <blockquote class="scroll-reveal">
-        <em>"Yeahhh, that was just unfair. Uhh, here. Free revive. On the house."</em><br>
-        <small>– Imaginary, after emotionally dying to Val</small>
-      </blockquote>
+  <!-- Floating Orbs -->
+  <div class="floating-orb"></div>
+  <div class="floating-orb"></div>
+  <div class="floating-orb"></div>
 
-      <h2 class="lang scroll-reveal" data-en="Overview" data-vi="Tổng quan">Overview</h2>
-      <p class="lang scroll-reveal" data-en="Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve."
-         data-vi="Val là một quái vật discord đặc biệt, nổi bật với các đòn tấn công tâm lý và các minigame gây tổn thương cảm xúc. Một khi bị cuốn vào, anh ta thử thách sự kiên nhẫn và ý chí của người chơi.">
-        Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve.
-      </p>
-
-      <h2 class="lang scroll-reveal" data-en="Mechanics" data-vi="Cơ chế">Mechanics</h2>
-      <p class="lang scroll-reveal" data-en="While appearing calm, Val initiates a brutal minigame upon contact in discord. This minigame is designed to be unwinnable, increasing emotional damage."
-         data-vi="Mặc dù trông có vẻ bình tĩnh, Val kích hoạt một minigame tàn bạo khi tiếp xúc trong discord. Minigame này được thiết kế không thể thắng, gây tổn thương tâm lý nghiêm trọng.">
-        While appearing calm, Val initiates a brutal minigame upon contact in discord. This minigame is designed to be unwinnable, increasing emotional damage.</p>
-
-      <p class="scroll-reveal">This is what Val's victim will turn like:</p>
-      <img class="scroll-reveal" src="discord.PNG" style="width:90%; border: 1px solid var(--border); border-radius: 8px; margin-top: 1rem;" alt="Example of what Val's victim will turn out.">
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-container">
+      <div class="nav-buttons">
+        <a href="index.html" class="nav-btn interactive" title="Home">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6.5 6.5.708.708L2 7.707V14.5a.5.5 0 0 0 .5.5H6v-5h4v5h3.5a.5.5 0 0 0 .5-.5V7.707l.146.147.708-.708-6.5-6.5z"/>
+          </svg>
+        </a>
+        <a href="monsters2.html" class="nav-btn interactive" title="Monsters">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1 2a1 1 0 0 1 1-1h3.5v2H2v10h3.5v2H2a1 1 0 0 1-1-1V2zm13 0a1 1 0 0 0-1-1h-3.5v2H14v10h-3.5v2H13a1 1 0 0 0 1-1V2zM6.5 1.5h3v13h-3v-13z"/>
+          </svg>
+        </a>
+      </div>
+      
+      <h1 class="logo glitch" data-text="N.A.V.I Database">N.A.V.I Database</h1>
+      
+      <div class="controls">
+        <button class="control-btn interactive" onclick="toggleTheme()">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button class="control-btn interactive" onclick="toggleLanguage()">
+          <span id="langIcon">🇬🇧</span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <div class="sidebar-card scroll-reveal">
-      <div class="card-header lang" data-en="Val" data-vi="Val">Val</div>
-
-      <div class="card-image">
-        <img src="val.PNG" alt="Val Image">
+  <!-- Main Content -->
+  <div class="main-container">
+    <main class="content">
+      <div class="quote-card scroll-reveal">
+        <div class="quote-text lang" 
+             data-en="&quot;Yeahhh, that was just unfair. Uhh, here. Free revive. On the house.&quot;"
+             data-vi="&quot;Ừm, cái đó thật sự không công bằng. Ờ, đây. Hồi sinh miễn phí. Tính vào tài khoản.&quot;">
+          "Yeahhh, that was just unfair. Uhh, here. Free revive. On the house."
+        </div>
+        <div class="quote-author lang"
+             data-en="– Imaginary, after emotionally dying to Val"
+             data-vi="– Imaginary, sau khi chết về mặt cảm xúc vì Val">
+          – Imaginary, after emotionally dying to Val
+        </div>
       </div>
 
-      <div class="card-caption lang" data-en="&quot;Good Luck&quot; – Val's Minigame Description"
+      <h2 class="section-title scroll-reveal lang" data-en="Overview" data-vi="Tổng quan">Overview</h2>
+      <p class="content-text scroll-reveal lang" 
+         data-en="Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve through carefully crafted challenges designed to push mental boundaries."
+         data-vi="Val là một quái vật discord đặc biệt, nổi bật với các đòn tấn công tâm lý và các minigame gây tổn thương cảm xúc. Một khi bị cuốn vào, anh ta thử thách sự kiên nhẫn và ý chí của người chơi thông qua những thử thách được thiết kế tinh vi để đẩy giới hạn tinh thần.">
+        Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve through carefully crafted challenges designed to push mental boundaries.
+      </p>
+
+      <h2 class="section-title scroll-reveal lang" data-en="Mechanics" data-vi="Cơ chế">Mechanics</h2>
+      <p class="content-text scroll-reveal lang" 
+         data-en="While appearing calm and collected on the surface, Val initiates a brutal psychological minigame upon contact in discord. This minigame is expertly designed to be unwinnable, systematically increasing emotional damage over time."
+         data-vi="Mặc dù trông có vẻ bình tĩnh và điềm đạm bên ngoài, Val kích hoạt một minigame tâm lý tàn bạo khi tiếp xúc trong discord. Minigame này được thiết kế khéo léo để không thể thắng, tăng tổn thương tâm lý một cách có hệ thống theo thời gian.">
+        While appearing calm and collected on the surface, Val initiates a brutal psychological minigame upon contact in discord. This minigame is expertly designed to be unwinnable, systematically increasing emotional damage over time.
+      </p>
+
+      <p class="content-text scroll-reveal lang"
+         data-en="This is what Val's victim will transform into:"
+         data-vi="Đây là những gì nạn nhân của Val sẽ biến thành:">
+        This is what Val's victim will transform into:
+      </p>
+      
+      <img class="discord-image scroll-reveal interactive" 
+           src="discord.PNG" 
+           alt="Example of what Val's victim will turn out"
+           loading="lazy">
+    </main>
+
+    <aside class="character-card scroll-reveal">
+      <div class="card-header lang" data-en="Val" data-vi="Val">Val</div>
+      
+      <div class="card-image-container">
+        <img class="card-image" src="val.PNG" alt="Val Character Image" loading="lazy">
+        <div class="image-overlay"></div>
+      </div>
+      
+      <div class="card-caption lang" 
+           data-en="&quot;Good Luck&quot; – Val's Minigame Description"
            data-vi="&quot;Chúc may mắn&quot; – Mô tả minigame của Val">
         "Good Luck" – Val's Minigame Description
       </div>
-
+      
       <div class="card-body">
-        <p><span class="label lang" data-en="Location" data-vi="Vị trí">Location</span>HQ (ink.game gang)</p>
-        <p><span class="label lang" data-en="Attack" data-vi="Tấn công">Attack</span>Texting back to [REDACTED] extremely slow, but fast enough to catch up to [REDACTED].</p>
-        <p><span class="label lang" data-en="Emotional Damage" data-vi="Tổn thương cảm xúc">Emotional Damage</span>Emotionally Death</p>
+        <div class="stat-row">
+          <span class="stat-label lang" data-en="Location" data-vi="Vị trí">Location</span>
+          <span class="stat-value">HQ (ink.game gang)</span>
+        </div>
+        
+        <div class="stat-row">
+          <span class="stat-label lang" data-en="Attack Pattern" data-vi="Kiểu tấn công">Attack Pattern</span>
+          <span class="stat-value lang" 
+                data-en="Texting back to [REDACTED] extremely slow, but fast enough to catch up to [REDACTED]."
+                data-vi="Nhắn tin trở lại cho [BỊ XÓA] cực chậm, nhưng đủ nhanh để bắt kịp [BỊ XÓA].">
+            Texting back to [REDACTED] extremely slow, but fast enough to catch up to [REDACTED].
+          </span>
+        </div>
+        
+        <div class="stat-row">
+          <span class="stat-label lang" data-en="Emotional Damage" data-vi="Tổn thương cảm xúc">Emotional Damage</span>
+          <span class="stat-value lang" data-en="Emotional Death" data-vi="Chết về mặt cảm xúc">Emotional Death</span>
+        </div>
       </div>
-    </div>
+    </aside>
   </div>
 
   <script>
+    // Page Loading
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 1000);
+    });
+
+    // Header Scroll Effect
+    const header = document.getElementById('header');
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Theme Toggle
     function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      document.documentElement.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      const themeIcon = document.getElementById('themeIcon');
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      themeIcon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+      
+      // Add transition effect
+      document.body.style.transition = 'all 0.3s ease';
+      setTimeout(() => {
+        document.body.style.transition = '';
+      }, 300);
     }
 
+    // Language Toggle
+    let currentLang = 'en';
     function toggleLanguage() {
-      const currentLang = document.documentElement.lang || 'en';
-      const nextLang = currentLang === 'en' ? 'vi' : 'en';
-      document.documentElement.lang = nextLang;
-
+      currentLang = currentLang === 'en' ? 'vi' : 'en';
+      const langIcon = document.getElementById('langIcon');
+      
       document.querySelectorAll('.lang').forEach(el => {
-        const txt = el.getAttribute(`data-${nextLang}`);
-        if (txt) el.innerHTML = txt;
+        const text = el.getAttribute(`data-${currentLang}`);
+        if (text) {
+          if (el.innerHTML !== text) {
+            el.style.opacity = '0';
+            setTimeout(() => {
+              el.innerHTML = text;
+              el.style.opacity = '1';
+            }, 150);
+          }
+        }
       });
+      
+      langIcon.textContent = currentLang === 'en' ? '🇻🇳' : '🇬🇧';
     }
 
-    const revealElements = document.querySelectorAll('.scroll-reveal');
+    // Scroll Reveal Animation
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('active');
+          setTimeout(() => {
+            entry.target.classList.add('active');
+          }, index * 100);
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1 });
-    revealElements.forEach(el => observer.observe(el));
+    }, observerOptions);
 
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.add('fade-in');
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      observer.observe(el);
     });
 
-    document.querySelectorAll('a').forEach(link => {
+    // Smooth Page Transitions
+    document.querySelectorAll('a[href]').forEach(link => {
       link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const href = this.href;
-        document.body.classList.remove('fade-in');
-        document.body.style.opacity = '0';
-        setTimeout(() => {
-          window.location.href = href;
-        }, 500);
+        const href = this.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('http')) {
+          e.preventDefault();
+          
+          // Create exit animation
+          document.body.style.transform = 'translateY(-20px)';
+          document.body.style.opacity = '0.8';
+          document.body.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+          
+          setTimeout(() => {
+            window.location.href = href;
+          }, 400);
+        }
       });
+    });
+
+    // Parallax Effect for Floating Orbs
+    window.addEventListener('mousemove', (e) => {
+      const orbs = document.querySelectorAll('.floating-orb');
+      const mouseX = e.clientX / window.innerWidth;
+      const mouseY = e.clientY / window.innerHeight;
+      
+      orbs.forEach((orb, index) => {
+        const speed = (index + 1) * 0.5;
+        const x = (mouseX - 0.5) * speed * 20;
+        const y = (mouseY - 0.5) * speed * 20;
+        
+        orb.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    });
+
+    // Enhanced Hover Effects for Interactive Elements
+    document.querySelectorAll('.interactive').forEach(element => {
+      element.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px) scale(1.02)';
+      });
+      
+      element.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    });
+
+    // Dynamic Background Color Shifting
+    let colorShift = 0;
+    setInterval(() => {
+      colorShift += 0.5;
+      document.documentElement.style.setProperty(
+        '--dynamic-hue', 
+        `hsl(${(colorShift % 360)}, 70%, 50%)`
+      );
+    }, 100);
+
+    // Keyboard Navigation Enhancement
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 't' || e.key === 'T') {
+        e.preventDefault();
+        toggleTheme();
+      }
+      if (e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        toggleLanguage();
+      }
+    });
+
+    // Performance Optimization - Throttled Scroll Events
+    let ticking = false;
+    function updateScrollEffects() {
+      // Update scroll-based animations here
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScrollEffects);
+        ticking = true;
+      }
+    });
+
+    // Easter Egg - Konami Code
+    let konamiCode = [];
+    const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    
+    document.addEventListener('keydown', (e) => {
+      konamiCode.push(e.keyCode);
+      if (konamiCode.length > konamiSequence.length) {
+        konamiCode.shift();
+      }
+      
+      if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+        // Trigger special effect
+        document.body.style.animation = 'rainbow 2s ease-in-out';
+        setTimeout(() => {
+          document.body.style.animation = '';
+        }, 2000);
+        konamiCode = [];
+      }
+    });
+
+    // Add rainbow animation for easter egg
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes rainbow {
+        0% { filter: hue-rotate(0deg) saturate(1.5); }
+        25% { filter: hue-rotate(90deg) saturate(1.5); }
+        50% { filter: hue-rotate(180deg) saturate(1.5); }
+        75% { filter: hue-rotate(270deg) saturate(1.5); }
+        100% { filter: hue-rotate(360deg) saturate(1.5); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Stagger animation for initial load
+      const elements = document.querySelectorAll('.scroll-reveal');
+      elements.forEach((el, index) => {
+        el.style.transitionDelay = `${index * 0.1}s`;
+      });
+      
+      // Add loading complete class
+      setTimeout(() => {
+        document.body.classList.add('loaded');
+      }, 1500);
     });
   </script>
 </body>
