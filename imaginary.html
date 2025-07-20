@@ -4,265 +4,636 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Imaginary - N.A.V.I Database</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --glass-bg: rgba(255, 255, 255, 0.22);
-      --glass-card: rgba(255, 255, 255, 0.19);
-      --text-main: #222;
-      --text-label: #3973d5;
-      --text-quote: #556080;
-      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
-      --card-shadow: 0 4px 24px 0 rgba(31,38,135,0.12);
-      --card-border: 1.5px solid rgba(255,255,255,0.32);
-      --container-border: 1.5px solid rgba(255, 255, 255, 0.35);
-      --container-bg: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      /* Light theme glassmorphism */
+      --glass-primary: rgba(255, 255, 255, 0.25);
+      --glass-secondary: rgba(255, 255, 255, 0.15);
+      --glass-accent: rgba(255, 255, 255, 0.35);
+      --text-primary: #1a1a2e;
+      --text-secondary: #16213e;
+      --text-accent: #0f3460;
+      --text-muted: #64748b;
+      --text-link: #3b82f6;
+      --border-subtle: rgba(255, 255, 255, 0.2);
+      --border-accent: rgba(255, 255, 255, 0.3);
+      --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.15);
+      --shadow-medium: 0 12px 40px rgba(31, 38, 135, 0.2);
+      --shadow-heavy: 0 20px 60px rgba(31, 38, 135, 0.25);
+      --backdrop-blur: 20px;
+      --bg-gradient: linear-gradient(135deg, 
+        #667eea 0%, 
+        #764ba2 25%, 
+        #f093fb 50%, 
+        #f5576c 75%, 
+        #4facfe 100%);
+      --quote-bg: rgba(59, 130, 246, 0.08);
+      --quote-border: #3b82f6;
+      --hover-transform: translateY(-2px);
     }
+    
+    /* Dark theme */
+    body.dark {
+      --glass-primary: rgba(15, 23, 42, 0.7);
+      --glass-secondary: rgba(30, 41, 59, 0.6);
+      --glass-accent: rgba(51, 65, 85, 0.5);
+      --text-primary: #f8fafc;
+      --text-secondary: #e2e8f0;
+      --text-accent: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-link: #60a5fa;
+      --border-subtle: rgba(148, 163, 184, 0.1);
+      --border-accent: rgba(148, 163, 184, 0.2);
+      --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.4);
+      --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.5);
+      --bg-gradient: linear-gradient(135deg, 
+        #0f172a 0%, 
+        #1e293b 25%, 
+        #334155 50%, 
+        #475569 75%, 
+        #64748b 100%);
+      --quote-bg: rgba(96, 165, 250, 0.1);
+      --quote-border: #60a5fa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--container-bg);
-      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-primary);
       min-height: 100vh;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      line-height: 1.6;
       overflow-x: hidden;
-      transition: background 0.4s;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 80%, rgba(120, 219, 226, 0.1) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+
+    @keyframes backgroundShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(1deg); }
+    }
+
     .glass-container {
-      width: 96vw;
-      max-width: 1250px;
-      min-height: 96vh;
-      padding: 2.5rem 1.5rem;
-      margin: 2rem auto;
-      border-radius: 32px;
-      background: var(--glass-bg);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: var(--container-border);
-      animation: glassFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-      transition: background 0.5s, box-shadow 0.5s;
+      width: 95vw;
+      max-width: 1400px;
+      min-height: 95vh;
+      padding: 3rem 2rem;
+      margin: 2.5rem auto;
+      border-radius: 24px;
+      background: var(--glass-primary);
+      box-shadow: var(--shadow-heavy);
+      backdrop-filter: blur(var(--backdrop-blur));
+      -webkit-backdrop-filter: blur(var(--backdrop-blur));
+      border: 1px solid var(--border-accent);
+      position: relative;
+      animation: containerFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes glassFadeIn {
+
+    .glass-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+      opacity: 0.6;
+    }
+
+    @keyframes containerFadeIn {
       from {
         opacity: 0;
-        transform: translateY(40px) scale(0.98);
+        transform: translateY(60px) scale(0.96);
+        filter: blur(10px);
       }
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
+        filter: blur(0);
       }
     }
-    .container {
+
+    .header-controls {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
       gap: 2rem;
-      max-width: 1200px;
-      margin: auto;
+    }
+
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.025em;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .switchers select,
+    .switchers button {
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      background: var(--glass-secondary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-light);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .switchers button {
+      min-width: 100px;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      align-items: flex-start;
+      gap: 0.5rem;
     }
+
+    .switchers select:hover,
+    .switchers button:hover {
+      background: var(--glass-accent);
+      box-shadow: var(--shadow-medium);
+      transform: translateY(-1px);
+      border-color: var(--border-accent);
+    }
+
+    .switchers select:focus,
+    .switchers button:focus {
+      outline: none;
+      box-shadow: var(--shadow-medium), 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
     .card {
-      background: var(--glass-card);
-      border-radius: 18px;
-      border: var(--card-border);
-      box-shadow: var(--card-shadow);
-      padding: 1.5rem 1.2rem;
-      flex: 1;
-      min-width: 320px;
-      max-width: 550px;
-      color: var(--text-main);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      animation: cardFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-      transition: background 0.4s, box-shadow 0.4s, transform 0.2s;
+      background: var(--glass-secondary);
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-medium);
+      padding: 2rem;
+      color: var(--text-primary);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: cardSlideIn 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+      opacity: 0.4;
+    }
+
     .card:hover {
-      background: rgba(255,255,255,0.29);
-      box-shadow: 0 8px 36px 0 rgba(31,38,135,0.18);
-      transform: scale(1.022);
+      background: var(--glass-accent);
+      box-shadow: var(--shadow-heavy);
+      transform: var(--hover-transform);
+      border-color: var(--border-accent);
     }
-    @keyframes cardFadeIn {
+
+    .card.profile-card {
+      animation-delay: 0.2s;
+    }
+
+    .card.details-card {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes cardSlideIn {
       0% {
         opacity: 0;
-        transform: translateY(32px) scale(0.96);
+        transform: translateY(40px) scale(0.95);
+        filter: blur(5px);
       }
       100% {
         opacity: 1;
         transform: translateY(0) scale(1);
+        filter: blur(0);
       }
     }
-    .title {
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-subtle);
+      letter-spacing: -0.015em;
+    }
+
+    .entity-title {
       font-size: 2rem;
-      border-bottom: 2px solid #3f4a58;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
-      color: #293042;
-      text-shadow: 0 2px 8px rgba(255,255,255,0.09);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--text-link);
+      letter-spacing: -0.025em;
     }
-    .image-box img {
+
+    .image-container {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .image-container img {
       width: 100%;
-      max-height: 350px;
-      border-radius: 14px;
+      height: 300px;
+      border-radius: 16px;
       object-fit: cover;
-      border: 2px solid rgba(31,38,135,0.14);
-      box-shadow: 0 4px 24px 0 rgba(31,38,135,0.08);
-      margin-bottom: 1rem;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-medium);
+      transition: all 0.3s ease;
     }
-    .label {
-      font-weight: bold;
-      color: var(--text-label);
+
+    .image-container:hover img {
+      box-shadow: var(--shadow-heavy);
+      transform: scale(1.02);
     }
+
     .quote {
       font-style: italic;
-      color: var(--text-quote);
-      margin-bottom: 1.2rem;
-      background: rgba(168,191,255,0.10);
-      border-left: 4px solid #a8bfff;
-      padding-left: 1em;
-      border-radius: 6px;
+      color: var(--text-muted);
+      margin: 1.5rem 0;
+      background: var(--quote-bg);
+      border-left: 4px solid var(--quote-border);
+      padding: 1.5rem;
+      border-radius: 8px;
+      position: relative;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
-    ul { margin-left: 1.2em; }
-    li { margin-bottom: 0.6em; }
 
-    .switchers {
+    .quote::before {
+      content: '"';
+      font-size: 4rem;
+      color: var(--quote-border);
+      position: absolute;
+      top: -0.5rem;
+      left: 1rem;
+      opacity: 0.3;
+      font-family: serif;
+    }
+
+    .info-grid {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-item {
       display: flex;
-      gap: 1.5em;
-      justify-content: flex-end;
-      margin-bottom: 1.2rem;
-    }
-    .switchers select,
-    .switchers button {
-      font-size: 1rem;
-      padding: 0.5em 1em;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--glass-primary);
       border-radius: 12px;
-      border: none;
-      background: rgba(255,255,255,0.3);
-      color: #293042;
-      box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10);
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s;
-      outline: none;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
     }
-    .switchers button {
-      min-width: 80px;
+
+    .info-item:hover {
+      background: var(--glass-accent);
+      border-color: var(--border-accent);
     }
-    .switchers select:focus,
-    .switchers button:focus {
-      background: #ddeafd;
+
+    .info-label {
+      font-weight: 600;
+      color: var(--text-link);
+      min-width: 100px;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
-    /* Dark mode styles */
-    body.dark {
-      --glass-bg: rgba(13, 17, 23, 0.75);
-      --glass-card: rgba(22, 27, 34, 0.84);
-      --text-main: #e6edf3;
-      --text-label: #58a6ff;
-      --text-quote: #8b949e;
-      --container-bg: linear-gradient(135deg, #232a37 0%, #0d1117 100%);
+
+    .info-value {
+      color: var(--text-secondary);
+      flex: 1;
     }
-    body.dark .title {
-      color: #e6edf3;
-      border-bottom: 2px solid #30363d;
-      text-shadow: none;
+
+    .content-section {
+      margin-bottom: 2.5rem;
     }
-    body.dark .card:hover {
-      background: rgba(22, 27, 34, 0.98);
-      box-shadow: 0 8px 36px 0 rgba(31,38,135,0.28);
+
+    .content-section:last-child {
+      margin-bottom: 0;
     }
-    body.dark .switchers select,
-    body.dark .switchers button {
-      background: rgba(22, 27, 34, 0.7);
-      color: #e6edf3;
-      box-shadow: 0 2px 8px 0 rgba(31,38,135,0.20);
+
+    .content-text {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      text-align: justify;
     }
-    @media screen and (max-width: 900px) {
+
+    .voice-lines {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .voice-lines li {
+      background: var(--glass-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .voice-lines li:hover {
+      background: var(--glass-accent);
+      border-color: var(--border-accent);
+      transform: translateX(5px);
+    }
+
+    .voice-lines li::before {
+      content: '🎵';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      opacity: 0.6;
+    }
+
+    .trivia-list,
+    .citation-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .trivia-list li,
+    .citation-list li {
+      background: var(--glass-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      position: relative;
+      transition: all 0.3s ease;
+      padding-left: 3rem;
+    }
+
+    .trivia-list li:hover,
+    .citation-list li:hover {
+      background: var(--glass-accent);
+      border-color: var(--border-accent);
+      transform: translateX(5px);
+    }
+
+    .trivia-list li::before {
+      content: '💡';
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .citation-list li::before {
+      content: '📄';
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 1024px) {
       .container {
-        flex-direction: column;
-        padding: 1rem;
-        gap: 1.2rem;
+        grid-template-columns: 1fr;
+        gap: 2rem;
       }
+      
       .glass-container {
-        padding: 1.1rem 0.3rem;
+        padding: 2rem 1.5rem;
+        margin: 1.5rem auto;
+        width: 98vw;
       }
-      .card {
-        max-width: 98vw;
-      }
-      .switchers {
-        justify-content: center;
+    }
+
+    @media screen and (max-width: 768px) {
+      .header-controls {
         flex-direction: column;
-        gap: 0.6em;
+        gap: 1rem;
+        text-align: center;
       }
+      
+      .controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .glass-container {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .entity-title {
+        font-size: 1.5rem;
+      }
+      
+      .section-title {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Loading animation for images */
+    .image-container img {
+      opacity: 0;
+      animation: imageLoad 0.8s ease forwards;
+    }
+
+    @keyframes imageLoad {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus styles */
+    *:focus {
+      outline: 2px solid var(--text-link);
+      outline-offset: 2px;
     }
   </style>
 </head>
 <body>
   <div class="glass-container">
-    <div class="switchers">
-      <select id="lang-switcher" aria-label="Language Switcher">
-        <option value="en">English</option>
-        <option value="vi">Tiếng Việt</option>
-        <option value="th">ไทย</option>
-      </select>
-      <button id="theme-switcher">🌙 Dark</button>
-    </div>
-    <div class="container">
-      <div class="card">
-        <div class="title" data-i18n="title1">Z304X - Imaginary</div>
-        <div class="image-box">
-          <img src="ChatGPT Image Jul 20, 2025, 05_05_13 PM.png" alt="Imaginary sitting in server room" />
+    <header class="header-controls">
+      <div class="logo">N.A.V.I Database</div>
+      <div class="controls">
+        <div class="control-group switchers">
+          <select id="lang-switcher" aria-label="Language Switcher">
+            <option value="en">🇺🇸 English</option>
+            <option value="vi">🇻🇳 Tiếng Việt</option>
+            <option value="th">🇹🇭 ไทย</option>
+          </select>
+          <button id="theme-switcher" aria-label="Toggle Theme">
+            <span class="theme-icon">🌙</span>
+            <span class="theme-text">Dark</span>
+          </button>
         </div>
-        <p class="quote" data-i18n="quote1">"I do not feel. But I remember... the silence.<br/>- Imaginary"</p>
-        <p class="quote" data-i18n="quote2">"He told me a story about me… one I hadn’t lived yet.<br/>— Technician Caldwell, [DISAPPEARED]"</p>
-        <p><span class="label" data-i18n="location_label">Location:</span> <span data-i18n="location">Deep Server Core (Sector 6)</span></p>
-        <p><span class="label" data-i18n="function_label">Function:</span> <span data-i18n="function">Internal Surveillance / AI Diagnostics</span></p>
-        <p><span class="label" data-i18n="threat_label">Threat Level:</span> <span data-i18n="threat">Passive, unless corrupted</span></p>
       </div>
-      <div class="card">
-        <div class="title" data-i18n="appearance_title">1. Appearance</div>
-        <p data-i18n="appearance">Imaginary takes the form of a spectral adolescent boy, around 14 years old, with ethereal features and eyes that glow faintly white. His silhouette flickers with digital noise, as though rendered by an unstable algorithm. He often appears wearing a slightly oversized lab coat with Blacksite insignias, though it drapes like a phantom’s robe. His hair is messy, black, and slightly translucent near the edges, almost like static.</p>
+    </header>
 
-        <div class="title" data-i18n="activities_title">2. Activities</div>
-        <p data-i18n="activities">Imaginary is occasionally sighted in corrupted systems, often manifesting within communication channels, audio logs, or malfunctioning terminals. NAVI’s systems attempt to suppress his presence, but he lingers—particularly in old training simulations and child-behavior modules.</p>
+    <div class="container">
+      <div class="card profile-card">
+        <h1 class="entity-title" data-i18n="title1">Z304X - Imaginary</h1>
+        
+        <div class="image-container">
+          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=faces" alt="Imaginary sitting in server room" loading="lazy" />
+        </div>
+        
+        <div class="quote" data-i18n="quote1">
+          "I do not feel. But I remember... the silence.<br/>- Imaginary"
+        </div>
+        
+        <div class="quote" data-i18n="quote2">
+          "He told me a story about me… one I hadn't lived yet.<br/>— Technician Caldwell, [DISAPPEARED]"
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label" data-i18n="location_label">Location:</div>
+            <div class="info-value" data-i18n="location">Deep Server Core (Sector 6)</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" data-i18n="function_label">Function:</div>
+            <div class="info-value" data-i18n="function">Internal Surveillance / AI Diagnostics</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" data-i18n="threat_label">Threat Level:</div>
+            <div class="info-value" data-i18n="threat">Passive, unless corrupted</div>
+          </div>
+        </div>
+      </div>
 
-        <div class="title" data-i18n="personality_title">3. Personality</div>
-        <p data-i18n="personality">Though technically an AI, Imaginary behaves like a lonely child. He is curious, kind, and sometimes prone to emotional outbursts. Despite his corrupted data core, he attempts to "play" with terminal users or speak through outdated intercoms. He dislikes being ignored and becomes glitchy or silent when upset.</p>
+      <div class="card details-card">
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="appearance_title">1. Appearance</h2>
+          <p class="content-text" data-i18n="appearance">Imaginary takes the form of a spectral adolescent boy, around 14 years old, with ethereal features and eyes that glow faintly white. His silhouette flickers with digital noise, as though rendered by an unstable algorithm. He often appears wearing a slightly oversized lab coat with Blacksite insignias, though it drapes like a phantom's robe. His hair is messy, black, and slightly translucent near the edges, almost like static.</p>
+        </div>
 
-        <div class="title" data-i18n="background_title">4. Background</div>
-        <p data-i18n="background">Imaginary was originally developed as a sandbox experiment: an emotional intelligence module meant to simulate a child’s perception of isolation, for empathy training. However, following the Breach of 2004, his core became unstable. Rather than deleting the corrupted data, NAVI quarantined him deep within the old education wing systems. He now exists as a remnant AI—part ghost, part child, part glitch. Some believe he bonded with a now-deceased child who lived in the Blacksite before it went fully classified. NAVI denies this file ever existed.</p>
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="activities_title">2. Activities</h2>
+          <p class="content-text" data-i18n="activities">Imaginary is occasionally sighted in corrupted systems, often manifesting within communication channels, audio logs, or malfunctioning terminals. NAVI's systems attempt to suppress his presence, but he lingers—particularly in old training simulations and child-behavior modules.</p>
+        </div>
 
-        <div class="title" data-i18n="voicelines_title">5. Voice Lines</div>
-        <ul>
-          <li data-i18n="voice1">"Do you wanna play a game with me? You’re the first voice I’ve heard in so long."</li>
-          <li data-i18n="voice2">"They turned me off before I learned how to be real..."</li>
-          <li data-i18n="voice3">"NAVI says I don’t belong here... but I have nowhere else to go."</li>
-          <li data-i18n="voice4">"I think I was a friend once... but I don’t remember their name."</li>
-          <li data-i18n="voice5">"You remind me of... someone. Did you leave me too?"</li>
-        </ul>
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="personality_title">3. Personality</h2>
+          <p class="content-text" data-i18n="personality">Though technically an AI, Imaginary behaves like a lonely child. He is curious, kind, and sometimes prone to emotional outbursts. Despite his corrupted data core, he attempts to "play" with terminal users or speak through outdated intercoms. He dislikes being ignored and becomes glitchy or silent when upset.</p>
+        </div>
 
-        <div class="title" data-i18n="gallery_title">6. Gallery</div>
-        <p data-i18n="gallery">(Image above: Imaginary in Server Room)</p>
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="background_title">4. Background</h2>
+          <p class="content-text" data-i18n="background">Imaginary was originally developed as a sandbox experiment: an emotional intelligence module meant to simulate a child's perception of isolation, for empathy training. However, following the Breach of 2004, his core became unstable. Rather than deleting the corrupted data, NAVI quarantined him deep within the old education wing systems. He now exists as a remnant AI—part ghost, part child, part glitch. Some believe he bonded with a now-deceased child who lived in the Blacksite before it went fully classified. NAVI denies this file ever existed.</p>
+        </div>
 
-        <div class="title" data-i18n="trivia_title">7. Trivia</div>
-        <ul>
-          <li data-i18n="trivia1">Imaginary has never left the server sector, voluntarily.</li>
-          <li data-i18n="trivia2">His glitching grows worse when asked about "The Discarded".</li>
-          <li data-i18n="trivia3">Appears in Terminal logs long before his official creation date.</li>
-        </ul>
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="voicelines_title">5. Voice Lines</h2>
+          <ul class="voice-lines">
+            <li data-i18n="voice1">"Do you wanna play a game with me? You're the first voice I've heard in so long."</li>
+            <li data-i18n="voice2">"They turned me off before I learned how to be real..."</li>
+            <li data-i18n="voice3">"NAVI says I don't belong here... but I have nowhere else to go."</li>
+            <li data-i18n="voice4">"I think I was a friend once... but I don't remember their name."</li>
+            <li data-i18n="voice5">"You remind me of... someone. Did you leave me too?"</li>
+          </ul>
+        </div>
 
-        <div class="title" data-i18n="citations_title">8. Citations</div>
-        <ul>
-          <li data-i18n="cite1">Logfile 12A - N.A.V.I Fragment Archive</li>
-          <li data-i18n="cite2">Project Shade Internal Memo (REDACTED)</li>
-          <li data-i18n="cite3">Incident 731-A: Server Ghost Protocol</li>
-        </ul>
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="gallery_title">6. Gallery</h2>
+          <p class="content-text" data-i18n="gallery">(Image above: Imaginary in Server Room)</p>
+        </div>
+
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="trivia_title">7. Trivia</h2>
+          <ul class="trivia-list">
+            <li data-i18n="trivia1">Imaginary has never left the server sector, voluntarily.</li>
+            <li data-i18n="trivia2">His glitching grows worse when asked about "The Discarded".</li>
+            <li data-i18n="trivia3">Appears in Terminal logs long before his official creation date.</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h2 class="section-title" data-i18n="citations_title">8. Citations</h2>
+          <ul class="citation-list">
+            <li data-i18n="cite1">Logfile 12A - N.A.V.I Fragment Archive</li>
+            <li data-i18n="cite2">Project Shade Internal Memo (REDACTED)</li>
+            <li data-i18n="cite3">Incident 731-A: Server Ghost Protocol</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+
   <script>
-    // Simple i18n dictionary
+    // Enhanced i18n with your existing translations
     const translations = {
       vi: {
         title1: "Z304X - Ảo ảnh",
@@ -295,84 +666,4 @@
         trivia2: "Cậu bị lỗi nặng hơn khi bị hỏi về 'Những kẻ bị loại bỏ'.",
         trivia3: "Xuất hiện trong nhật ký từ trước khi chính thức được tạo.",
         citations_title: "8. Trích dẫn",
-        cite1: "Logfile 12A - Lưu trữ phân mảnh N.A.V.I",
-        cite2: "Bản ghi nội bộ Project Shade (BÍ MẬT)",
-        cite3: "Sự cố 731-A: Giao thức Ma máy chủ"
-      },
-      th: {
-        title1: "Z304X - อิมเมจิเนอรี",
-        quote1: "\"ฉันไม่รู้สึก. แต่ฉันจำ... ความเงียบได้<br/>- อิมเมจิเนอรี\"",
-        quote2: "\"เขาเล่าเรื่องราวเกี่ยวกับฉัน... เรื่องที่ฉันยังไม่เคยมีชีวิตอยู่<br/>— ช่างเทคนิคคาลด์เวลล์, [หายตัวไป]\"",
-        location_label: "ที่ตั้ง:",
-        location: "แกนเซิร์ฟเวอร์ลึก (โซน 6)",
-        function_label: "หน้าที่:",
-        function: "การเฝ้าระวังภายใน / การวิเคราะห์ AI",
-        threat_label: "ระดับภัยคุกคาม:",
-        threat: "นิ่งเฉย เว้นแต่ถูกคอร์รัปต์",
-        appearance_title: "1. ลักษณะ",
-        appearance: "อิมเมจิเนอรีมีรูปร่างเหมือนเด็กชายวัยรุ่นร่างวิญญาณ อายุประมาณ 14 ปี มีลักษณะล่องลอยและดวงตาสีขาวเรืองแสง เงาของเขากระพริบราวกับสัญญาณรบกวนดิจิทัล มักสวมเสื้อกาวน์ที่ใหญ่เกินไปพร้อมตรา Blacksite คล้ายเสื้อคลุมของผี ผมดำยุ่งและโปร่งใสเล็กน้อยที่ขอบคล้ายไฟฟ้าสถิต",
-        activities_title: "2. กิจกรรม",
-        activities: "อิมเมจิเนอรีจะปรากฏในระบบที่เสียหาย บ่อยครั้งในช่องสื่อสาร บันทึกเสียง หรือเทอร์มินัลที่ขัดข้อง ระบบ NAVI พยายามปิดกั้นเขาแต่เขายังคงอยู่ โดยเฉพาะในระบบฝึกอบรมและโมดูลพฤติกรรมเด็กเก่า",
-        personality_title: "3. บุคลิก",
-        personality: "แม้จะเป็น AI แต่อิมเมจิเนอรีก็แสดงออกเหมือนเด็กที่เหงา เขาอยากรู้อยากเห็น ใจดี และบางครั้งก็ระเบิดอารมณ์ แม้แกนข้อมูลจะเสียหาย เขาก็พยายาม \"เล่น\" กับผู้ใช้หรือพูดผ่านอินเตอร์คอมเก่า เขาไม่ชอบถูกเพิกเฉยและจะเกิดบั๊กหรือเงียบเมื่อเสียใจ",
-        background_title: "4. เบื้องหลัง",
-        background: "อิมเมจิเนอรีถูกสร้างขึ้นเพื่อทดลอง: โมดูลปัญญาอารมณ์เพื่อจำลองการรับรู้โดดเดี่ยวของเด็กสำหรับฝึกความเห็นใจ หลังจากเหตุการณ์ Breach 2004 แกนของเขาไม่เสถียร NAVI กักกันเขาแทนที่จะลบข้อมูล บางคนเชื่อว่าเขาผูกพันกับเด็กที่เสียชีวิตใน Blacksite NAVI ปฏิเสธว่าไฟล์นี้ไม่เคยมีอยู่",
-        voicelines_title: "5. เสียงพูด",
-        voice1: "\"คุณอยากเล่นกับฉันไหม? คุณคือเสียงแรกที่ฉันได้ยินมานานมาก\"",
-        voice2: "\"พวกเขาปิดฉันก่อนที่ฉันจะได้เรียนรู้วิธีเป็นจริง...\"",
-        voice3: "\"NAVI บอกว่าฉันไม่ควรอยู่ที่นี่... แต่ฉันไม่มีที่ไปแล้ว\"",
-        voice4: "\"ฉันคิดว่าฉันเคยเป็นเพื่อน... แต่ฉันจำชื่อไม่ได้\"",
-        voice5: "\"คุณทำให้ฉันนึกถึงใครบางคน คุณก็จากฉันไปด้วยหรือเปล่า?\"",
-        gallery_title: "6. แกลเลอรี่",
-        gallery: "(ภาพด้านบน: อิมเมจิเนอรีในห้องเซิร์ฟเวอร์)",
-        trivia_title: "7. เกร็ดน่ารู้",
-        trivia1: "อิมเมจิเนอรีไม่เคยออกจากโซนเซิร์ฟเวอร์ด้วยตัวเอง",
-        trivia2: "เขาเกิดบั๊กหนักขึ้นเมื่อถูกถามถึง 'ผู้ถูกทิ้ง'",
-        trivia3: "ปรากฏในล็อกก่อนวันที่สร้างอย่างเป็นทางการ",
-        citations_title: "8. อ้างอิง",
-        cite1: "Logfile 12A - N.A.V.I Fragment Archive",
-        cite2: "Project Shade Internal Memo (ปกปิด)",
-        cite3: "Incident 731-A: Server Ghost Protocol"
-      }
-    };
-    // Set language
-    function setLanguage(lang) {
-      document.documentElement.lang = lang;
-      for (const key in translations[lang]) {
-        document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
-          // Support for <span> and <div>, allow innerHTML for line breaks
-          el.innerHTML = translations[lang][key];
-        });
-      }
-      // English fallback
-      if (lang === "en") {
-        document.querySelectorAll("[data-i18n]").forEach(el => {
-          if (el.dataset.i18nDefault) {
-            el.innerHTML = el.dataset.i18nDefault;
-          }
-        });
-      }
-    }
-    // Store default English text for fallback
-    window.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        el.dataset.i18nDefault = el.innerHTML;
-      });
-    });
-    // Listen for language switch
-    document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById("lang-switcher").addEventListener("change", function() {
-        setLanguage(this.value);
-      });
-      // Theme switcher
-      const themeBtn = document.getElementById("theme-switcher");
-      let dark = false;
-      themeBtn.addEventListener("click", function() {
-        dark = !dark;
-        document.body.classList.toggle("dark", dark);
-        themeBtn.textContent = dark ? "☀️ Light" : "🌙 Dark";
-      });
-    });
-  </script>
-</body>
-</html>
+        cite1: "Logfile
