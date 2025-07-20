@@ -2,17 +2,32 @@
 let currentTheme = 'dark';
 let currentLanguage = 'en';
 
-// Language translations
+// Language translations with all four languages
 const translations = {
   en: {
     themeIcon: '🌙',
-    langIcon: '🇬🇧'
+    langIcon: '🇬🇧',
+    langName: 'English'
   },
   vi: {
     themeIcon: '🌙',
-    langIcon: '🇻🇳'
+    langIcon: '🇻🇳',
+    langName: 'Tiếng Việt'
+  },
+  th: {
+    themeIcon: '🌙',
+    langIcon: '🇹🇭',
+    langName: 'ไทย'
+  },
+  zh: {
+    themeIcon: '🌙',
+    langIcon: '🇨🇳',
+    langName: '中文'
   }
 };
+
+// Language cycle order
+const languageOrder = ['en', 'vi', 'th', 'zh'];
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -32,7 +47,7 @@ function initializeApp() {
     }
   }, 1000);
 
-  // Initialize theme and language from localStorage or defaults
+  // Initialize theme and language from memory or defaults (no localStorage)
   initializeTheme();
   initializeLanguage();
   
@@ -47,13 +62,15 @@ function initializeApp() {
   
   // Add smooth scroll behavior
   setupSmoothScroll();
+  
+  // Create language dropdown
+  createLanguageDropdown();
 }
 
 // Theme System
 function initializeTheme() {
-  // Try to load theme from localStorage, fallback to 'dark'
-  const savedTheme = localStorage.getItem('naviTheme') || 'dark';
-  currentTheme = savedTheme;
+  // Use default theme (no localStorage)
+  currentTheme = 'dark';
   document.body.setAttribute('data-theme', currentTheme);
   updateThemeIcon();
 }
@@ -61,7 +78,6 @@ function initializeTheme() {
 function toggleTheme() {
   currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
   document.body.setAttribute('data-theme', currentTheme);
-  localStorage.setItem('naviTheme', currentTheme);
   updateThemeIcon();
   
   // Add transition effect
@@ -78,20 +94,33 @@ function updateThemeIcon() {
   }
 }
 
-// Language System
+// Enhanced Language System
 function initializeLanguage() {
-  // Try to load language from localStorage, fallback to 'en'
-  const savedLanguage = localStorage.getItem('naviLanguage') || 'en';
-  currentLanguage = savedLanguage;
+  // Use default language (no localStorage)
+  currentLanguage = 'en';
   updateLanguage();
   updateLanguageIcon();
 }
 
 function toggleLanguage() {
-  currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
-  localStorage.setItem('naviLanguage', currentLanguage);
+  // Cycle through all languages in order
+  const currentIndex = languageOrder.indexOf(currentLanguage);
+  const nextIndex = (currentIndex + 1) % languageOrder.length;
+  currentLanguage = languageOrder[nextIndex];
+  
   updateLanguage();
   updateLanguageIcon();
+  updateLanguageDropdown();
+}
+
+function setLanguage(langCode) {
+  if (languageOrder.includes(langCode)) {
+    currentLanguage = langCode;
+    updateLanguage();
+    updateLanguageIcon();
+    updateLanguageDropdown();
+    hideLanguageDropdown();
+  }
 }
 
 function updateLanguage() {
@@ -100,11 +129,28 @@ function updateLanguage() {
   langElements.forEach(element => {
     const enText = element.getAttribute('data-en');
     const viText = element.getAttribute('data-vi');
+    const thText = element.getAttribute('data-th');
+    const zhText = element.getAttribute('data-zh');
     
-    if (currentLanguage === 'en' && enText) {
-      element.innerHTML = enText;
-    } else if (currentLanguage === 'vi' && viText) {
-      element.innerHTML = viText;
+    let textToShow = enText; // Default fallback
+    
+    switch(currentLanguage) {
+      case 'en':
+        if (enText) textToShow = enText;
+        break;
+      case 'vi':
+        if (viText) textToShow = viText;
+        break;
+      case 'th':
+        if (thText) textToShow = thText;
+        break;
+      case 'zh':
+        if (zhText) textToShow = zhText;
+        break;
+    }
+    
+    if (textToShow) {
+      element.innerHTML = textToShow;
     }
   });
 }
@@ -112,8 +158,198 @@ function updateLanguage() {
 function updateLanguageIcon() {
   const langIcon = document.getElementById('langIcon');
   if (langIcon) {
-    langIcon.textContent = currentLanguage === 'en' ? '🇬🇧' : '🇻🇳';
+    const iconMap = {
+      'en': '🇬🇧',
+      'vi': '🇻🇳',
+      'th': '🇹🇭',
+      'zh': '🇨🇳'
+    };
+    langIcon.textContent = iconMap[currentLanguage] || '🇬🇧';
   }
+}
+
+// Language Dropdown System
+function createLanguageDropdown() {
+  const langButton = document.querySelector('[onclick*="toggleLanguage"]') || 
+                    document.getElementById('langButton');
+  
+  if (!langButton) return;
+  
+  // Create dropdown container
+  const dropdown = document.createElement('div');
+  dropdown.id = 'languageDropdown';
+  dropdown.className = 'language-dropdown';
+  dropdown.innerHTML = `
+    <div class="language-options">
+      ${languageOrder.map(lang => `
+        <div class="language-option" onclick="setLanguage('${lang}')" data-lang="${lang}">
+          <span class="lang-flag">${translations[lang].langIcon}</span>
+          <span class="lang-name">${translations[lang].langName}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  // Insert dropdown after the language button
+  langButton.parentNode.insertBefore(dropdown, langButton.nextSibling);
+  
+  // Add click handler to show/hide dropdown
+  langButton.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isVisible = dropdown.classList.contains('show');
+    if (isVisible) {
+      hideLanguageDropdown();
+    } else {
+      showLanguageDropdown();
+    }
+  });
+  
+  // Hide dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target) && !langButton.contains(e.target)) {
+      hideLanguageDropdown();
+    }
+  });
+  
+  // Add styles for dropdown
+  addLanguageDropdownStyles();
+}
+
+function showLanguageDropdown() {
+  const dropdown = document.getElementById('languageDropdown');
+  if (dropdown) {
+    dropdown.classList.add('show');
+    updateLanguageDropdown();
+  }
+}
+
+function hideLanguageDropdown() {
+  const dropdown = document.getElementById('languageDropdown');
+  if (dropdown) {
+    dropdown.classList.remove('show');
+  }
+}
+
+function updateLanguageDropdown() {
+  const options = document.querySelectorAll('.language-option');
+  options.forEach(option => {
+    const lang = option.dataset.lang;
+    if (lang === currentLanguage) {
+      option.classList.add('active');
+    } else {
+      option.classList.remove('active');
+    }
+  });
+}
+
+function addLanguageDropdownStyles() {
+  const styles = document.createElement('style');
+  styles.id = 'language-dropdown-styles';
+  styles.textContent = `
+    .language-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+    
+    .language-dropdown.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .language-options {
+      background: var(--card-bg, rgba(255, 255, 255, 0.1));
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+      border-radius: 12px;
+      padding: 8px;
+      min-width: 150px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .language-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      color: var(--text-color, #ffffff);
+    }
+    
+    .language-option:hover {
+      background: var(--hover-bg, rgba(255, 255, 255, 0.1));
+      transform: translateX(2px);
+    }
+    
+    .language-option.active {
+      background: var(--accent-color, #00d4ff);
+      color: var(--accent-text, #000);
+    }
+    
+    .lang-flag {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    
+    .lang-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Dark theme adjustments */
+    [data-theme="dark"] .language-options {
+      background: rgba(0, 0, 0, 0.8);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    [data-theme="dark"] .language-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Light theme adjustments */
+    [data-theme="light"] .language-options {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+    
+    [data-theme="light"] .language-option {
+      color: #333;
+    }
+    
+    [data-theme="light"] .language-option:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .language-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 80px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%) translateY(10px);
+      }
+      
+      .language-dropdown.show {
+        transform: translateX(-50%) translateY(0);
+      }
+      
+      .language-options {
+        min-width: 200px;
+      }
+    }
+  `;
+  document.head.appendChild(styles);
 }
 
 // Scroll Effects
@@ -273,6 +509,11 @@ document.addEventListener('keydown', function(e) {
       toggleLanguage();
     }
   }
+  
+  // Hide language dropdown with Escape key
+  if (e.key === 'Escape') {
+    hideLanguageDropdown();
+  }
 });
 
 // Performance Optimization
@@ -339,6 +580,7 @@ document.addEventListener('DOMContentLoaded', setupAccessibility);
 // Export functions for HTML onclick handlers
 window.toggleTheme = toggleTheme;
 window.toggleLanguage = toggleLanguage;
+window.setLanguage = setLanguage;
 
 // Initialize performance optimizations
 document.addEventListener('DOMContentLoaded', optimizePerformance);
