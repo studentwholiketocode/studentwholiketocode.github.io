@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hadal Blacksite Terminal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: red;
+      font-family: monospace;
+      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #terminal {
+      flex-grow: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow-y: auto;
+    }
+    .line {
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    #input-line {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    #prompt {
+      margin-right: 5px;
+    }
+    #input {
+      background: none;
+      border: none;
+      color: red;
+      outline: none;
+      flex-grow: 1;
+      min-width: 100px;
+    }
+    .autocomplete {
+      color: grey;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 22%, 24%, 55% {
+        opacity: 0.4;
+      }
+    }
+    .flicker {
+      animation: flicker 1.5s infinite;
+    }
+    @media (max-width: 600px) {
+      #terminal {
+        padding: 0.5rem;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal">
+    <div class="line flicker">Booting NAVI Terminal...</div>
+  </div>
+  <form id="cmd-form" onsubmit="handleCommand(event)">
+    <div id="input-line">
+      <span id="prompt">C:\Blacksite&gt;</span>
+      <input id="input" type="text" autocomplete="off" autofocus />
+      <span id="autocomplete" class="autocomplete"></span>
+    </div>
+  </form>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('input');
+    const auto = document.getElementById('autocomplete');
+    const prompt = document.getElementById('prompt');
+
+    const commands = [
+      'help', 'dir', 'cd', 'cls', 'echo', 'exit', 'type', 'copy', 'del', 'rename', 'md', 'rd', 'ver', 'whoami',
+      'ipconfig', 'tree', 'color', 'date', 'time', 'shutdown', 'restart', 'navi', 'val', 'imaginary', 'nomi',
+      'sseal', 'john', 'l', 'grader', 'lore', 'log', 'core', 'blacksite'
+    ];
+
+    const loreData = {
+      val: 'Val was a deep-level systems engineer who disappeared post-breach. Reports claim her signal still pings within the Trenchbleeder Tunnels.',
+      imaginary: 'Imaginary was a failed AI experiment. NAVI absorbed portions of its neural routines after shutdown.',
+      nomi: 'Nomi handled cryo logistics. She vanished after taking control of a ventilation sector alone.',
+      sseal: "Sseal's ID badge was found in the flooded Oxygen Gardens. Logs suggest she locked herself in willingly.",
+      john: 'John was the last recorded technician to speak with NAVI. His voice remains stored in hidden logs.',
+      l: 'No full records for "L" exist. Anomalous file timestamps show recent activity despite his termination in 1997.',
+      grader: 'Grader is rumored to be the failsafe architect. Some say he built NAVI to observe Urbanshade, not assist it.'
+    };
+
+    let history = [];
+    let historyIndex = -1;
+
+    function bootTerminal() {
+      setTimeout(() => {
+        appendLine('System ready. Type "help" for available commands.');
+      }, 1500);
+    }
+
+    function appendLine(text) {
+      const line = document.createElement('div');
+      line.className = 'line';
+      line.textContent = text;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function handleCommand(e) {
+      e.preventDefault();
+      const value = input.value.trim();
+      const lower = value.toLowerCase();
+      if (!value) return;
+
+      appendLine(`${prompt.textContent}${value}`);
+      history.push(value);
+      historyIndex = history.length;
+      input.value = '';
+      auto.textContent = '';
+
+      if (commands.includes(lower)) {
+        switch(lower) {
+          case 'help':
+            appendLine('Available commands:\n' + commands.join(', '));
+            break;
+          case 'cls':
+            terminal.innerHTML = '';
+            break;
+          case 'exit':
+            appendLine('Exiting NAVI...');
+            break;
+          case 'val':
+          case 'imaginary':
+          case 'nomi':
+          case 'sseal':
+          case 'john':
+          case 'l':
+          case 'grader':
+            appendLine(loreData[lower]);
+            break;
+          case 'navi':
+            appendLine('NAVI Core Aware. Awaiting your query. Access to restricted sectors is unauthorized.');
+            break;
+          default:
+            appendLine(`Executed: ${value}`);
+        }
+      } else {
+        appendLine(`Unknown command: ${value}`);
+      }
+    }
+
+    input.addEventListener('input', () => {
+      const current = input.value.trim().toLowerCase();
+      const match = commands.find(cmd => cmd.startsWith(current));
+      if (match && current !== match) {
+        auto.textContent = match.slice(current.length);
+      } else {
+        auto.textContent = '';
+      }
+    });
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const match = commands.find(cmd => cmd.startsWith(input.value.trim().toLowerCase()));
+        if (match) {
+          input.value = match;
+          auto.textContent = '';
+        }
+      } else if (e.key === 'ArrowUp') {
+        if (historyIndex > 0) {
+          historyIndex--;
+          input.value = history[historyIndex];
+          auto.textContent = '';
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          input.value = history[historyIndex];
+          auto.textContent = '';
+        } else {
+          historyIndex = history.length;
+          input.value = '';
+        }
+      }
+    });
+
+    bootTerminal();
+  </script>
+</body>
+</html>

@@ -133,6 +133,28 @@
       font-weight: 500;
     }
 
+    .terminal-btn {
+      background: rgba(255, 0, 60, 0.15);
+      color: #ff0033;
+      border: 1px solid #ff3355;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      transition: 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 10px #ff0033aa;
+      margin-left: 10px;
+    }
+
+    .terminal-btn:hover {
+      background: rgba(255, 0, 60, 0.3);
+      box-shadow: 0 0 15px #ff0044;
+    }
+
     @media screen and (max-width: 700px) {
       .features {
         grid-template-columns: repeat(2, 1fr);
@@ -162,6 +184,7 @@
           <img src="https://flagcdn.com/w40/cn.png" onclick="switchLanguage('zh')" />
           <img src="https://flagcdn.com/w40/jp.png" onclick="switchLanguage('ja')" />
         </div>
+        <button class="terminal-btn" onclick="window.location.href='terminal.html'">Terminal</button>
       </div>
     </div>
 
