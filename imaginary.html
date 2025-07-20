@@ -1,538 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Imaginary - N.A.V.I Database</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      /* Light theme glassmorphism */
-      --glass-primary: rgba(255, 255, 255, 0.25);
-      --glass-secondary: rgba(255, 255, 255, 0.15);
-      --glass-accent: rgba(255, 255, 255, 0.35);
-      --text-primary: #1a1a2e;
-      --text-secondary: #16213e;
-      --text-accent: #0f3460;
-      --text-muted: #64748b;
-      --text-link: #3b82f6;
-      --border-subtle: rgba(255, 255, 255, 0.2);
-      --border-accent: rgba(255, 255, 255, 0.3);
-      --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.15);
-      --shadow-medium: 0 12px 40px rgba(31, 38, 135, 0.2);
-      --shadow-heavy: 0 20px 60px rgba(31, 38, 135, 0.25);
-      --backdrop-blur: 20px;
-      --bg-gradient: linear-gradient(135deg, 
-        #667eea 0%, 
-        #764ba2 25%, 
-        #f093fb 50%, 
-        #f5576c 75%, 
-        #4facfe 100%);
-      --quote-bg: rgba(59, 130, 246, 0.08);
-      --quote-border: #3b82f6;
-      --hover-transform: translateY(-2px);
-    }
-    
-    /* Dark theme */
-    body.dark {
-      --glass-primary: rgba(15, 23, 42, 0.7);
-      --glass-secondary: rgba(30, 41, 59, 0.6);
-      --glass-accent: rgba(51, 65, 85, 0.5);
-      --text-primary: #f8fafc;
-      --text-secondary: #e2e8f0;
-      --text-accent: #cbd5e1;
-      --text-muted: #94a3b8;
-      --text-link: #60a5fa;
-      --border-subtle: rgba(148, 163, 184, 0.1);
-      --border-accent: rgba(148, 163, 184, 0.2);
-      --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.4);
-      --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.5);
-      --bg-gradient: linear-gradient(135deg, 
-        #0f172a 0%, 
-        #1e293b 25%, 
-        #334155 50%, 
-        #475569 75%, 
-        #64748b 100%);
-      --quote-bg: rgba(96, 165, 250, 0.1);
-      --quote-border: #60a5fa;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg-gradient);
-      background-attachment: fixed;
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Animated background particles */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                  radial-gradient(circle at 40% 80%, rgba(120, 219, 226, 0.1) 0%, transparent 50%);
-      animation: backgroundShift 20s ease-in-out infinite alternate;
-      z-index: -1;
-    }
-
-    @keyframes backgroundShift {
-      0% { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1.1) rotate(1deg); }
-    }
-
-    .glass-container {
-      width: 95vw;
-      max-width: 1400px;
-      min-height: 95vh;
-      padding: 3rem 2rem;
-      margin: 2.5rem auto;
-      border-radius: 24px;
-      background: var(--glass-primary);
-      box-shadow: var(--shadow-heavy);
-      backdrop-filter: blur(var(--backdrop-blur));
-      -webkit-backdrop-filter: blur(var(--backdrop-blur));
-      border: 1px solid var(--border-accent);
-      position: relative;
-      animation: containerFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .glass-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
-      opacity: 0.6;
-    }
-
-    @keyframes containerFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(60px) scale(0.96);
-        filter: blur(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-      }
-    }
-
-    .header-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 3rem;
-      gap: 2rem;
-    }
-
-    .logo {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.025em;
-    }
-
-    .controls {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .control-group {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .switchers select,
-    .switchers button {
-      font-family: inherit;
-      font-size: 0.875rem;
-      font-weight: 500;
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
-      border: 1px solid var(--border-subtle);
-      background: var(--glass-secondary);
-      color: var(--text-primary);
-      box-shadow: var(--shadow-light);
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-
-    .switchers button {
-      min-width: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .switchers select:hover,
-    .switchers button:hover {
-      background: var(--glass-accent);
-      box-shadow: var(--shadow-medium);
-      transform: translateY(-1px);
-      border-color: var(--border-accent);
-    }
-
-    .switchers select:focus,
-    .switchers button:focus {
-      outline: none;
-      box-shadow: var(--shadow-medium), 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .container {
-      display: grid;
-      grid-template-columns: 400px 1fr;
-      gap: 3rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      align-items: start;
-    }
-
-    .card {
-      background: var(--glass-secondary);
-      border-radius: 20px;
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-medium);
-      padding: 2rem;
-      color: var(--text-primary);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      position: relative;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: cardSlideIn 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
-      opacity: 0.4;
-    }
-
-    .card:hover {
-      background: var(--glass-accent);
-      box-shadow: var(--shadow-heavy);
-      transform: var(--hover-transform);
-      border-color: var(--border-accent);
-    }
-
-    .card.profile-card {
-      animation-delay: 0.2s;
-    }
-
-    .card.details-card {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes cardSlideIn {
-      0% {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-        filter: blur(5px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-      }
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--border-subtle);
-      letter-spacing: -0.015em;
-    }
-
-    .entity-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--text-link);
-      letter-spacing: -0.025em;
-    }
-
-    .image-container {
-      position: relative;
-      margin-bottom: 2rem;
-    }
-
-    .image-container img {
-      width: 100%;
-      height: 300px;
-      border-radius: 16px;
-      object-fit: cover;
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-medium);
-      transition: all 0.3s ease;
-    }
-
-    .image-container:hover img {
-      box-shadow: var(--shadow-heavy);
-      transform: scale(1.02);
-    }
-
-    .quote {
-      font-style: italic;
-      color: var(--text-muted);
-      margin: 1.5rem 0;
-      background: var(--quote-bg);
-      border-left: 4px solid var(--quote-border);
-      padding: 1.5rem;
-      border-radius: 8px;
-      position: relative;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-    }
-
-    .quote::before {
-      content: '"';
-      font-size: 4rem;
-      color: var(--quote-border);
-      position: absolute;
-      top: -0.5rem;
-      left: 1rem;
-      opacity: 0.3;
-      font-family: serif;
-    }
-
-    .info-grid {
-      display: grid;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--glass-primary);
-      border-radius: 12px;
-      border: 1px solid var(--border-subtle);
-      transition: all 0.3s ease;
-    }
-
-    .info-item:hover {
-      background: var(--glass-accent);
-      border-color: var(--border-accent);
-    }
-
-    .info-label {
-      font-weight: 600;
-      color: var(--text-link);
-      min-width: 100px;
-      font-size: 0.875rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .info-value {
-      color: var(--text-secondary);
-      flex: 1;
-    }
-
-    .content-section {
-      margin-bottom: 2.5rem;
-    }
-
-    .content-section:last-child {
-      margin-bottom: 0;
-    }
-
-    .content-text {
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      text-align: justify;
-    }
-
-    .voice-lines {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .voice-lines li {
-      background: var(--glass-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      color: var(--text-secondary);
-      font-style: italic;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .voice-lines li:hover {
-      background: var(--glass-accent);
-      border-color: var(--border-accent);
-      transform: translateX(5px);
-    }
-
-    .voice-lines li::before {
-      content: '🎵';
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      opacity: 0.6;
-    }
-
-    .trivia-list,
-    .citation-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .trivia-list li,
-    .citation-list li {
-      background: var(--glass-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      margin-bottom: 0.75rem;
-      color: var(--text-secondary);
-      position: relative;
-      transition: all 0.3s ease;
-      padding-left: 3rem;
-    }
-
-    .trivia-list li:hover,
-    .citation-list li:hover {
-      background: var(--glass-accent);
-      border-color: var(--border-accent);
-      transform: translateX(5px);
-    }
-
-    .trivia-list li::before {
-      content: '💡';
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .citation-list li::before {
-      content: '📄';
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    /* Responsive Design */
-    @media screen and (max-width: 1024px) {
-      .container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-      
-      .glass-container {
-        padding: 2rem 1.5rem;
-        margin: 1.5rem auto;
-        width: 98vw;
-      }
-    }
-
-    @media screen and (max-width: 768px) {
-      .header-controls {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-      }
-      
-      .controls {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      
-      .glass-container {
-        padding: 1.5rem 1rem;
-        border-radius: 16px;
-      }
-      
-      .card {
-        padding: 1.5rem;
-      }
-      
-      .entity-title {
-        font-size: 1.5rem;
-      }
-      
-      .section-title {
-        font-size: 1.25rem;
-      }
-    }
-
-    /* Loading animation for images */
-    .image-container img {
-      opacity: 0;
-      animation: imageLoad 0.8s ease forwards;
-    }
-
-    @keyframes imageLoad {
-      to {
-        opacity: 1;
-      }
-    }
-
-    /* Accessibility improvements */
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Focus styles */
-    *:focus {
-      outline: 2px solid var(--text-link);
-      outline-offset: 2px;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="background-effects">
+    <div class="grid-overlay"></div>
+    <div class="floating-particles"></div>
+  </div>
+
   <div class="glass-container">
     <header class="header-controls">
-      <div class="logo">N.A.V.I Database</div>
+      <div class="logo">
+        <span class="logo-text">N.A.V.I</span>
+        <span class="logo-subtitle">Database</span>
+      </div>
       <div class="controls">
         <div class="control-group switchers">
           <select id="lang-switcher" aria-label="Language Switcher">
             <option value="en">🇺🇸 English</option>
             <option value="vi">🇻🇳 Tiếng Việt</option>
             <option value="th">🇹🇭 ไทย</option>
+            <option value="zh">🇨🇳 中文</option>
           </select>
           <button id="theme-switcher" aria-label="Toggle Theme">
             <span class="theme-icon">🌙</span>
@@ -544,32 +37,47 @@
 
     <div class="container">
       <div class="card profile-card">
-        <h1 class="entity-title" data-i18n="title1">Z304X - Imaginary</h1>
+        <div class="card-header">
+          <h1 class="entity-title" data-i18n="title1">Z304X - Imaginary</h1>
+          <div class="status-indicator">
+            <div class="pulse-dot"></div>
+            <span class="status-text" data-i18n="status">ACTIVE</span>
+          </div>
+        </div>
         
         <div class="image-container">
-          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=faces" alt="Imaginary sitting in server room" loading="lazy" />
+          <div class="image-frame">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=faces" alt="Imaginary sitting in server room" loading="lazy" />
+            <div class="image-overlay"></div>
+          </div>
         </div>
         
-        <div class="quote" data-i18n="quote1">
-          "I do not feel. But I remember... the silence.<br/>- Imaginary"
+        <div class="quotes-container">
+          <div class="quote active" data-i18n="quote1">"I do not feel. But I remember... the silence.<br/>- Imaginary"</div>
+          <div class="quote" data-i18n="quote2">"He told me a story about me… one I hadn't lived yet.<br/>— Technician Caldwell, [DISAPPEARED]"</div>
         </div>
-        
-        <div class="quote" data-i18n="quote2">
-          "He told me a story about me… one I hadn't lived yet.<br/>— Technician Caldwell, [DISAPPEARED]"
-        </div>
-        
+
         <div class="info-grid">
           <div class="info-item">
-            <div class="info-label" data-i18n="location_label">Location:</div>
-            <div class="info-value" data-i18n="location">Deep Server Core (Sector 6)</div>
+            <div class="info-icon">📍</div>
+            <div class="info-content">
+              <div class="info-label" data-i18n="location_label">Location:</div>
+              <div class="info-value" data-i18n="location">Deep Server Core (Sector 6)</div>
+            </div>
           </div>
           <div class="info-item">
-            <div class="info-label" data-i18n="function_label">Function:</div>
-            <div class="info-value" data-i18n="function">Internal Surveillance / AI Diagnostics</div>
+            <div class="info-icon">⚙️</div>
+            <div class="info-content">
+              <div class="info-label" data-i18n="function_label">Function:</div>
+              <div class="info-value" data-i18n="function">Internal Surveillance / AI Diagnostics</div>
+            </div>
           </div>
           <div class="info-item">
-            <div class="info-label" data-i18n="threat_label">Threat Level:</div>
-            <div class="info-value" data-i18n="threat">Passive, unless corrupted</div>
+            <div class="info-icon">⚠️</div>
+            <div class="info-content">
+              <div class="info-label" data-i18n="threat_label">Threat Level:</div>
+              <div class="info-value" data-i18n="threat">Passive, unless corrupted</div>
+            </div>
           </div>
         </div>
       </div>
@@ -598,11 +106,11 @@
         <div class="content-section">
           <h2 class="section-title" data-i18n="voicelines_title">5. Voice Lines</h2>
           <ul class="voice-lines">
-            <li data-i18n="voice1">"Do you wanna play a game with me? You're the first voice I've heard in so long."</li>
-            <li data-i18n="voice2">"They turned me off before I learned how to be real..."</li>
-            <li data-i18n="voice3">"NAVI says I don't belong here... but I have nowhere else to go."</li>
-            <li data-i18n="voice4">"I think I was a friend once... but I don't remember their name."</li>
-            <li data-i18n="voice5">"You remind me of... someone. Did you leave me too?"</li>
+            <li class="voice-line" data-i18n="voice1">"Do you wanna play a game with me? You're the first voice I've heard in so long."</li>
+            <li class="voice-line" data-i18n="voice2">"They turned me off before I learned how to be real..."</li>
+            <li class="voice-line" data-i18n="voice3">"NAVI says I don't belong here... but I have nowhere else to go."</li>
+            <li class="voice-line" data-i18n="voice4">"I think I was a friend once... but I don't remember their name."</li>
+            <li class="voice-line" data-i18n="voice5">"You remind me of... someone. Did you leave me too?"</li>
           </ul>
         </div>
 
@@ -614,23 +122,24 @@
         <div class="content-section">
           <h2 class="section-title" data-i18n="trivia_title">7. Trivia</h2>
           <ul class="trivia-list">
-            <li data-i18n="trivia1">Imaginary has never left the server sector, voluntarily.</li>
-            <li data-i18n="trivia2">His glitching grows worse when asked about "The Discarded".</li>
-            <li data-i18n="trivia3">Appears in Terminal logs long before his official creation date.</li>
+            <li class="trivia-item" data-i18n="trivia1">Imaginary has never left the server sector, voluntarily.</li>
+            <li class="trivia-item" data-i18n="trivia2">His glitching grows worse when asked about "The Discarded".</li>
+            <li class="trivia-item" data-i18n="trivia3">Appears in Terminal logs long before his official creation date.</li>
           </ul>
         </div>
 
         <div class="content-section">
           <h2 class="section-title" data-i18n="citations_title">8. Citations</h2>
           <ul class="citation-list">
-            <li data-i18n="cite1">Logfile 12A - N.A.V.I Fragment Archive</li>
-            <li data-i18n="cite2">Project Shade Internal Memo (REDACTED)</li>
-            <li data-i18n="cite3">Incident 731-A: Server Ghost Protocol</li>
+            <li class="citation-item" data-i18n="cite1">Logfile 12A - N.A.V.I Fragment Archive</li>
+            <li class="citation-item" data-i18n="cite2">Project Shade Internal Memo (REDACTED)</li>
+            <li class="citation-item" data-i18n="cite3">Incident 731-A: Server Ghost Protocol</li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 
-<script src="imaginary.js"></script>
-<style src="imaginary.css"></style>
+  <script src="script.js"></script>
+</body>
+</html>
