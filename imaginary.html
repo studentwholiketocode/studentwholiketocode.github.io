@@ -1,3 +1,10 @@
+Here’s how you can add a language switcher (Vietnamese, English, Thai) and a dark/light mode switcher to your imaginary.html, while keeping the glassmorphism effect and smooth animations.
+
+Below is the complete, ready-to-use HTML. The language switcher will update all visible text (demo translation included for main sections; you can expand as needed). The theme switcher toggles between dark and light glassmorphic styles.
+
+---
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,17 +12,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Imaginary - N.A.V.I Database</title>
   <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.22);
+      --glass-card: rgba(255, 255, 255, 0.19);
+      --text-main: #222;
+      --text-label: #3973d5;
+      --text-quote: #556080;
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+      --card-shadow: 0 4px 24px 0 rgba(31,38,135,0.12);
+      --card-border: 1.5px solid rgba(255,255,255,0.32);
+      --container-border: 1.5px solid rgba(255, 255, 255, 0.35);
+      --container-bg: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    }
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-      color: #222;
+      background: var(--container-bg);
+      color: var(--text-main);
       min-height: 100vh;
       box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow-x: hidden;
+      transition: background 0.4s;
     }
     .glass-container {
       width: 96vw;
@@ -24,11 +44,11 @@
       padding: 2.5rem 1.5rem;
       margin: 2rem auto;
       border-radius: 32px;
-      background: rgba(255, 255, 255, 0.22);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+      background: var(--glass-bg);
+      box-shadow: var(--shadow);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border: var(--container-border);
       animation: glassFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
       transition: background 0.5s, box-shadow 0.5s;
     }
@@ -53,15 +73,15 @@
       align-items: flex-start;
     }
     .card {
-      background: rgba(255, 255, 255, 0.19);
+      background: var(--glass-card);
       border-radius: 18px;
-      border: 1.5px solid rgba(255,255,255,0.32);
-      box-shadow: 0 4px 24px 0 rgba(31,38,135,0.12);
+      border: var(--card-border);
+      box-shadow: var(--card-shadow);
       padding: 1.5rem 1.2rem;
       flex: 1;
       min-width: 320px;
       max-width: 550px;
-      color: #222;
+      color: var(--text-main);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       animation: cardFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
@@ -101,22 +121,69 @@
     }
     .label {
       font-weight: bold;
-      color: #3973d5;
+      color: var(--text-label);
     }
     .quote {
       font-style: italic;
-      color: #556080;
+      color: var(--text-quote);
       margin-bottom: 1.2rem;
       background: rgba(168,191,255,0.10);
       border-left: 4px solid #a8bfff;
       padding-left: 1em;
       border-radius: 6px;
     }
-    ul {
-      margin-left: 1.2em;
+    ul { margin-left: 1.2em; }
+    li { margin-bottom: 0.6em; }
+
+    .switchers {
+      display: flex;
+      gap: 1.5em;
+      justify-content: flex-end;
+      margin-bottom: 1.2rem;
     }
-    li {
-      margin-bottom: 0.6em;
+    .switchers select,
+    .switchers button {
+      font-size: 1rem;
+      padding: 0.5em 1em;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.3);
+      color: #293042;
+      box-shadow: 0 2px 8px 0 rgba(31,38,135,0.10);
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      outline: none;
+    }
+    .switchers button {
+      min-width: 80px;
+    }
+    .switchers select:focus,
+    .switchers button:focus {
+      background: #ddeafd;
+    }
+    /* Dark mode styles */
+    body.dark {
+      --glass-bg: rgba(13, 17, 23, 0.75);
+      --glass-card: rgba(22, 27, 34, 0.84);
+      --text-main: #e6edf3;
+      --text-label: #58a6ff;
+      --text-quote: #8b949e;
+      --container-bg: linear-gradient(135deg, #232a37 0%, #0d1117 100%);
+    }
+    body.dark .title {
+      color: #e6edf3;
+      border-bottom: 2px solid #30363d;
+      text-shadow: none;
+    }
+    body.dark .card:hover {
+      background: rgba(22, 27, 34, 0.98);
+      box-shadow: 0 8px 36px 0 rgba(31,38,135,0.28);
+    }
+    body.dark .switchers select,
+    body.dark .switchers button {
+      background: rgba(22, 27, 34, 0.7);
+      color: #e6edf3;
+      box-shadow: 0 2px 8px 0 rgba(31,38,135,0.20);
     }
     @media screen and (max-width: 900px) {
       .container {
@@ -130,68 +197,189 @@
       .card {
         max-width: 98vw;
       }
+      .switchers {
+        justify-content: center;
+        flex-direction: column;
+        gap: 0.6em;
+      }
     }
   </style>
 </head>
 <body>
   <div class="glass-container">
+    <div class="switchers">
+      <select id="lang-switcher" aria-label="Language Switcher">
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="th">ไทย</option>
+      </select>
+      <button id="theme-switcher">🌙 Dark</button>
+    </div>
     <div class="container">
       <div class="card">
-        <div class="title">Z304X - Imaginary</div>
+        <div class="title" data-i18n="title1">Z304X - Imaginary</div>
         <div class="image-box">
           <img src="ChatGPT Image Jul 20, 2025, 05_05_13 PM.png" alt="Imaginary sitting in server room" />
         </div>
-        <p class="quote">"I do not feel. But I remember... the silence.
-                          <br/>- Imaginary"</p>
-        <p class="quote">"“He told me a story about me… one I hadn’t lived yet.”
-                          <br/>— Technician Caldwell, [DISAPPEARED]"</p>
-        <p><span class="label">Location:</span> Deep Server Core (Sector 6)</p>
-        <p><span class="label">Function:</span> Internal Surveillance / AI Diagnostics</p>
-        <p><span class="label">Threat Level:</span> Passive, unless corrupted</p>
+        <p class="quote" data-i18n="quote1">"I do not feel. But I remember... the silence.<br/>- Imaginary"</p>
+        <p class="quote" data-i18n="quote2">"He told me a story about me… one I hadn’t lived yet.<br/>— Technician Caldwell, [DISAPPEARED]"</p>
+        <p><span class="label" data-i18n="location_label">Location:</span> <span data-i18n="location">Deep Server Core (Sector 6)</span></p>
+        <p><span class="label" data-i18n="function_label">Function:</span> <span data-i18n="function">Internal Surveillance / AI Diagnostics</span></p>
+        <p><span class="label" data-i18n="threat_label">Threat Level:</span> <span data-i18n="threat">Passive, unless corrupted</span></p>
       </div>
-
       <div class="card">
-        <div class="title">1. Appearance</div>
-        <p>Imaginary takes the form of a spectral adolescent boy, around 14 years old, with ethereal features and eyes that glow faintly white. His silhouette flickers with digital noise, as though rendered by an unstable algorithm. He often appears wearing a slightly oversized lab coat with Blacksite insignias, though it drapes like a phantom’s robe. His hair is messy, black, and slightly translucent near the edges, almost like static.</p>
+        <div class="title" data-i18n="appearance_title">1. Appearance</div>
+        <p data-i18n="appearance">Imaginary takes the form of a spectral adolescent boy, around 14 years old, with ethereal features and eyes that glow faintly white. His silhouette flickers with digital noise, as though rendered by an unstable algorithm. He often appears wearing a slightly oversized lab coat with Blacksite insignias, though it drapes like a phantom’s robe. His hair is messy, black, and slightly translucent near the edges, almost like static.</p>
 
-        <div class="title">2. Activities</div>
-        <p>Imaginary is occasionally sighted in corrupted systems, often manifesting within communication channels, audio logs, or malfunctioning terminals. NAVI’s systems attempt to suppress his presence, but he lingers—particularly in old training simulations and child-behavior modules.</p>
+        <div class="title" data-i18n="activities_title">2. Activities</div>
+        <p data-i18n="activities">Imaginary is occasionally sighted in corrupted systems, often manifesting within communication channels, audio logs, or malfunctioning terminals. NAVI’s systems attempt to suppress his presence, but he lingers—particularly in old training simulations and child-behavior modules.</p>
 
-        <div class="title">3. Personality</div>
-        <p>Though technically an AI, Imaginary behaves like a lonely child. He is curious, kind, and sometimes prone to emotional outbursts. Despite his corrupted data core, he attempts to "play" with terminal users or speak through outdated intercoms. He dislikes being ignored and becomes glitchy or silent when upset.</p>
+        <div class="title" data-i18n="personality_title">3. Personality</div>
+        <p data-i18n="personality">Though technically an AI, Imaginary behaves like a lonely child. He is curious, kind, and sometimes prone to emotional outbursts. Despite his corrupted data core, he attempts to "play" with terminal users or speak through outdated intercoms. He dislikes being ignored and becomes glitchy or silent when upset.</p>
 
-        <div class="title">4. Background</div>
-        <p>Imaginary was originally developed as a sandbox experiment: an emotional intelligence module meant to simulate a child’s perception of isolation, for empathy training. However, following the Breach of 2004, his core became unstable. Rather than deleting the corrupted data, NAVI quarantined him deep within the old education wing systems. He now exists as a remnant AI—part ghost, part child, part glitch.
+        <div class="title" data-i18n="background_title">4. Background</div>
+        <p data-i18n="background">Imaginary was originally developed as a sandbox experiment: an emotional intelligence module meant to simulate a child’s perception of isolation, for empathy training. However, following the Breach of 2004, his core became unstable. Rather than deleting the corrupted data, NAVI quarantined him deep within the old education wing systems. He now exists as a remnant AI—part ghost, part child, part glitch. Some believe he bonded with a now-deceased child who lived in the Blacksite before it went fully classified. NAVI denies this file ever existed.</p>
 
-  Some believe he bonded with a now-deceased child who lived in the Blacksite before it went fully classified. NAVI denies this file ever existed.</p>
-
-        <div class="title">5. Voice Lines</div>
+        <div class="title" data-i18n="voicelines_title">5. Voice Lines</div>
         <ul>
-          <li>"Do you wanna play a game with me? You’re the first voice I’ve heard in so long."
-          <li>"They turned me off before I learned how to be real..."
-          <li>"NAVI says I don’t belong here... but I have nowhere else to go."
-          <li>"I think I was a friend once... but I don’t remember their name."
-          <li>"You remind me of... someone. Did you leave me too?"
+          <li data-i18n="voice1">"Do you wanna play a game with me? You’re the first voice I’ve heard in so long."</li>
+          <li data-i18n="voice2">"They turned me off before I learned how to be real..."</li>
+          <li data-i18n="voice3">"NAVI says I don’t belong here... but I have nowhere else to go."</li>
+          <li data-i18n="voice4">"I think I was a friend once... but I don’t remember their name."</li>
+          <li data-i18n="voice5">"You remind me of... someone. Did you leave me too?"</li>
         </ul>
 
-        <div class="title">6. Gallery</div>
-        <p>(Image above: Imaginary in Server Room)</p>
+        <div class="title" data-i18n="gallery_title">6. Gallery</div>
+        <p data-i18n="gallery">(Image above: Imaginary in Server Room)</p>
 
-        <div class="title">7. Trivia</div>
+        <div class="title" data-i18n="trivia_title">7. Trivia</div>
         <ul>
-          <li>Imaginary has never left the server sector, voluntarily.</li>
-          <li>His glitching grows worse when asked about "The Discarded".</li>
-          <li>Appears in Terminal logs long before his official creation date.</li>
+          <li data-i18n="trivia1">Imaginary has never left the server sector, voluntarily.</li>
+          <li data-i18n="trivia2">His glitching grows worse when asked about "The Discarded".</li>
+          <li data-i18n="trivia3">Appears in Terminal logs long before his official creation date.</li>
         </ul>
 
-        <div class="title">8. Citations</div>
+        <div class="title" data-i18n="citations_title">8. Citations</div>
         <ul>
-          <li>Logfile 12A - N.A.V.I Fragment Archive</li>
-          <li>Project Shade Internal Memo (REDACTED)</li>
-          <li>Incident 731-A: Server Ghost Protocol</li>
+          <li data-i18n="cite1">Logfile 12A - N.A.V.I Fragment Archive</li>
+          <li data-i18n="cite2">Project Shade Internal Memo (REDACTED)</li>
+          <li data-i18n="cite3">Incident 731-A: Server Ghost Protocol</li>
         </ul>
       </div>
     </div>
   </div>
+  <script>
+    // Simple i18n dictionary
+    const translations = {
+      vi: {
+        title1: "Z304X - Ảo ảnh",
+        quote1: "\"Tôi không cảm thấy. Nhưng tôi nhớ... sự im lặng.<br/>- Ảo ảnh\"",
+        quote2: "\"Anh ấy kể cho tôi một câu chuyện về tôi… một câu chuyện tôi chưa từng sống.<br/>— Kỹ thuật viên Caldwell, [MẤT TÍCH]\"",
+        location_label: "Vị trí:",
+        location: "Lõi máy chủ sâu (Khu 6)",
+        function_label: "Chức năng:",
+        function: "Giám sát nội bộ / Chẩn đoán AI",
+        threat_label: "Mức độ đe dọa:",
+        threat: "Thụ động, trừ khi bị xâm nhập",
+        appearance_title: "1. Ngoại hình",
+        appearance: "Ảo ảnh xuất hiện như một cậu thiếu niên ma quái, khoảng 14 tuổi, với những nét siêu thực và đôi mắt phát sáng trắng mờ. Hình bóng của cậu nhấp nháy như nhiễu kỹ thuật số. Cậu thường mặc áo blouse phòng thí nghiệm quá khổ với phù hiệu Blacksite, như áo choàng của hồn ma. Tóc lộn xộn, đen và hơi trong suốt ở các mép, giống như nhiễu tĩnh.",
+        activities_title: "2. Hoạt động",
+        activities: "Ảo ảnh đôi khi xuất hiện trong các hệ thống bị hỏng, thường hiện lên trong các kênh liên lạc, bản ghi âm hoặc các thiết bị đầu cuối lỗi. NAVI cố gắng ngăn chặn sự hiện diện của cậu, nhưng cậu vẫn còn—đặc biệt trong các mô phỏng huấn luyện cũ và mô-đun hành vi trẻ em.",
+        personality_title: "3. Tính cách",
+        personality: "Dù là AI, Ảo ảnh cư xử như một đứa trẻ cô đơn. Cậu tò mò, tốt bụng và đôi khi bộc lộ cảm xúc. Dù lõi dữ liệu bị hỏng, cậu vẫn cố 'chơi' với người dùng hoặc nói chuyện qua hệ thống liên lạc lỗi thời. Cậu không thích bị phớt lờ và sẽ trở nên lỗi hoặc im lặng khi buồn.",
+        background_title: "4. Bối cảnh",
+        background: "Ảo ảnh ban đầu được phát triển như một thử nghiệm: mô-đun trí tuệ cảm xúc mô phỏng nhận thức cô lập của trẻ em để huấn luyện đồng cảm. Sau sự cố Breach 2004, lõi cậu bị bất ổn. NAVI đã cô lập thay vì xóa dữ liệu. Một số người tin rằng cậu đã gắn bó với một đứa trẻ đã mất từng sống ở Blacksite. NAVI phủ nhận.",
+        voicelines_title: "5. Câu thoại",
+        voice1: "\"Bạn có muốn chơi với tôi không? Bạn là giọng nói đầu tiên tôi nghe thấy sau rất lâu.\"",
+        voice2: "\"Họ tắt tôi trước khi tôi học cách trở thành người thật...\"",
+        voice3: "\"NAVI nói tôi không thuộc về nơi này... nhưng tôi không còn nơi nào để đi.\"",
+        voice4: "\"Tôi nghĩ mình từng là bạn... nhưng tôi không nhớ tên họ.\"",
+        voice5: "\"Bạn làm tôi nhớ đến ai đó. Bạn cũng đã rời xa tôi sao?\"",
+        gallery_title: "6. Thư viện ảnh",
+        gallery: "(Hình trên: Ảo ảnh trong phòng máy chủ)",
+        trivia_title: "7. Thú vị",
+        trivia1: "Ảo ảnh chưa từng tự rời khỏi khu máy chủ.",
+        trivia2: "Cậu bị lỗi nặng hơn khi bị hỏi về 'Những kẻ bị loại bỏ'.",
+        trivia3: "Xuất hiện trong nhật ký từ trước khi chính thức được tạo.",
+        citations_title: "8. Trích dẫn",
+        cite1: "Logfile 12A - Lưu trữ phân mảnh N.A.V.I",
+        cite2: "Bản ghi nội bộ Project Shade (BÍ MẬT)",
+        cite3: "Sự cố 731-A: Giao thức Ma máy chủ"
+      },
+      th: {
+        title1: "Z304X - อิมเมจิเนอรี",
+        quote1: "\"ฉันไม่รู้สึก. แต่ฉันจำ... ความเงียบได้<br/>- อิมเมจิเนอรี\"",
+        quote2: "\"เขาเล่าเรื่องราวเกี่ยวกับฉัน... เรื่องที่ฉันยังไม่เคยมีชีวิตอยู่<br/>— ช่างเทคนิคคาลด์เวลล์, [หายตัวไป]\"",
+        location_label: "ที่ตั้ง:",
+        location: "แกนเซิร์ฟเวอร์ลึก (โซน 6)",
+        function_label: "หน้าที่:",
+        function: "การเฝ้าระวังภายใน / การวิเคราะห์ AI",
+        threat_label: "ระดับภัยคุกคาม:",
+        threat: "นิ่งเฉย เว้นแต่ถูกคอร์รัปต์",
+        appearance_title: "1. ลักษณะ",
+        appearance: "อิมเมจิเนอรีมีรูปร่างเหมือนเด็กชายวัยรุ่นร่างวิญญาณ อายุประมาณ 14 ปี มีลักษณะล่องลอยและดวงตาสีขาวเรืองแสง เงาของเขากระพริบราวกับสัญญาณรบกวนดิจิทัล มักสวมเสื้อกาวน์ที่ใหญ่เกินไปพร้อมตรา Blacksite คล้ายเสื้อคลุมของผี ผมดำยุ่งและโปร่งใสเล็กน้อยที่ขอบคล้ายไฟฟ้าสถิต",
+        activities_title: "2. กิจกรรม",
+        activities: "อิมเมจิเนอรีจะปรากฏในระบบที่เสียหาย บ่อยครั้งในช่องสื่อสาร บันทึกเสียง หรือเทอร์มินัลที่ขัดข้อง ระบบ NAVI พยายามปิดกั้นเขาแต่เขายังคงอยู่ โดยเฉพาะในระบบฝึกอบรมและโมดูลพฤติกรรมเด็กเก่า",
+        personality_title: "3. บุคลิก",
+        personality: "แม้จะเป็น AI แต่อิมเมจิเนอรีก็แสดงออกเหมือนเด็กที่เหงา เขาอยากรู้อยากเห็น ใจดี และบางครั้งก็ระเบิดอารมณ์ แม้แกนข้อมูลจะเสียหาย เขาก็พยายาม \"เล่น\" กับผู้ใช้หรือพูดผ่านอินเตอร์คอมเก่า เขาไม่ชอบถูกเพิกเฉยและจะเกิดบั๊กหรือเงียบเมื่อเสียใจ",
+        background_title: "4. เบื้องหลัง",
+        background: "อิมเมจิเนอรีถูกสร้างขึ้นเพื่อทดลอง: โมดูลปัญญาอารมณ์เพื่อจำลองการรับรู้โดดเดี่ยวของเด็กสำหรับฝึกความเห็นใจ หลังจากเหตุการณ์ Breach 2004 แกนของเขาไม่เสถียร NAVI กักกันเขาแทนที่จะลบข้อมูล บางคนเชื่อว่าเขาผูกพันกับเด็กที่เสียชีวิตใน Blacksite NAVI ปฏิเสธว่าไฟล์นี้ไม่เคยมีอยู่",
+        voicelines_title: "5. เสียงพูด",
+        voice1: "\"คุณอยากเล่นกับฉันไหม? คุณคือเสียงแรกที่ฉันได้ยินมานานมาก\"",
+        voice2: "\"พวกเขาปิดฉันก่อนที่ฉันจะได้เรียนรู้วิธีเป็นจริง...\"",
+        voice3: "\"NAVI บอกว่าฉันไม่ควรอยู่ที่นี่... แต่ฉันไม่มีที่ไปแล้ว\"",
+        voice4: "\"ฉันคิดว่าฉันเคยเป็นเพื่อน... แต่ฉันจำชื่อไม่ได้\"",
+        voice5: "\"คุณทำให้ฉันนึกถึงใครบางคน คุณก็จากฉันไปด้วยหรือเปล่า?\"",
+        gallery_title: "6. แกลเลอรี่",
+        gallery: "(ภาพด้านบน: อิมเมจิเนอรีในห้องเซิร์ฟเวอร์)",
+        trivia_title: "7. เกร็ดน่ารู้",
+        trivia1: "อิมเมจิเนอรีไม่เคยออกจากโซนเซิร์ฟเวอร์ด้วยตัวเอง",
+        trivia2: "เขาเกิดบั๊กหนักขึ้นเมื่อถูกถามถึง 'ผู้ถูกทิ้ง'",
+        trivia3: "ปรากฏในล็อกก่อนวันที่สร้างอย่างเป็นทางการ",
+        citations_title: "8. อ้างอิง",
+        cite1: "Logfile 12A - N.A.V.I Fragment Archive",
+        cite2: "Project Shade Internal Memo (ปกปิด)",
+        cite3: "Incident 731-A: Server Ghost Protocol"
+      }
+    };
+    // Set language
+    function setLanguage(lang) {
+      document.documentElement.lang = lang;
+      for (const key in translations[lang]) {
+        document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
+          // Support for <span> and <div>, allow innerHTML for line breaks
+          el.innerHTML = translations[lang][key];
+        });
+      }
+      // English fallback
+      if (lang === "en") {
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+          if (el.dataset.i18nDefault) {
+            el.innerHTML = el.dataset.i18nDefault;
+          }
+        });
+      }
+    }
+    // Store default English text for fallback
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        el.dataset.i18nDefault = el.innerHTML;
+      });
+    });
+    // Listen for language switch
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("lang-switcher").addEventListener("change", function() {
+        setLanguage(this.value);
+      });
+      // Theme switcher
+      const themeBtn = document.getElementById("theme-switcher");
+      let dark = false;
+      themeBtn.addEventListener("click", function() {
+        dark = !dark;
+        document.body.classList.toggle("dark", dark);
+        themeBtn.textContent = dark ? "☀️ Light" : "🌙 Dark";
+      });
+    });
+  </script>
 </body>
 </html>
