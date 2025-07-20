@@ -1,0 +1,280 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monsters - N.A.V.I Database</title>
+  <style>
+    :root {
+      --bg-light: #f5f5f5;
+      --text-light: #111;
+      --bg-dark: #0f0f0f;
+      --text-dark: #f5f5f5;
+      --accent: #00bfff;
+      --card-light: #ffffff;
+      --card-dark: #1e1e1e;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+    }
+
+    #starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    header {
+      background-color: #151515;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      z-index: 1;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      color: var(--accent);
+    }
+
+    .toggle-buttons select {
+      padding: 0.4rem 1rem;
+      margin-left: 0.5rem;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    main {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+      position: relative;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 2rem;
+    }
+
+    .feature-box {
+      background-color: var(--card-dark);
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+      color: var(--text-dark);
+      transition: transform 0.3s, box-shadow 0.3s;
+      transform-style: preserve-3d;
+      opacity: 0;
+      transform: translateY(40px);
+      text-decoration: none;
+      display: block;
+    }
+
+    .feature-box:hover {
+      transform: rotateX(6deg) rotateY(6deg) scale(1.03);
+      box-shadow: 0 0 30px rgba(0, 191, 255, 0.7);
+    }
+
+    .feature-box.visible {
+      opacity: 1;
+      transform: none;
+      transition: all 0.6s ease-out;
+    }
+
+    .feature-box h3 {
+      font-size: 1.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .feature-box span {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    /* Light Mode */
+    .light-mode {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    .light-mode header {
+      background-color: #ddd;
+    }
+
+    .light-mode .feature-box {
+      background-color: var(--card-light);
+      color: var(--text-light);
+    }
+
+    .light-mode .toggle-buttons select {
+      background-color: #ccc;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  <header>
+    <h1>N.A.V.I Database</h1>
+    <div class="toggle-buttons">
+      <button onclick="toggleTheme()">🌗</button>
+      <select id="language-select" onchange="changeLanguage(this.value)">
+        <option value="en">🇬🇧 English</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <h2 id="monster-title">Main Monsters</h2>
+    <div class="feature-grid">
+      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Nomi">
+        <span>❓</span>
+        <h3>Nomi</h3>
+      </a>
+      <a class="feature-box" href="val.html" title="Access to N.A.V.I's information about Val">
+        <span>🛠️</span>
+        <h3>Val</h3>
+      </a>
+      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about North">
+        <span>❓</span>
+        <h3>North</h3>
+      </a>
+      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Iki">
+        <span>❓</span>
+        <h3>Iki</h3>
+      </a>
+      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Imaginary">
+        <span>❓</span>
+        <h3>Imaginary</h3>
+      </a>
+      <a class="feature-box" href="nopermission.html" title="Access to N.A.V.I's information about Illusions">
+        <span>❓</span>
+        <h3>Illusions</h3>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    window.toggleTheme = function () {
+      const isLight = document.body.classList.toggle("light-mode");
+      localStorage.setItem("theme", isLight ? "light" : "dark");
+    };
+
+    function changeLanguage(lang) {
+      document.documentElement.lang = lang;
+      document.getElementById("monster-title").textContent = lang === "vi" ? "Quái Vật Chính" : "Main Monsters";
+      localStorage.setItem("language", lang);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("theme") === "light") {
+        document.body.classList.add("light-mode");
+      }
+      const savedLang = localStorage.getItem("language");
+      if (savedLang) {
+        document.getElementById("language-select").value = savedLang;
+        changeLanguage(savedLang);
+      }
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      document.querySelectorAll('.feature-box').forEach(box => {
+        observer.observe(box);
+      });
+    });
+
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+    const starCount = 200;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < starCount; i++) {
+        stars.push({
+          x: Math.random() * canvas.width - canvas.width / 2,
+          y: Math.random() * canvas.height - canvas.height / 2,
+          z: Math.random() * canvas.width,
+          o: Math.random()
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let star of stars) {
+        const k = 128.0 / star.z;
+        const px = star.x * k + canvas.width / 2;
+        const py = star.y * k + canvas.height / 2;
+
+        if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
+          const size = (1 - star.z / canvas.width) * 2;
+          ctx.beginPath();
+          ctx.arc(px, py, size, 0, 2 * Math.PI);
+          ctx.fillStyle = `rgba(255, 255, 255, ${star.o})`;
+          ctx.fill();
+        }
+
+        star.z -= 1;
+        if (star.z <= 0) {
+          star.z = canvas.width;
+          star.x = Math.random() * canvas.width - canvas.width / 2;
+          star.y = Math.random() * canvas.height - canvas.height / 2;
+          star.o = Math.random();
+        }
+      }
+      requestAnimationFrame(drawStars);
+    }
+
+    initStars();
+    drawStars();
+  </script>
+</body>
+</html>

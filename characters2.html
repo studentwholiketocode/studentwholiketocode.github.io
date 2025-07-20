@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Characters</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --text: #111;
+      --card: #fff;
+      --border: #ccc;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1c1c1e;
+      --text: #f5f5f5;
+      --card: #2c2c2e;
+      --border: #3c3c3c;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+    }
+
+    aside {
+      width: 220px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 1rem;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .switch {
+      cursor: pointer;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 5px 10px;
+      color: var(--text);
+      background-color: transparent;
+    }
+
+    .content {
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body data-theme="dark">
+  <aside>
+    <h2>Navigation</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="monster.html">Monsters</a>
+      <a href="character.html">Characters</a>
+      <!-- Add more if needed -->
+    </nav>
+  </aside>
+
+  <main>
+    <header>
+      <h1 id="title">Characters</h1>
+      <div class="toolbar">
+        <button class="switch" onclick="toggleTheme()">🌗 Theme</button>
+        <button class="switch" onclick="switchLanguage()">🌐 VN/EN</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="card">
+        <h2 id="section-title">Character Section</h2>
+        <p id="placeholder-text">[Insert your character descriptions here]</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleTheme() {
+      const html = document.querySelector('body');
+      html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+    }
+
+    const translations = {
+      en: {
+        title: "Characters",
+        section: "Character Section",
+        placeholder: "[REDACTED]",
+      },
+      vi: {
+        title: "Nhân Vật",
+        section: "Mục Nhân Vật",
+        placeholder: "[ĐÃ BỊ XÓA]",
+      }
+    };
+
+    let currentLang = 'en';
+
+    function switchLanguage() {
+      currentLang = currentLang === 'en' ? 'vi' : 'en';
+      const t = translations[currentLang];
+      document.getElementById("title").innerText = t.title;
+      document.getElementById("section-title").innerText = t.section;
+      document.getElementById("placeholder-text").innerText = t.placeholder;
+    }
+  </script>
+</body>
+</html>

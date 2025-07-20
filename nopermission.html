@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>No Permission - N.A.V.I Database</title>
+  <style>
+    :root {
+      --bg-light: #f8f9fa;
+      --bg-dark: #1e1e2f;
+      --text-light: #1a1a1a;
+      --text-dark: #f0f0f0;
+      --card-light: #ffffff;
+      --card-dark: #2c2e3a;
+      --accent: #ff4c4c;
+      --border-radius: 12px;
+      --transition: 0.3s ease;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 120px;
+      padding-bottom: 40px;
+    }
+
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .top-controls {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .toggle-btn,
+    select.language {
+      padding: 6px 10px;
+      font-size: 14px;
+      background-color: var(--card-dark);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    body:not(.dark) .toggle-btn,
+    body:not(.dark) select.language {
+      background-color: #444;
+    }
+
+    select.language {
+      appearance: none;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      background-color: var(--card-light);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+      transition: var(--transition);
+    }
+
+    body.dark .topbar {
+      background-color: var(--card-dark);
+    }
+
+    .message-box, .info-box {
+      background-color: var(--card-light);
+      padding: 40px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 80%;
+      max-width: 600px;
+      margin-bottom: 30px;
+      transition: var(--transition);
+    }
+
+    body.dark .message-box,
+    body.dark .info-box {
+      background-color: var(--card-dark);
+    }
+
+    .message-box h1 {
+      color: var(--accent);
+      font-size: 32px;
+      margin-bottom: 25px;
+    }
+
+    .info-box h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+
+    .info-box ul {
+      text-align: left;
+      padding-left: 20px;
+    }
+
+    .info-box li {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    .home-button {
+      padding: 10px 20px;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: var(--accent);
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s;
+    }
+
+    .home-button:hover {
+      background-color: #cc2c2c;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar" id="header-title">N.A.V.I Database</div>
+
+  <div class="top-controls">
+    <button class="toggle-btn" onclick="toggleDark()">🌗</button>
+    <select class="language" onchange="switchLanguage(this.value)">
+      <option value="en">🇺🇸 English</option>
+      <option value="vn">🇻🇳 Tiếng Việt</option>
+    </select>
+  </div>
+
+  <div class="message-box">
+    <h1 id="no-permission">You don't have enough permission to access this.</h1>
+    <a href="index.html" class="home-button" id="home-button">🔙 Back to Home</a>
+  </div>
+
+  <div class="info-box">
+    <h2 id="info-title">Information you are authorized to access</h2>
+    <ul id="info-list">
+      <li>Basic user profile information</li>
+      <li>Public wiki pages</li>
+      <li>Terms of use & privacy policy</li>
+      <li>System announcements</li>
+    </ul>
+  </div>
+
+  <script>
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+
+    const translations = {
+      en: {
+        "header-title": "N.A.V.I Database",
+        "no-permission": "You don't have enough permission to access this.",
+        "home-button": "🔙 Back to Home",
+        "info-title": "Information you are authorized to access",
+        "info-list": [
+          "Basic user profile information",
+          "Public wiki pages",
+          "Terms of use & privacy policy",
+          "System announcements"
+        ]
+      },
+      vn: {
+        "header-title": "Cơ sở dữ liệu N.A.V.I",
+        "no-permission": "Bạn không có đủ quyền để truy cập trang này.",
+        "home-button": "🔙 Quay về Trang chủ",
+        "info-title": "Thông tin bạn được phép truy cập",
+        "info-list": [
+          "Thông tin hồ sơ người dùng cơ bản",
+          "Trang wiki công khai",
+          "Điều khoản sử dụng & chính sách bảo mật",
+          "Thông báo hệ thống"
+        ]
+      }
+    };
+
+    function switchLanguage(lang) {
+      for (const id in translations[lang]) {
+        if (id === "info-list") {
+          const ul = document.getElementById("info-list");
+          ul.innerHTML = "";
+          translations[lang]["info-list"].forEach(item => {
+            const li = document.createElement("li");
+            li.textContent = item;
+            ul.appendChild(li);
+          });
+        } else {
+          const el = document.getElementById(id);
+          if (el) el.textContent = translations[lang][id];
+        }
+      }
+    }
+  </script>
+</body>
+</html>

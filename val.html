@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>N.A.V.I Database - Val</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --text: #ffffff;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --accent: #2563eb;
+    }
+
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --text: #000000;
+      --card-bg: #f0f0f0;
+      --border: #cccccc;
+      --accent: #2563eb;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    body.fade-in {
+      opacity: 1;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: bold;
+      animation: logoFadeIn 1s ease forwards;
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    @keyframes logoFadeIn {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .left-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .toggles button {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.7rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      transition: background 0.3s ease;
+    }
+
+    .toggles button:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-nav {
+      position: fixed;
+      top: 100px;
+      left: 20px;
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex-wrap: wrap;
+    }
+
+    .content {
+      flex: 1 1 60%;
+      min-width: 300px;
+    }
+
+    .content h2 {
+      margin-top: 0;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.3rem;
+    }
+
+    .sidebar-card {
+      flex: 1 1 300px;
+      max-width: 300px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .card-header {
+      background: var(--accent);
+      padding: 0.8rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .card-image img {
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-caption {
+      font-style: italic;
+      text-align: center;
+      color: gray;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-body {
+      padding: 1rem;
+    }
+
+    .card-body p {
+      margin: 0.7rem 0;
+    }
+
+    .label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .scroll-reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <div class="topbar scroll-reveal">
+    <div class="left-nav">
+      <a href="index.html" class="nav-btn" title="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6.5 6.5.708.708L2 7.707V14.5a.5.5 0 0 0 .5.5H6v-5h4v5h3.5a.5.5 0 0 0 .5-.5V7.707l.146.147.708-.708-6.5-6.5z"/>
+        </svg>
+      </a>
+      <a href="monsters2.html" class="nav-btn" title="Monsters">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M1 2a1 1 0 0 1 1-1h3.5v2H2v10h3.5v2H2a1 1 0 0 1-1-1V2zm13 0a1 1 0 0 0-1-1h-3.5v2H14v10h-3.5v2H13a1 1 0 0 0 1-1V2zM6.5 1.5h3v13h-3v-13z"/>
+        </svg>
+      </a>
+    </div>
+    <h1>N.A.V.I Database</h1>
+    <div class="toggles">
+      <button onclick="toggleTheme()">🌙/☀️</button>
+      <button onclick="toggleLanguage()">🇬🇧/🇻🇳</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="content scroll-reveal">
+      <blockquote class="scroll-reveal">
+        <em>"Yeahhh, that was just unfair. Uhh, here. Free revive. On the house."</em><br>
+        <small>– Imaginary, after emotionally dying to Val</small>
+      </blockquote>
+
+      <h2 class="lang scroll-reveal" data-en="Overview" data-vi="Tổng quan">Overview</h2>
+      <p class="lang scroll-reveal" data-en="Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve."
+         data-vi="Val là một quái vật discord đặc biệt, nổi bật với các đòn tấn công tâm lý và các minigame gây tổn thương cảm xúc. Một khi bị cuốn vào, anh ta thử thách sự kiên nhẫn và ý chí của người chơi.">
+        Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve.
+      </p>
+
+      <h2 class="lang scroll-reveal" data-en="Mechanics" data-vi="Cơ chế">Mechanics</h2>
+      <p class="lang scroll-reveal" data-en="While appearing calm, Val initiates a brutal minigame upon contact in discord. This minigame is designed to be unwinnable, increasing emotional damage."
+         data-vi="Mặc dù trông có vẻ bình tĩnh, Val kích hoạt một minigame tàn bạo khi tiếp xúc trong discord. Minigame này được thiết kế không thể thắng, gây tổn thương tâm lý nghiêm trọng.">
+        While appearing calm, Val initiates a brutal minigame upon contact in discord. This minigame is designed to be unwinnable, increasing emotional damage.</p>
+
+      <p class="scroll-reveal">This is what Val's victim will turn like:</p>
+      <img class="scroll-reveal" src="discord.PNG" style="width:90%; border: 1px solid var(--border); border-radius: 8px; margin-top: 1rem;" alt="Example of what Val's victim will turn out.">
+    </div>
+
+    <div class="sidebar-card scroll-reveal">
+      <div class="card-header lang" data-en="Val" data-vi="Val">Val</div>
+
+      <div class="card-image">
+        <img src="val.PNG" alt="Val Image">
+      </div>
+
+      <div class="card-caption lang" data-en="&quot;Good Luck&quot; – Val's Minigame Description"
+           data-vi="&quot;Chúc may mắn&quot; – Mô tả minigame của Val">
+        "Good Luck" – Val's Minigame Description
+      </div>
+
+      <div class="card-body">
+        <p><span class="label lang" data-en="Location" data-vi="Vị trí">Location</span>HQ (ink.game gang)</p>
+        <p><span class="label lang" data-en="Attack" data-vi="Tấn công">Attack</span>Texting back to [REDACTED] extremely slow, but fast enough to catch up to [REDACTED].</p>
+        <p><span class="label lang" data-en="Emotional Damage" data-vi="Tổn thương cảm xúc">Emotional Damage</span>Emotionally Death</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function toggleLanguage() {
+      const currentLang = document.documentElement.lang || 'en';
+      const nextLang = currentLang === 'en' ? 'vi' : 'en';
+      document.documentElement.lang = nextLang;
+
+      document.querySelectorAll('.lang').forEach(el => {
+        const txt = el.getAttribute(`data-${nextLang}`);
+        if (txt) el.innerHTML = txt;
+      });
+    }
+
+    const revealElements = document.querySelectorAll('.scroll-reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('fade-in');
+    });
+
+    document.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const href = this.href;
+        document.body.classList.remove('fade-in');
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+          window.location.href = href;
+        }, 500);
+      });
+    });
+  </script>
+</body>
+</html>
