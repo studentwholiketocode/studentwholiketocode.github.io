@@ -29,6 +29,75 @@
   </style>
 </head>
 <body>
+  <div style="padding: 2rem;">
+  <!-- Theme Switcher -->
+  <button id="theme-toggle" style="margin-right: 1rem;">🌞/🌙</button>
+  
+  <!-- Language Switcher -->
+  <select id="language-switcher">
+    <option value="en">English</option>
+    <option value="th">ไทย</option>
+    <option value="vi">Tiếng Việt</option>
+    <option value="zh">中文</option>
+  </select>
+</div>
+
+<!-- Glassmorphism Container Example -->
+<div class="glass-card">
+  <h1 id="title">No Permission</h1>
+  <p id="desc">You do not have permission to access this page.</p>
+</div>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  transition: background 0.5s, color 0.5s;
+  background: #f4f4f4;
+  color: #222;
+}
+body.dark-mode {
+  background: #181c23;
+  color: #f1f1f1;
+}
+.glass-card {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.2);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.17);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  text-align: center;
+  transition: background 0.5s, color 0.5s;
+}
+body.dark-mode .glass-card {
+  background: rgba(24,28,35,0.4);
+  border: 1px solid rgba(200, 200, 200, 0.18);
+}
+</style>
+
+<script>
+// Dark/Light mode toggle
+document.getElementById('theme-toggle').onclick = function() {
+  document.body.classList.toggle('dark-mode');
+};
+
+// Language translations
+const translations = {
+  en: { title: "No Permission", desc: "You do not have permission to access this page." },
+  th: { title: "ไม่มีสิทธิ์เข้าถึง", desc: "คุณไม่มีสิทธิ์ในการเข้าถึงหน้านี้" },
+  vi: { title: "Không có quyền truy cập", desc: "Bạn không có quyền truy cập trang này." },
+  zh: { title: "无权限", desc: "您无权访问此页面。" }
+};
+
+document.getElementById('language-switcher').onchange = function(e) {
+  const lang = e.target.value;
+  document.getElementById('title').textContent = translations[lang].title;
+  document.getElementById('desc').textContent = translations[lang].desc;
+};
+</script>
   <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="card permission-card text-center p-4">
       <div>
