@@ -8,114 +8,189 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      color: #222;
+      min-height: 100vh;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+    .glass-container {
+      width: 96vw;
+      max-width: 1250px;
+      min-height: 96vh;
+      padding: 2.5rem 1.5rem;
+      margin: 2rem auto;
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      animation: glassFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: background 0.5s, box-shadow 0.5s;
+    }
+    @keyframes glassFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
     .container {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      padding: 2rem;
       gap: 2rem;
       max-width: 1200px;
       margin: auto;
+      justify-content: center;
+      align-items: flex-start;
     }
     .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 1rem;
+      background: rgba(255, 255, 255, 0.19);
+      border-radius: 18px;
+      border: 1.5px solid rgba(255,255,255,0.32);
+      box-shadow: 0 4px 24px 0 rgba(31,38,135,0.12);
+      padding: 1.5rem 1.2rem;
       flex: 1;
-      min-width: 300px;
+      min-width: 320px;
+      max-width: 550px;
+      color: #222;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      animation: cardFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: background 0.4s, box-shadow 0.4s, transform 0.2s;
+    }
+    .card:hover {
+      background: rgba(255,255,255,0.29);
+      box-shadow: 0 8px 36px 0 rgba(31,38,135,0.18);
+      transform: scale(1.022);
+    }
+    @keyframes cardFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(32px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
     .title {
       font-size: 2rem;
       border-bottom: 2px solid #3f4a58;
       padding-bottom: 0.5rem;
       margin-bottom: 1rem;
+      color: #293042;
+      text-shadow: 0 2px 8px rgba(255,255,255,0.09);
     }
     .image-box img {
       width: 100%;
       max-height: 350px;
-      border-radius: 10px;
+      border-radius: 14px;
       object-fit: cover;
-      border: 2px solid #30363d;
+      border: 2px solid rgba(31,38,135,0.14);
+      box-shadow: 0 4px 24px 0 rgba(31,38,135,0.08);
+      margin-bottom: 1rem;
     }
     .label {
       font-weight: bold;
-      color: #58a6ff;
+      color: #3973d5;
     }
     .quote {
       font-style: italic;
-      color: #8b949e;
-      margin-bottom: 2rem;
+      color: #556080;
+      margin-bottom: 1.2rem;
+      background: rgba(168,191,255,0.10);
+      border-left: 4px solid #a8bfff;
+      padding-left: 1em;
+      border-radius: 6px;
     }
-    @media screen and (max-width: 768px) {
+    ul {
+      margin-left: 1.2em;
+    }
+    li {
+      margin-bottom: 0.6em;
+    }
+    @media screen and (max-width: 900px) {
       .container {
         flex-direction: column;
         padding: 1rem;
+        gap: 1.2rem;
+      }
+      .glass-container {
+        padding: 1.1rem 0.3rem;
+      }
+      .card {
+        max-width: 98vw;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <div class="title">Z304X - Imaginary</div>
-      <div class="image-box">
-        <img src="ChatGPT Image Jul 20, 2025, 05_05_13 PM.png" alt="Imaginary sitting in server room" />
+  <div class="glass-container">
+    <div class="container">
+      <div class="card">
+        <div class="title">Z304X - Imaginary</div>
+        <div class="image-box">
+          <img src="ChatGPT Image Jul 20, 2025, 05_05_13 PM.png" alt="Imaginary sitting in server room" />
+        </div>
+        <p class="quote">"I do not feel. But I remember... the silence.
+                          <br/>- Imaginary"</p>
+        <p class="quote">"“He told me a story about me… one I hadn’t lived yet.”
+                          <br/>— Technician Caldwell, [DISAPPEARED]"</p>
+        <p><span class="label">Location:</span> Deep Server Core (Sector 6)</p>
+        <p><span class="label">Function:</span> Internal Surveillance / AI Diagnostics</p>
+        <p><span class="label">Threat Level:</span> Passive, unless corrupted</p>
       </div>
-      <p class="quote">"I do not feel. But I remember... the silence.
-                        <br/>- Imaginary"</p>
-      <p class="quote">"“He told me a story about me… one I hadn’t lived yet.”
-                        <br/>— Technician Caldwell, [DISAPPEARED]"</p>
-      <p><span class="label">Location:</span> Deep Server Core (Sector 6)</p>
-      <p><span class="label">Function:</span> Internal Surveillance / AI Diagnostics</p>
-      <p><span class="label">Threat Level:</span> Passive, unless corrupted</p>
-      
-    </div>
 
-    <div class="card">
-      <div class="title">1. Appearance</div>
-      <p>Imaginary takes the form of a spectral adolescent boy, around 14 years old, with ethereal features and eyes that glow faintly white. His silhouette flickers with digital noise, as though rendered by an unstable algorithm. He often appears wearing a slightly oversized lab coat with Blacksite insignias, though it drapes like a phantom’s robe. His hair is messy, black, and slightly translucent near the edges, almost like static.</p>
+      <div class="card">
+        <div class="title">1. Appearance</div>
+        <p>Imaginary takes the form of a spectral adolescent boy, around 14 years old, with ethereal features and eyes that glow faintly white. His silhouette flickers with digital noise, as though rendered by an unstable algorithm. He often appears wearing a slightly oversized lab coat with Blacksite insignias, though it drapes like a phantom’s robe. His hair is messy, black, and slightly translucent near the edges, almost like static.</p>
 
-      <div class="title">2. Activities</div>
-      <p>Imaginary is occasionally sighted in corrupted systems, often manifesting within communication channels, audio logs, or malfunctioning terminals. NAVI’s systems attempt to suppress his presence, but he lingers—particularly in old training simulations and child-behavior modules.</p>
+        <div class="title">2. Activities</div>
+        <p>Imaginary is occasionally sighted in corrupted systems, often manifesting within communication channels, audio logs, or malfunctioning terminals. NAVI’s systems attempt to suppress his presence, but he lingers—particularly in old training simulations and child-behavior modules.</p>
 
-      <div class="title">3. Personality</div>
-      <p>Though technically an AI, Imaginary behaves like a lonely child. He is curious, kind, and sometimes prone to emotional outbursts. Despite his corrupted data core, he attempts to "play" with terminal users or speak through outdated intercoms. He dislikes being ignored and becomes glitchy or silent when upset.</p>
+        <div class="title">3. Personality</div>
+        <p>Though technically an AI, Imaginary behaves like a lonely child. He is curious, kind, and sometimes prone to emotional outbursts. Despite his corrupted data core, he attempts to "play" with terminal users or speak through outdated intercoms. He dislikes being ignored and becomes glitchy or silent when upset.</p>
 
-      <div class="title">4. Background</div>
-      <p>Imaginary was originally developed as a sandbox experiment: an emotional intelligence module meant to simulate a child’s perception of isolation, for empathy training. However, following the Breach of 2004, his core became unstable. Rather than deleting the corrupted data, NAVI quarantined him deep within the old education wing systems. He now exists as a remnant AI—part ghost, part child, part glitch.
+        <div class="title">4. Background</div>
+        <p>Imaginary was originally developed as a sandbox experiment: an emotional intelligence module meant to simulate a child’s perception of isolation, for empathy training. However, following the Breach of 2004, his core became unstable. Rather than deleting the corrupted data, NAVI quarantined him deep within the old education wing systems. He now exists as a remnant AI—part ghost, part child, part glitch.
 
-Some believe he bonded with a now-deceased child who lived in the Blacksite before it went fully classified. NAVI denies this file ever existed.</p>
+  Some believe he bonded with a now-deceased child who lived in the Blacksite before it went fully classified. NAVI denies this file ever existed.</p>
 
-      <div class="title">5. Voice Lines</div>
-      <ul>
-        <li>"Do you wanna play a game with me? You’re the first voice I’ve heard in so long."
-        <li>"They turned me off before I learned how to be real..."
-        <li>"NAVI says I don’t belong here... but I have nowhere else to go."
-        <li>"I think I was a friend once... but I don’t remember their name."
-        <li>"You remind me of... someone. Did you leave me too?"
-      </ul>
+        <div class="title">5. Voice Lines</div>
+        <ul>
+          <li>"Do you wanna play a game with me? You’re the first voice I’ve heard in so long."
+          <li>"They turned me off before I learned how to be real..."
+          <li>"NAVI says I don’t belong here... but I have nowhere else to go."
+          <li>"I think I was a friend once... but I don’t remember their name."
+          <li>"You remind me of... someone. Did you leave me too?"
+        </ul>
 
-      <div class="title">6. Gallery</div>
-      <p>(Image above: Imaginary in Server Room)</p>
+        <div class="title">6. Gallery</div>
+        <p>(Image above: Imaginary in Server Room)</p>
 
-      <div class="title">7. Trivia</div>
-      <ul>
-        <li>Imaginary has never left the server sector, voluntarily.</li>
-        <li>His glitching grows worse when asked about "The Discarded".</li>
-        <li>Appears in Terminal logs long before his official creation date.</li>
-      </ul>
+        <div class="title">7. Trivia</div>
+        <ul>
+          <li>Imaginary has never left the server sector, voluntarily.</li>
+          <li>His glitching grows worse when asked about "The Discarded".</li>
+          <li>Appears in Terminal logs long before his official creation date.</li>
+        </ul>
 
-      <div class="title">8. Citations</div>
-      <ul>
-        <li>Logfile 12A - N.A.V.I Fragment Archive</li>
-        <li>Project Shade Internal Memo (REDACTED)</li>
-        <li>Incident 731-A: Server Ghost Protocol</li>
-      </ul>
-    </div>
+        <div class="title">8. Citations</div>
+        <ul>
+          <li>Logfile 12A - N.A.V.I Fragment Archive</li>
+          <li>Project Shade Internal Memo (REDACTED)</li>
+          <li>Incident 731-A: Server Ghost Protocol</li>
+        </ul>
+      </div>
     </div>
   </div>
 </body>
