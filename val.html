@@ -749,5 +749,93 @@
         </div>
     </div>
 
-    <script src="val.js"></script>
+<script>
+    function toggleTheme() {
+        document.documentElement.toggleAttribute('data-theme');
+    }
+
+    function executeCommand(command) {
+        const terminal = document.getElementById('terminal');
+        const timestamp = new Date().toLocaleString();
+        const responses = {
+            'scan --memory': 'Memory scan complete. 47 neural fragments recovered.',
+            'sync --quantum': 'Quantum synchronization initiated. Coherence at 99.8%.',
+            'decrypt --fragments': 'Fragment decryption in progress. Neural patterns emerging.',
+            'bridge --consciousness': 'Consciousness bridge activated. Connection established.',
+            'analyze --patterns': 'Pattern analysis complete. Quantum signatures detected.',
+            'help': 'Available commands: scan --memory, sync --quantum, decrypt --fragments, bridge --consciousness, analyze --patterns'
+        };
+
+        terminal.innerHTML += `<div class="log-entry info">[${timestamp}] neural@interface:~$ ${command}</div>`;
+
+        setTimeout(() => {
+            const response = responses[command] || 'Unknown command. Type "help" for available commands.';
+            terminal.innerHTML += `<div class="log-entry success">[${timestamp}] ${response}</div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }, 1000);
+    }
+
+    function playFragment(fragmentId) {
+        const responses = {
+            'neural_001': 'Neural pathway reconstruction initiated. Quantum resonance detected.',
+            'neural_002': 'Memory synchronization active. Consciousness bridge establishing...',
+            'neural_003': 'Encryption protocols validated. Maximum efficiency achieved.',
+            'neural_004': 'Temporal coherence restored. Neural integration ready.'
+        };
+
+        document.getElementById('valResponse').innerHTML = 
+            `<span class="status-indicator"></span>Fragment ${fragmentId}: ${responses[fragmentId] || 'Unknown fragment.'}`;
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const valResponse = document.getElementById('valResponse');
+        const message = input.value.trim();
+        if (!message) return;
+
+        valResponse.innerHTML = '<span class="status-indicator"></span>Processing neural pattern...';
+
+        setTimeout(() => {
+            const lower = message.toLowerCase();
+            let response = '';
+
+            if (lower.includes('hello') || lower.includes('hi')) {
+                response = 'Neural link established. Consciousness bridge active.';
+            } else if (lower.includes('status')) {
+                response = 'All neural systems operational. Quantum coherence stable.';
+            } else if (lower.includes('sync')) {
+                response = 'Initiating quantum synchronization... Neural patterns aligned.';
+            } else {
+                response = `Neural pattern received: "${message}". Consciousness bridge processing...`;
+            }
+
+            valResponse.innerHTML = `<span class="status-indicator"></span>${response}`;
+            input.value = '';
+        }, 1500);
+    }
+
+    // Optional: Add ENTER key trigger
+    document.addEventListener('DOMContentLoaded', () => {
+        const cmdInput = document.getElementById('commandInput');
+        const msgInput = document.getElementById('messageInput');
+
+        if (cmdInput) {
+            cmdInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    executeCommand(cmdInput.value);
+                    cmdInput.value = '';
+                }
+            });
+        }
+
+        if (msgInput) {
+            msgInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+    });
+</script>
+</body>
 </html>
