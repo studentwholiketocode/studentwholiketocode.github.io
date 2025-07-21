@@ -542,3 +542,23 @@ document.addEventListener('keydown', (e) => {
     }
     
     // Ctrl/Cmd + D to toggle theme
+    / Ctrl/Cmd + D to toggle theme
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        toggleTheme();
+    }
+    
+    // Ctrl/Cmd + T to focus terminal input
+    if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+        e.preventDefault();
+        const commandInput = document.getElementById('commandInput');
+        if (commandInput) commandInput.focus();
+    }
+    
+    // Ctrl/Cmd + M to focus message input
+    if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault();
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) messageInput.focus();
+    }
+});
