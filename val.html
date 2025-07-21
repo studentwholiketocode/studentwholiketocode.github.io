@@ -749,42 +749,4 @@
         </div>
     </div>
 
-    <script>
-        function toggleTheme() {
-            document.documentElement.toggleAttribute('data-theme');
-        }
-
-        function executeCommand(command) {
-            const terminal = document.getElementById('terminal');
-            const timestamp = new Date().toLocaleString();
-            const responses = {
-                'scan --memory': 'Memory scan complete. 47 neural fragments recovered.',
-                'sync --quantum': 'Quantum synchronization initiated. Coherence at 99.8%.',
-                'decrypt --fragments': 'Fragment decryption in progress. Neural patterns emerging.',
-                'bridge --consciousness': 'Consciousness bridge activated. Connection established.',
-                'analyze --patterns': 'Pattern analysis complete. Quantum signatures detected.'
-            };
-            
-            terminal.innerHTML += `<div class="log-entry info">[${timestamp}] ${command}</div>`;
-            setTimeout(() => {
-                terminal.innerHTML += `<div class="log-entry success">[${timestamp}] ${responses[command] || 'Command executed successfully.'}</div>`;
-                terminal.scrollTop = terminal.scrollHeight;
-            }, 1000);
-        }
-
-        function playFragment(fragmentId) {
-            const responses = {
-                'neural_001': 'Neural pathway reconstruction initiated. Quantum resonance detected.',
-                'neural_002': 'Memory synchronization active. Consciousness bridge establishing...',
-                'neural_003': 'Encryption protocols validated. Maximum efficiency achieved.',
-                'neural_004': 'Temporal coherence restored. Neural integration ready.'
-            };
-            
-            document.getElementById('valResponse').innerHTML = 
-                `<span class="status-indicator"></span>Fragment ${fragmentId}: ${responses[fragmentId]}`;
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value;
-            if (
+    <script src="val.js"></script>
