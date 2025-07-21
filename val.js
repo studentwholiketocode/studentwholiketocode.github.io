@@ -562,3 +562,190 @@ document.addEventListener('keydown', (e) => {
         if (messageInput) messageInput.focus();
     }
 });
+  class NeuralInterface {
+    constructor() {
+      this.currentTheme = localStorage.getItem('theme') || 'dark';
+      this.commandHistory = [];
+      this.historyIndex = -1;
+      this.isProcessing = false;
+      this.fragmentAudioMap = {
+        'neural_001': 'Neural pathway reconstruction initiated. Quantum resonance detected.',
+        'neural_002': 'Memory synchronization active. Consciousness bridge establishing...',
+        'neural_003': 'Encryption protocols validated. Maximum efficiency achieved.',
+        'neural_004': 'Temporal coherence restored. Neural integration ready.'
+      };
+      this.init();
+    }
+
+    init() {
+      this.applyTheme();
+      this.initializeTerminal();
+      this.setupEventListeners();
+    }
+
+    applyTheme() {
+      const root = document.documentElement;
+      if (this.currentTheme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+
+    setupEventListeners() {
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+          e.preventDefault();
+          toggleTheme();
+        }
+
+        const input = document.getElementById('commandInput');
+        if (input === document.activeElement) {
+          if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (this.historyIndex > 0) this.historyIndex--;
+            input.value = this.commandHistory[this.historyIndex] || '';
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (this.historyIndex < this.commandHistory.length - 1) this.historyIndex++;
+            input.value = this.commandHistory[this.historyIndex] || '';
+          }
+        }
+      });
+    }
+
+    initializeTerminal() {
+      const terminal = document.getElementById('terminal');
+      setTimeout(() => {
+        const now = new Date().toLocaleTimeString();
+        terminal.innerHTML = `
+          <div class="log-entry info">[${now}] Initializing VAL.9X Neural Interface...</div>
+          <div class="log-entry success">[${now}] Quantum bridge connected successfully</div>
+          <div class="log-entry warning">[${now}] Fragment memory nodes blinking</div>
+          <div class="log-entry info">[${now}] Coherence signal stabilized at 99.7%</div>
+          <div class="log-entry success">[${now}] Booting complete</div>
+          <div class="log-entry info">[${now}] Type <span class="command-prompt">help</span> for a list of commands</div>
+          <div class="log-entry info">[${now}] Awaiting consciousness bridge <span class="typing-cursor">_</span></div>
+        `;
+      }, 600);
+    }
+
+    executeCommand(cmd) {
+      const terminal = document.getElementById('terminal');
+      const timestamp = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-entry info';
+      entry.textContent = `[${timestamp}] neural@interface:~$ ${cmd}`;
+      terminal.appendChild(entry);
+
+      this.commandHistory.push(cmd);
+      this.historyIndex = this.commandHistory.length;
+
+      let response = '';
+      if (cmd.includes('scan --memory')) {
+        response = 'Memory scan complete. 47 neural fragments recovered.';
+      } else if (cmd.includes('sync --quantum')) {
+        response = 'Quantum synchronization initiated. Coherence at 99.8%.';
+      } else if (cmd.includes('decrypt --fragments')) {
+        response = 'Fragment decryption in progress. Neural patterns emerging.';
+      } else if (cmd.includes('bridge --consciousness')) {
+        response = 'Consciousness bridge activated. Connection established.';
+      } else if (cmd.includes('analyze --patterns')) {
+        response = 'Pattern analysis complete. Quantum signatures detected.';
+      } else if (cmd === 'clear') {
+        terminal.innerHTML = '';
+        return;
+      } else if (cmd === 'help') {
+        response = 'Available commands: scan --memory, sync --quantum, decrypt --fragments, bridge --consciousness, analyze --patterns, clear';
+      } else {
+        response = `Unknown command "${cmd}". Type help for assistance.`;
+      }
+
+      setTimeout(() => {
+        const resp = document.createElement('div');
+        resp.className = cmd === 'help' ? 'log-entry warning' : 'log-entry success';
+        resp.innerHTML = `[${timestamp}] ${response}`;
+        terminal.appendChild(resp);
+        terminal.scrollTop = terminal.scrollHeight;
+      }, 700);
+    }
+
+    sendMessage() {
+      const input = document.getElementById('messageInput');
+      const valResponse = document.getElementById('valResponse');
+      const msg = input.value.trim();
+
+      if (!msg) return;
+
+      valResponse.innerHTML = '<span class="status-indicator"></span>Transmitting...';
+
+      setTimeout(() => {
+        let response;
+        const lower = msg.toLowerCase();
+
+        if (lower.includes('hello')) {
+          response = 'Neural link active. Awaiting further input.';
+        } else if (lower.includes('status')) {
+          response = 'All subsystems green. VAL.9X is stable.';
+        } else if (lower.includes('glitch')) {
+          response = '!!ERROR!! Data integrity compromised. Stabilizing...';
+        } else {
+          response = `Pattern received: "${msg}" — Response calculated.`;
+        }
+
+        valResponse.innerHTML = `<span class="status-indicator"></span>${response}`;
+        input.value = '';
+      }, 1200);
+    }
+
+    playFragment(id) {
+      const valResponse = document.getElementById('valResponse');
+      const message = this.fragmentAudioMap[id] || `Fragment ${id} played.`;
+      valResponse.innerHTML = `<span class="status-indicator"></span>${message}`;
+    }
+  }
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme');
+    const svg = document.querySelector('.theme-switcher svg');
+
+    if (current === 'light') {
+      root.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+      svg.innerHTML = '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+    } else {
+      root.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+      svg.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+  }
+
+  function executeCommand(cmd) {
+    window.neuralInterface.executeCommand(cmd);
+    document.getElementById('commandInput').value = '';
+  }
+
+  function sendMessage() {
+    window.neuralInterface.sendMessage();
+  }
+
+  function playFragment(id) {
+    window.neuralInterface.playFragment(id);
+  }
+
+  function handleCommandEnter(event) {
+    if (event.key === 'Enter') {
+      executeCommand(event.target.value);
+    }
+  }
+
+  function handleMessageEnter(event) {
+    if (event.key === 'Enter') {
+      sendMessage();
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    window.neuralInterface = new NeuralInterface();
+  });
