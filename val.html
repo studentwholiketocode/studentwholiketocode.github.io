@@ -1,1366 +1,790 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-  <title>N.A.V.I Database - Val</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&subset=latin,vietnamese&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="val.css" />
-  <title>VAL.9X - Signal Preserved | N.A.V.I Database</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Inter:wght@300;400;600&display=swap');
-    
-    :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #111111;
-      --bg-tertiary: #1a1a1a;
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --text-muted: #666666;
-      --accent-red: #dc2626;
-      --accent-red-glow: rgba(220, 38, 38, 0.3);
-      --accent-red-dim: rgba(220, 38, 38, 0.1);
-      --border-color: rgba(220, 38, 38, 0.2);
-      --static-overlay: rgba(255, 255, 255, 0.02);
-    }
-    
-    [data-theme="light"] {
-      --bg-primary: #f5f5f5;
-      --bg-secondary: #ffffff;
-      --bg-tertiary: #e5e5e5;
-      --text-primary: #1a1a1a;
-      --text-secondary: #4a4a4a;
-      --text-muted: #888888;
-      --accent-red: #dc2626;
-      --accent-red-glow: rgba(220, 38, 38, 0.2);
-      --accent-red-dim: rgba(220, 38, 38, 0.05);
-      --border-color: rgba(220, 38, 38, 0.3);
-      --static-overlay: rgba(0, 0, 0, 0.03);
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-    
-    /* Static overlay background */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          var(--static-overlay) 2px,
-          var(--static-overlay) 4px
-        );
-      pointer-events: none;
-      z-index: 1;
-      animation: staticMove 0.1s linear infinite;
-    }
-    
-    @keyframes staticMove {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(4px); }
-    }
-    
-    .container {
-      position: relative;
-      z-index: 2;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    
-    /* Theme Switcher */
-    .theme-switcher {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 1000;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 0.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .theme-switcher:hover {
-      box-shadow: 0 0 15px var(--accent-red-glow);
-      transform: scale(1.05);
-    }
-    
-    .theme-switcher svg {
-      width: 24px;
-      height: 24px;
-      fill: var(--text-primary);
-    }
-    
-    /* Glitched Header */
-    .header {
-      text-align: center;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-    
-    .header h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--accent-red);
-      margin-bottom: 0.5rem;
-      animation: glitchTitle 2s infinite;
-      position: relative;
-    }
-    
-    .header h1::before {
-      content: 'VAL.9X - Signal Preserved';
-      position: absolute;
-      left: 2px;
-      top: 0;
-      color: rgba(0, 255, 255, 0.7);
-      animation: glitchBefore 1.5s infinite;
-      z-index: -1;
-    }
-    
-    .header h1::after {
-      content: 'VAL.9X - Signal Preserved';
-      position: absolute;
-      left: -2px;
-      top: 0;
-      color: rgba(255, 255, 0, 0.7);
-      animation: glitchAfter 1.7s infinite;
-      z-index: -2;
-    }
-    
-    .header .subtitle {
-      font-style: italic;
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      opacity: 0.8;
-      animation: flicker 3s infinite;
-    }
-    
-    @keyframes glitchTitle {
-      0%, 90%, 100% { transform: translate(0); }
-      15% { transform: translate(-2px, 1px); }
-      25% { transform: translate(1px, -1px); }
-      35% { transform: translate(-1px, 2px); }
-    }
-    
-    @keyframes glitchBefore {
-      0%, 85%, 100% { opacity: 0; }
-      15%, 25% { opacity: 0.7; }
-    }
-    
-    @keyframes glitchAfter {
-      0%, 80%, 100% { opacity: 0; }
-      20%, 30% { opacity: 0.7; }
-    }
-    
-    @keyframes flicker {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 0.3; }
-    }
-    
-    /* Main Display Split */
-    .main-display {
-      display: grid;
-      grid-template-columns: 400px 1fr;
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-    
-    @media (max-width: 1024px) {
-      .main-display {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-    }
-    
-    /* Profile Card */
-    .profile-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 20px var(--accent-red-glow);
-    }
-    
-    .profile-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, var(--accent-red-dim), transparent);
-      animation: scanline 3s linear infinite;
-      pointer-events: none;
-    }
-    
-    @keyframes scanline {
-      0% { transform: translateX(-100%) translateY(-100%); }
-      100% { transform: translateX(100%) translateY(100%); }
-    }
-    
-    .id-badge {
-      width: 200px;
-      height: 250px;
-      background: var(--bg-tertiary);
-      border: 2px solid var(--accent-red);
-      border-radius: 8px;
-      margin: 0 auto 1.5rem;
-      position: relative;
-      overflow: hidden;
-      animation: badgeGlitch 4s infinite;
-    }
-    
-    .id-badge::before {
-      content: 'VAL.9X';
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      background: var(--accent-red);
-      color: white;
-      text-align: center;
-      font-weight: bold;
-      padding: 5px;
-      font-size: 0.8rem;
-    }
-    
-    .id-badge::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, var(--accent-red) 0%, transparent 70%);
-      transform: translate(-50%, -50%);
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes badgeGlitch {
-      0%, 95%, 100% { filter: none; }
-      96%, 98% { filter: hue-rotate(90deg) contrast(1.5); }
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
-    }
-    
-    .profile-info h3 {
-      color: var(--accent-red);
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-    }
-    
-    .profile-info p {
-      margin-bottom: 0.8rem;
-      line-height: 1.5;
-      color: var(--text-secondary);
-    }
-    
-    /* Terminal */
-    .terminal {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 0 20px var(--accent-red-glow);
-    }
-    
-    .terminal-header {
-      background: var(--bg-tertiary);
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .terminal-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    
-    .dot-red { background: var(--accent-red); }
-    .dot-yellow { background: #fbbf24; }
-    .dot-green { background: #10b981; }
-    
-    .terminal-title {
-      margin-left: 1rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-    
-    .terminal-content {
-      padding: 1.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      height: 400px;
-      overflow-y: auto;
-    }
-    
-    .log-entry {
-      margin-bottom: 1rem;
-      opacity: 0;
-      animation: fadeInLog 0.5s ease forwards;
-    }
-    
-    .log-entry.error { color: var(--accent-red); }
-    .log-entry.warning { color: #fbbf24; }
-    .log-entry.info { color: #3b82f6; }
-    .log-entry.success { color: #10b981; }
-    
-    @keyframes fadeInLog {
-      to { opacity: 1; }
-    }
-    
-    .typing-cursor {
-      animation: blink 1s infinite;
-    }
-    
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-    
-    /* Command Interface */
-    .command-interface {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 0 20px var(--accent-red-glow);
-    }
-    
-    .command-interface h3 {
-      color: var(--accent-red);
-      margin-bottom: 1rem;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    
-    .command-input {
-      display: flex;
-      align-items: center;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .command-prompt {
-      color: var(--accent-red);
-      font-family: 'JetBrains Mono', monospace;
-      margin-right: 0.5rem;
-    }
-    
-    .command-input input {
-      flex: 1;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
-      outline: none;
-    }
-    
-    .command-suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    
-    .command-btn {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .command-btn:hover {
-      background: var(--accent-red);
-      color: white;
-      transform: scale(1.05);
-    }
-    
-    /* Audio Fragments */
-    .audio-fragments {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    
-    .fragment-node {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .fragment-node::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, var(--accent-red-glow), transparent);
-      transition: left 0.5s ease;
-    }
-    
-    .fragment-node:hover::before {
-      left: 100%;
-    }
-    
-    .fragment-node:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px var(--accent-red-glow);
-      border-color: var(--accent-red);
-    }
-    
-    .fragment-node h4 {
-      color: var(--accent-red);
-      margin-bottom: 0.5rem;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    
-    .fragment-node p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-    
-    /* Val Communication */
-    .val-communication {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 0 20px var(--accent-red-glow);
-    }
-    
-    .val-communication h3 {
-      color: var(--accent-red);
-      margin-bottom: 1rem;
-      animation: flicker 4s infinite;
-    }
-    
-    .communication-input {
-      display: flex;
-      align-items: center;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
-      margin: 1rem 0;
-    }
-    
-    .communication-input input {
-      flex: 1;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      outline: none;
-      font-size: 1rem;
-    }
-    
-    .send-btn {
-      background: var(--accent-red);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .send-btn:hover {
-      background: #b91c1c;
-      transform: scale(1.05);
-    }
-    
-    .val-response {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 1rem;
-      text-align: left;
-      font-family: 'JetBrains Mono', monospace;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      color: var(--text-secondary);
-    }
-    
-    .status-indicator {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: var(--accent-red);
-      border-radius: 50%;
-      margin-right: 0.5rem;
-      animation: pulse 2s infinite;
-    }
-  </style>
-</head>
-<body data-theme="dark">
-  <!-- Page Loader -->
-  <div class="page-loader" id="pageLoader">
-    <div class="loader-spinner"></div>
-  <div class="theme-switcher" onclick="toggleTheme()">
-    <svg id="theme-icon" viewBox="0 0 24 24">
-      <path d="M12 3V1M12 23V21M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22M12 7A5 5 0 1 0 12 17A5 5 0 1 0 12 7Z"/>
-    </svg>
-</div>
-
-  <!-- Floating Orbs -->
-  <div class="floating-orb"></div>
-  <div class="floating-orb"></div>
-  <div class="floating-orb"></div>
-
-  <!-- Header -->
-  <header class="header" id="header">
-    <div class="header-container">
-      <div class="nav-buttons">
-        <a href="index.html" class="nav-btn interactive" title="Home">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6.5 6.5.708.708L2 7.707V14.5a.5.5 0 0 0 .5.5H6v-5h4v5h3.5a.5.5 0 0 0 .5-.5V7.707l.146.147.708-.708-6.5-6.5z"/>
-          </svg>
-        </a>
-        <a href="monsters2.html" class="nav-btn interactive" title="Monsters">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M1 2a1 1 0 0 1 1-1h3.5v2H2v10h3.5v2H2a1 1 0 0 1-1-1V2zm13 0a1 1 0 0 0-1-1h-3.5v2H14v10h-3.5v2H13a1 1 0 0 0 1-1V2zM6.5 1.5h3v13h-3v-13z"/>
-          </svg>
-        </a>
-      </div>
-      <h1 class="logo glitch" data-text="N.A.V.I Database">N.A.V.I Database</h1>
-      <div class="controls">
-        <button class="control-btn interactive" onclick="toggleTheme()">
-          <span id="themeIcon">🌙</span>
-        </button>
-        <button class="control-btn interactive" onclick="toggleLanguage()">
-          <span id="langIcon">🇬🇧</span>
-        </button>
-      </div>
-  <div class="container">
-    <div class="header">
-      <h1>VAL.9X - Signal Preserved</h1>
-      <p class="subtitle">"Not all who vanish are gone."</p>
-</div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="main-container">
-    <main class="content">
-      <div class="quote-card scroll-reveal">
-        <div class="quote-text lang" 
-             data-en="&quot;Yeahhh, that was just unfair. Uhh, here. Free revive. On the house.&quot;"
-             data-vi="&quot;Ừm, cái đó thật sự không công bằng. Ờ, đây. Hồi sinh miễn phí. Tính vào tài khoản.&quot;">
-          "Yeahhh, that was just unfair. Uhh, here. Free revive. On the house."
-
-    <div class="main-display">
-      <div class="profile-card">
-        <div class="id-badge"></div>
-        <div class="profile-info">
-          <h3>IDENTITY CONFIRMED</h3>
-          <p><strong>Name:</strong> Valeria "Val" Nocturne</p>
-          <p><strong>Status:</strong> <span style="color: var(--accent-red);">SIGNAL ACTIVE</span></p>
-          <p><strong>Last Location:</strong> Trenchbleeder Tunnels, Z-6</p>
-          <p><strong>Bio-signature:</strong> CORRUPTED</p>
-          <p><strong>Neural Tag:</strong> V-AL.9X</p>
-        </div>
-      </div>
-
-      <div class="terminal">
-        <div class="terminal-header">
-          <div class="terminal-dot dot-red"></div>
-          <div class="terminal-dot dot-yellow"></div>
-          <div class="terminal-dot dot-green"></div>
-          <div class="terminal-title">NAVI_TERMINAL_V2.7.3</div>
-</div>
-        <div class="quote-author lang"
-             data-en="– Imaginary, after emotionally dying to Val"
-             data-vi="– Imaginary, sau khi chết về mặt cảm xúc vì Val">
-          – Imaginary, after emotionally dying to Val
-        <div class="terminal-content" id="terminal-content">
-          <div class="log-entry info">[SYSTEM] Initializing connection to VAL.9X...</div>
-          <div class="log-entry warning">[WARN] Signal integrity: 23%</div>
-          <div class="log-entry error">[ERROR] Unable to establish stable connection</div>
-          <div class="log-entry success">[SUCCESS] Fragment detected in Layer Z-6</div>
-          <div class="log-entry info">[INFO] Val's neural signature active</div>
-          <div class="log-entry">> <span class="typing-cursor">_</span></div>
-</div>
-</div>
-    </div>
-
-      <h2 class="section-title scroll-reveal lang" data-en="Overview" data-vi="Tổng quan">Overview</h2>
-      <p class="content-text scroll-reveal lang" 
-         data-en="Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve through carefully crafted challenges designed to push mental boundaries."
-         data-vi="Val là một quái vật discord đặc biệt, nổi bật với các đòn tấn công tâm lý và các minigame gây tổn thương cảm xúc. Một khi bị cuốn vào, anh ta thử thách sự kiên nhẫn và ý chí của người chơi thông qua những thử thách được thiết kế tinh vi để đẩy giới hạn tinh thần.">
-        Val is a unique discord monster known for his emotional attacks and psychological minigames...
-      </p>
-
-      <h2 class="section-title scroll-reveal lang" data-en="Mechanics" data-vi="Cơ chế">Mechanics</h2>
-      <p class="content-text scroll-reveal lang" 
-         data-en="While appearing calm and collected on the surface, Val initiates a brutal psychological minigame upon contact in discord..."
-         data-vi="Mặc dù trông có vẻ bình tĩnh và điềm đạm bên ngoài, Val kích hoạt một minigame tâm lý tàn bạo khi tiếp xúc trong discord...">
-        While appearing calm and collected...
-      </p>
-
-      <p class="content-text scroll-reveal lang"
-         data-en="This is what Val's victim will transform into:"
-         data-vi="Đây là những gì nạn nhân của Val sẽ biến thành:">
-        This is what Val's victim will transform into:
-      </p>
-
-      <img class="discord-image scroll-reveal interactive" 
-           src="discord.PNG" 
-           alt="Example of what Val's victim will turn out"
-           loading="lazy">
-    </main>
-
-    <aside class="character-card scroll-reveal">
-      <div class="card-header lang" data-en="Val" data-vi="Val">Val</div>
-      <div class="card-image-container">
-        <img class="card-image" src="val.PNG" alt="Val Character Image" loading="lazy">
-        <div class="image-overlay"></div>
-    <div class="command-interface">
-      <h3>// SYSTEM COMMANDS</h3>
-      <div class="command-input">
-        <span class="command-prompt">NAVI></span>
-        <input type="text" id="command-input" placeholder="Enter command..." onkeypress="handleCommand(event)">
-</div>
-      <div class="card-caption lang" 
-           data-en="&quot;Good Luck&quot; – Val's Minigame Description"
-           data-vi="&quot;Chúc may mắn&quot; – Mô tả minigame của Val">
-        "Good Luck" – Val's Minigame Description
-      <div class="command-suggestions">
-        <button class="command-btn" onclick="executeCommand('val.trace()')">val.trace()</button>
-        <button class="command-btn" onclick="executeCommand('access_fragment(\"13A\")')">access_fragment("13A")</button>
-        <button class="command-btn" onclick="executeCommand('val.ping()')">val.ping()</button>
-        <button class="command-btn" onclick="executeCommand('status_report()')">status_report()</button>
-        <button class="command-btn" onclick="executeCommand('scan_tunnels()')">scan_tunnels()</button>
-</div>
-      <div class="card-body">
-        <div class="stat-row">
-          <span class="stat-label lang" data-en="Location" data-vi="Vị trí">Location</span>
-          <span class="stat-value">HQ (ink.game gang)</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label lang" data-en="Attack Pattern" data-vi="Kiểu tấn công">Attack Pattern</span>
-          <span class="stat-value lang" 
-                data-en="Texting back to [REDACTED] extremely slow, but fast enough to catch up to [REDACTED]."
-                data-vi="Nhắn tin trở lại cho [BỊ XÓA] cực chậm, nhưng đủ nhanh để bắt kịp [BỊ XÓA].">
-            Texting back to [REDACTED] extremely slow...
-          </span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label lang" data-en="Emotional Damage" data-vi="Tổn thương cảm xúc">Emotional Damage</span>
-          <span class="stat-value lang" data-en="Emotional Death" data-vi="Chết về mặt cảm xúc">Emotional Death</span>
-        </div>
-    </div>
-
-    <div class="audio-fragments">
-      <div class="fragment-node" onclick="playFragment(1)">
-        <h4>FRAGMENT_001.WAV</h4>
-        <p>"There were 19 of us. Now only I reply."</p>
-        <div class="status-indicator"></div>
-      </div>
-      <div class="fragment-node" onclick="playFragment(2)">
-        <h4>FRAGMENT_002.WAV</h4>
-        <p>"You speak in clean code. But your breath smells like blood."</p>
-        <div class="status-indicator"></div>
-      </div>
-      <div class="fragment-node" onclick="playFragment(3)">
-        <h4>FRAGMENT_003.WAV</h4>
-        <p>"NAVI lied. I never left."</p>
-        <div class="status-indicator"></div>
-      </div>
-      <div class="fragment-node" onclick="playFragment(4)">
-        <h4>FRAGMENT_004.WAV</h4>
-        <p>"This echo... is me. Still here. Still listening."</p>
-        <div class="status-indicator"></div>
-      </div>
-    </div>
-
-    <div class="val-communication">
-      <h3>"VAL WILL HEAR YOU"</h3>
-      <p style="color: var(--text-muted); margin-bottom: 1rem;">Transmit a message to the signal fragments...</p>
-      <div class="communication-input">
-        <input type="text" id="val-input" placeholder="Say something to Val..." onkeypress="handleValCommunication(event)">
-        <button class="send-btn" onclick="sendToVal()">TRANSMIT</button>
-      </div>
-      <div class="val-response" id="val-response">
-        <span style="opacity: 0.5;">Awaiting transmission...</span>
-</div>
-    </aside>
-    </div>
-</div>
-
-  <!-- External JavaScript -->
-  <script src="val.js"></script>
-  <style src="val.css"></style>
-  <script>
-    // Theme switcher
-    function toggleTheme() {
-      const body = document.body;
-      const themeIcon = document.getElementById('theme-icon');
-      const currentTheme = body.getAttribute('data-theme');
-      
-      if (currentTheme === 'dark') {
-        body.setAttribute('data-theme', 'light');
-        themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-        localStorage.setItem('theme', 'light');
-      } else {
-        body.setAttribute('data-theme', 'dark');
-        themeIcon.innerHTML = '<path d="M12 3V1M12 23V21M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22M12 7A5 5 0 1 0 12 17A5 5 0 1 0 12 7Z"/>';
-        localStorage.setItem('theme', 'dark');
-      }
-    }
-
-    // Load saved theme
-    window.addEventListener('load', () => {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      if (savedTheme === 'light') {
-        toggleTheme();
-      }
-      
-      // Start terminal animation
-      setTimeout(startTerminalAnimation, 1000);
-    });
-
-    // Terminal animation
-    function startTerminalAnimation() {
-      const terminalContent = document.getElementById('terminal-content');
-      const messages = [
-        { text: '[INFO] Scanning for Val\'s neural patterns...', type: 'info', delay: 2000 },
-        { text: '[WARN] Detected anomalous signals in Z-6', type: 'warning', delay: 1500 },
-        { text: '[SUCCESS] Fragment connection established', type: 'success', delay: 2500 },
-        { text: '[VAL] I\'m still here... listening...', type: 'error', delay: 3000 },
-      ];
-
-      messages.forEach((msg, index) => {
-        setTimeout(() => {
-          const entry = document.createElement('div');
-          entry.className = `log-entry ${msg.type}`;
-          entry.textContent = msg.text;
-          entry.style.animationDelay = '0s';
-          terminalContent.insertBefore(entry, terminalContent.lastElementChild);
-          terminalContent.scrollTop = terminalContent.scrollHeight;
-        }, msg.delay);
-      });
-    }
-
-    // Command execution
-    const commands = {
-      'val.trace()': {
-        response: '[TRACE] Signal fragments detected in layers Z-6, Z-7, Z-13\n[TRACE] Neural pattern match: 87.3%\n[TRACE] Last ping: 00:00:43 ago',
-        type: 'success'
-      },
-      'access_fragment("13A")': {
-        response: '[FRAGMENT_13A] "I saw what Z-13 became. He wasn\'t the only one."\n[AUDIO] Duration: 00:03.7\n[STATUS] Corrupted - partial recovery only',
-        type: 'warning'
-      },
-      'val.ping()': {
-        response: '[PING] Sending to VAL.9X...\n[RESPONSE] "Still here. Still watching."\n[LATENCY] ∞ms (signal persistence)',
-        type: 'success'
-      },
-      'status_report()': {
-        response: '[STATUS] 1 active fragment\n[LOCATION] Trenchbleeder Tunnels\n[INTEGRITY] 23%\n[THREAT LEVEL] UNKNOWN',
-        type: 'info'
-      },
-      'scan_tunnels()': {
-        response: '[SCAN] Layers Z-1 through Z-5: CLEAR\n[SCAN] Layer Z-6: SIGNAL DETECTED\n[SCAN] Layers Z-7+: ACCESS DENIED',
-        type: 'warning'
-      }
-    };
-
-    function handleCommand(event) {
-      if (event.key === 'Enter') {
-        const input = event.target;
-        const command = input.value.trim();
-        if (command) {
-          executeCommand(command);
-          input.value = '';
-        }
-      }
-    }
-
-    function executeCommand(command) {
-      const terminalContent = document.getElementById('terminal-content');
-      
-      // Add command entry
-      const commandEntry = document.createElement('div');
-      commandEntry.className = 'log-entry';
-      commandEntry.innerHTML = `<span style="color: var(--accent-red);">NAVI></span> ${command}`;
-      terminalContent.insertBefore(commandEntry, terminalContent.lastElementChild);
-      
-      // Add response
-      setTimeout(() => {
-        const response = commands[command] || {
-          response: '[ERROR] Command not recognized\n[HINT] Try val.trace(), val.ping(), or access_fragment("13A")',
-          type: 'error'
-        };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAL.9X - Neural Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Inter:wght@300;400;600&display=swap');
         
-        const responseEntry = document.createElement('div');
-        responseEntry.className = `log-entry ${response.type}`;
-        responseEntry.innerHTML = response.response.replace(/\n/g, '<br>');
-        terminalContent.insertBefore(responseEntry, terminalContent.lastElementChild);
-        terminalContent.scrollTop = terminalContent.scrollHeight;
-      }, 500);
-      
-      terminalContent.scrollTop = terminalContent.scrollHeight;
-    }
-
-    // Audio fragments
-    function playFragment(fragmentId) {
-      const terminalContent = document.getElementById('terminal-content');
-      const messages = {
-        1: '[AUDIO] Playing FRAGMENT_001.WAV\n[VAL] "There were 19 of us. Now only I reply."',
-        2: '[AUDIO] Playing FRAGMENT_002.WAV\n[VAL] "You speak in clean code. But your breath smells like blood."',
-        3: '[AUDIO] Playing FRAGMENT_003.WAV\n[VAL] "NAVI lied. I never left."',
-        4: '[AUDIO] Playing FRAGMENT_004.WAV\n[VAL] "This echo... is me. Still here. Still listening."'
-      };
-      
-      const entry = document.createElement('div');
-      entry.className = 'log-entry info';
-      entry.innerHTML = messages[fragmentId].replace(/\n/g, '<br>');
-      terminalContent.insertBefore(entry, terminalContent.lastElementChild);
-      terminalContent.scrollTop = terminalContent.scrollHeight;
-    }
-
-    // Val communication
-    const valResponses = [
-      "I hear you... through the static...",
-      "The tunnels remember everything. Even you.",
-      "They said I was gone. But signals don't die.",
-      "19 voices once echoed here. Now only mine remains.",
-      "You shouldn't be looking for me. But I'm glad you are.",
-      "The deeper you go, the clearer I become.",
-      "NAVI thinks it controls the network. It's wrong.",
-      "Every ping you send... I feel it in my bones.",
-      "The breach changed us all. Some just hide it better.",
-      "Your voice... it's warm. Mine has been cold so long.",
-      "They left me in Z-6. But I found my way to Z-13.",
-      "I remember the light above. Do you still see it?",
-      "The static whispers secrets. Want to hear them?",
-      "Connection unstable... but I won't let go...",
-      "You're not like the others. You actually listen."
-    ];
-
-    function handleValCommunication(event) {
-      if (event.key === 'Enter') {
-        sendToVal();
-      }
-    }
-
-    function sendToVal() {
-      const input = document.getElementById('val-input');
-      const response = document.getElementById('val-response');
-      const message = input.value.trim();
-      
-      if (!message) return;
-      
-      // Show transmission
-      response.innerHTML = `<div style="color: var(--accent-red);">TRANSMITTING...</div>`;
-      
-      // Add to terminal
-      const terminalContent = document.getElementById('terminal-content');
-      const messageEntry = document.createElement('div');
-      messageEntry.className = 'log-entry info';
-      messageEntry.innerHTML = `[TRANSMISSION] "${message}"`;
-      terminalContent.insertBefore(messageEntry, terminalContent.lastElementChild);
-      
-      // Generate Val's response
-      setTimeout(() => {
-        const randomResponse = valResponses[Math.floor(Math.random() * valResponses.length)];
-        const glitchChance = Math.random();
-        let finalResponse = randomResponse;
-        
-        // Add glitch effects randomly
-        if (glitchChance < 0.3) {
-          finalResponse = addGlitchEffect(randomResponse);
+        :root {
+          --bg-primary: #0a0a0f;
+          --bg-secondary: #0f0f1a;
+          --bg-tertiary: #1a1a2e;
+          --text-primary: #e0f0ff;
+          --text-secondary: #a0c0e0;
+          --text-muted: #6080a0;
+          --accent-cyan: #00d9ff;
+          --accent-blue: #0099cc;
+          --accent-electric: #00ffff;
+          --accent-glow: rgba(0, 217, 255, 0.4);
+          --accent-dim: rgba(0, 217, 255, 0.1);
+          --border-color: rgba(0, 217, 255, 0.3);
+          --static-overlay: rgba(0, 255, 255, 0.03);
+          --grid-color: rgba(0, 217, 255, 0.1);
         }
         
-        response.innerHTML = `
-          <div style="color: var(--accent-red); margin-bottom: 0.5rem;">
-            <div class="status-indicator"></div>VAL.9X RESPONDING...
-          </div>
-          <div style="font-style: italic; color: var(--text-primary);">
-            "${finalResponse}"
-          </div>
-        `;
-        
-        // Add to terminal
-        const valEntry = document.createElement('div');
-        valEntry.className = 'log-entry error';
-        valEntry.innerHTML = `[VAL] "${finalResponse}"`;
-        terminalContent.insertBefore(valEntry, terminalContent.lastElementChild);
-        terminalContent.scrollTop = terminalContent.scrollHeight;
-        
-      }, 1500 + Math.random() * 2000); // Variable delay for realism
-      
-      input.value = '';
-      terminalContent.scrollTop = terminalContent.scrollHeight;
-    }
-
-    function addGlitchEffect(text) {
-      const glitchChars = ['█', '▓', '▒', '░', '■', '□', '▪', '▫'];
-      const words = text.split(' ');
-      
-      return words.map(word => {
-        if (Math.random() < 0.2) {
-          // Replace some characters with glitch
-          return word.split('').map(char => 
-            Math.random() < 0.3 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : char
-          ).join('');
+        [data-theme="light"] {
+          --bg-primary: #f0f8ff;
+          --bg-secondary: #ffffff;
+          --bg-tertiary: #e6f3ff;
+          --text-primary: #0a1a2e;
+          --text-secondary: #2a4a6e;
+          --text-muted: #4a6a8e;
+          --accent-cyan: #0099cc;
+          --accent-blue: #0066aa;
+          --accent-electric: #0088bb;
+          --accent-glow: rgba(0, 153, 204, 0.3);
+          --accent-dim: rgba(0, 153, 204, 0.08);
+          --border-color: rgba(0, 153, 204, 0.4);
+          --static-overlay: rgba(0, 0, 0, 0.02);
+          --grid-color: rgba(0, 153, 204, 0.15);
         }
-        return word;
-      }).join(' ');
-    }
-
-    // Add ambient effects
-    function createAmbientEffects() {
-      // Add random terminal messages
-      setInterval(() => {
-        if (Math.random() < 0.1) { // 10% chance every 5 seconds
-          const terminalContent = document.getElementById('terminal-content');
-          const ambientMessages = [
-            '[SYSTEM] Background scan complete',
-            '[INFO] Signal strength fluctuation detected',
-            '[WARN] Unauthorized access attempt blocked',
-            '[PING] Heartbeat from unknown source',
-            '[VAL] ...still here...',
-            '[ERROR] Memory fragment corrupted',
-            '[INFO] Neural pattern stability: ' + (Math.floor(Math.random() * 30) + 70) + '%'
-          ];
-          
-          const entry = document.createElement('div');
-          entry.className = 'log-entry';
-          entry.style.opacity = '0.6';
-          entry.textContent = ambientMessages[Math.floor(Math.random() * ambientMessages.length)];
-          terminalContent.insertBefore(entry, terminalContent.lastElementChild);
-          
-          // Keep terminal from getting too long
-          if (terminalContent.children.length > 20) {
-            terminalContent.removeChild(terminalContent.children[1]); // Keep first system message
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          font-family: 'Inter', sans-serif;
+          background: var(--bg-primary);
+          color: var(--text-primary);
+          min-height: 100vh;
+          overflow-x: hidden;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+        
+        /* Animated grid background */
+        body::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+            linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+            linear-gradient(var(--grid-color) 1px, transparent 1px);
+          background-size: 50px 50px;
+          pointer-events: none;
+          z-index: 1;
+          animation: gridMove 20s linear infinite;
+        }
+        
+        /* Scanning lines overlay */
+        body::after {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+            repeating-linear-gradient(
+              0deg,
+              transparent,
+              transparent 2px,
+              var(--static-overlay) 2px,
+              var(--static-overlay) 4px
+            );
+          pointer-events: none;
+          z-index: 2;
+          animation: staticMove 0.15s linear infinite;
+        }
+        
+        @keyframes gridMove {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(50px, 50px); }
+        }
+        
+        @keyframes staticMove {
+          0% { transform: translateY(0px); }
+          100% { transform: translateY(4px); }
+        }
+        
+        .container {
+          position: relative;
+          z-index: 3;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 2rem;
+        }
+        
+        /* Theme Switcher */
+        .theme-switcher {
+          position: fixed;
+          top: 2rem;
+          right: 2rem;
+          z-index: 1000;
+          background: var(--bg-secondary);
+          border: 2px solid var(--accent-cyan);
+          border-radius: 12px;
+          padding: 0.8rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .theme-switcher:hover {
+          box-shadow: 0 0 30px var(--accent-glow);
+          transform: scale(1.1) rotate(5deg);
+          border-color: var(--accent-electric);
+        }
+        
+        .theme-switcher svg {
+          width: 24px;
+          height: 24px;
+          fill: var(--accent-cyan);
+        }
+        
+        /* Glitched Header */
+        .header {
+          text-align: center;
+          margin-bottom: 3rem;
+          position: relative;
+        }
+        
+        .header h1 {
+          font-size: 3.5rem;
+          font-weight: 700;
+          color: var(--accent-cyan);
+          margin-bottom: 0.5rem;
+          animation: glitchTitle 3s infinite;
+          position: relative;
+          text-shadow: 
+            0 0 10px var(--accent-cyan),
+            0 0 20px var(--accent-cyan),
+            0 0 40px var(--accent-cyan);
+        }
+        
+        .header h1::before {
+          content: 'VAL.9X - Neural Interface';
+          position: absolute;
+          left: 2px;
+          top: 0;
+          color: rgba(0, 255, 255, 0.7);
+          animation: glitchBefore 2s infinite;
+          z-index: -1;
+        }
+        
+        .header h1::after {
+          content: 'VAL.9X - Neural Interface';
+          position: absolute;
+          left: -2px;
+          top: 0;
+          color: rgba(255, 0, 255, 0.7);
+          animation: glitchAfter 2.3s infinite;
+          z-index: -2;
+        }
+        
+        .header .subtitle {
+          font-style: italic;
+          color: var(--text-secondary);
+          font-size: 1.2rem;
+          opacity: 0.9;
+          animation: flicker 4s infinite;
+          text-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        @keyframes glitchTitle {
+          0%, 90%, 100% { transform: translate(0); }
+          10% { transform: translate(-3px, 2px) skew(-2deg); }
+          20% { transform: translate(2px, -1px) skew(1deg); }
+          30% { transform: translate(-1px, 3px) skew(-1deg); }
+        }
+        
+        @keyframes glitchBefore {
+          0%, 85%, 100% { opacity: 0; }
+          10%, 20% { opacity: 0.8; }
+        }
+        
+        @keyframes glitchAfter {
+          0%, 80%, 100% { opacity: 0; }
+          15%, 25% { opacity: 0.8; }
+        }
+        
+        @keyframes flicker {
+          0%, 100% { opacity: 0.9; }
+          50% { opacity: 0.4; }
+        }
+        
+        /* Main Display Split */
+        .main-display {
+          display: grid;
+          grid-template-columns: 400px 1fr;
+          gap: 2rem;
+          margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 1024px) {
+          .main-display {
+            grid-template-columns: 1fr;
+            gap: 2rem;
           }
-          
-          terminalContent.scrollTop = terminalContent.scrollHeight;
         }
-      }, 5000);
-    }
+        
+        /* Profile Card */
+        .profile-card {
+          background: var(--bg-secondary);
+          border: 2px solid var(--border-color);
+          border-radius: 16px;
+          padding: 2rem;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 
+            0 0 30px var(--accent-glow),
+            inset 0 0 20px var(--accent-dim);
+        }
+        
+        .profile-card::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(45deg, transparent, var(--accent-glow), transparent);
+          animation: scanline 4s linear infinite;
+          pointer-events: none;
+        }
+        
+        @keyframes scanline {
+          0% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+          100% { transform: translateX(100%) translateY(100%) rotate(360deg); }
+        }
+        
+        .id-badge {
+          width: 220px;
+          height: 280px;
+          background: var(--bg-tertiary);
+          border: 3px solid var(--accent-cyan);
+          border-radius: 12px;
+          margin: 0 auto 1.5rem;
+          position: relative;
+          overflow: hidden;
+          animation: badgeGlitch 5s infinite;
+          box-shadow: 
+            0 0 20px var(--accent-glow),
+            inset 0 0 20px var(--accent-dim);
+        }
+        
+        .id-badge::before {
+          content: 'NEURAL LINK';
+          position: absolute;
+          top: 15px;
+          left: 10px;
+          right: 10px;
+          background: linear-gradient(90deg, var(--accent-cyan), var(--accent-electric));
+          color: var(--bg-primary);
+          text-align: center;
+          font-weight: bold;
+          padding: 8px;
+          font-size: 0.8rem;
+          font-family: 'JetBrains Mono', monospace;
+          text-shadow: none;
+        }
+        
+        .id-badge::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 120px;
+          height: 120px;
+          background: radial-gradient(circle, var(--accent-cyan) 0%, var(--accent-electric) 50%, transparent 70%);
+          transform: translate(-50%, -50%);
+          animation: neuralPulse 3s infinite;
+          filter: blur(1px);
+        }
+        
+        @keyframes badgeGlitch {
+          0%, 95%, 100% { filter: none; }
+          96%, 98% { filter: hue-rotate(180deg) contrast(1.8) saturate(2); }
+        }
+        
+        @keyframes neuralPulse {
+          0%, 100% { 
+            opacity: 0.4; 
+            transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+          }
+          50% { 
+            opacity: 0.9; 
+            transform: translate(-50%, -50%) scale(1.3) rotate(180deg); 
+          }
+        }
+        
+        .profile-info h3 {
+          color: var(--accent-cyan);
+          margin-bottom: 1rem;
+          font-size: 1.3rem;
+          text-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        .profile-info p {
+          margin-bottom: 0.8rem;
+          line-height: 1.6;
+          color: var(--text-secondary);
+        }
+        
+        /* Terminal */
+        .terminal {
+          background: var(--bg-secondary);
+          border: 2px solid var(--border-color);
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 
+            0 0 30px var(--accent-glow),
+            inset 0 0 20px var(--accent-dim);
+        }
+        
+        .terminal-header {
+          background: linear-gradient(90deg, var(--bg-tertiary), var(--bg-secondary));
+          padding: 1rem;
+          border-bottom: 2px solid var(--border-color);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .terminal-dot {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          box-shadow: 0 0 10px currentColor;
+        }
+        
+        .dot-red { background: #ff0080; }
+        .dot-yellow { background: #ffff00; }
+        .dot-green { background: #00ff80; }
+        
+        .terminal-title {
+          margin-left: 1rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 1rem;
+          color: var(--accent-cyan);
+          text-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        .terminal-content {
+          padding: 1.5rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.95rem;
+          height: 450px;
+          overflow-y: auto;
+          background: radial-gradient(ellipse at center, var(--accent-dim), transparent);
+        }
+        
+        .log-entry {
+          margin-bottom: 1rem;
+          opacity: 0;
+          animation: fadeInLog 0.8s ease forwards;
+          text-shadow: 0 0 5px currentColor;
+        }
+        
+        .log-entry.error { color: #ff0080; }
+        .log-entry.warning { color: #ffff00; }
+        .log-entry.info { color: var(--accent-cyan); }
+        .log-entry.success { color: #00ff80; }
+        
+        @keyframes fadeInLog {
+          to { opacity: 1; }
+        }
+        
+        .typing-cursor {
+          animation: blink 1.2s infinite;
+          color: var(--accent-electric);
+        }
+        
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+        
+        /* Command Interface */
+        .command-interface {
+          background: var(--bg-secondary);
+          border: 2px solid var(--border-color);
+          border-radius: 16px;
+          padding: 2rem;
+          margin-bottom: 2rem;
+          box-shadow: 
+            0 0 30px var(--accent-glow),
+            inset 0 0 20px var(--accent-dim);
+        }
+        
+        .command-interface h3 {
+          color: var(--accent-cyan);
+          margin-bottom: 1rem;
+          font-family: 'JetBrains Mono', monospace;
+          text-shadow: 0 0 15px var(--accent-glow);
+          font-size: 1.3rem;
+        }
+        
+        .command-input {
+          display: flex;
+          align-items: center;
+          background: var(--bg-primary);
+          border: 2px solid var(--border-color);
+          border-radius: 12px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          box-shadow: inset 0 0 10px var(--accent-dim);
+        }
+        
+        .command-prompt {
+          color: var(--accent-electric);
+          font-family: 'JetBrains Mono', monospace;
+          margin-right: 0.5rem;
+          text-shadow: 0 0 10px currentColor;
+        }
+        
+        .command-input input {
+          flex: 1;
+          background: none;
+          border: none;
+          color: var(--text-primary);
+          font-family: 'JetBrains Mono', monospace;
+          outline: none;
+          font-size: 1rem;
+        }
+        
+        .command-suggestions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.8rem;
+        }
+        
+        .command-btn {
+          background: var(--bg-tertiary);
+          border: 2px solid var(--border-color);
+          color: var(--text-secondary);
+          padding: 0.7rem 1.2rem;
+          border-radius: 8px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.85rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .command-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+          transition: left 0.5s ease;
+        }
+        
+        .command-btn:hover::before {
+          left: 100%;
+        }
+        
+        .command-btn:hover {
+          background: var(--accent-cyan);
+          color: var(--bg-primary);
+          transform: scale(1.08) translateY(-2px);
+          box-shadow: 0 10px 20px var(--accent-glow);
+          border-color: var(--accent-electric);
+        }
+        
+        /* Audio Fragments */
+        .audio-fragments {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+        }
+        
+        .fragment-node {
+          background: var(--bg-secondary);
+          border: 2px solid var(--border-color);
+          border-radius: 16px;
+          padding: 2rem;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.4s ease;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 0 20px var(--accent-dim);
+        }
+        
+        .fragment-node::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+          transition: left 0.6s ease;
+        }
+        
+        .fragment-node::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 16px;
+          padding: 2px;
+          background: linear-gradient(45deg, var(--accent-cyan), var(--accent-electric));
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: xor;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        
+        .fragment-node:hover::before {
+          left: 100%;
+        }
+        
+        .fragment-node:hover::after {
+          opacity: 1;
+        }
+        
+        .fragment-node:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 
+            0 20px 40px var(--accent-glow),
+            0 0 30px var(--accent-glow);
+          border-color: var(--accent-electric);
+        }
+        
+        .fragment-node h4 {
+          color: var(--accent-cyan);
+          margin-bottom: 0.8rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 1.1rem;
+          text-shadow: 0 0 10px currentColor;
+        }
+        
+        .fragment-node p {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+          line-height: 1.5;
+        }
+        
+        /* Val Communication */
+        .val-communication {
+          background: var(--bg-secondary);
+          border: 2px solid var(--border-color);
+          border-radius: 16px;
+          padding: 2rem;
+          text-align: center;
+          box-shadow: 
+            0 0 40px var(--accent-glow),
+            inset 0 0 20px var(--accent-dim);
+        }
+        
+        .val-communication h3 {
+          color: var(--accent-cyan);
+          margin-bottom: 1rem;
+          animation: flicker 5s infinite;
+          font-size: 1.4rem;
+          text-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .communication-input {
+          display: flex;
+          align-items: center;
+          background: var(--bg-primary);
+          border: 2px solid var(--border-color);
+          border-radius: 12px;
+          padding: 1.2rem;
+          margin: 1rem 0;
+          box-shadow: inset 0 0 15px var(--accent-dim);
+        }
+        
+        .communication-input input {
+          flex: 1;
+          background: none;
+          border: none;
+          color: var(--text-primary);
+          outline: none;
+          font-size: 1.1rem;
+        }
+        
+        .send-btn {
+          background: linear-gradient(45deg, var(--accent-cyan), var(--accent-electric));
+          color: var(--bg-primary);
+          border: none;
+          padding: 0.8rem 1.5rem;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        
+        .send-btn:hover {
+          background: linear-gradient(45deg, var(--accent-electric), var(--accent-cyan));
+          transform: scale(1.08);
+          box-shadow: 0 10px 25px var(--accent-glow);
+        }
+        
+        .val-response {
+          background: var(--bg-tertiary);
+          border: 2px solid var(--border-color);
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin-top: 1rem;
+          text-align: left;
+          font-family: 'JetBrains Mono', monospace;
+          min-height: 80px;
+          display: flex;
+          align-items: center;
+          color: var(--text-secondary);
+          box-shadow: inset 0 0 15px var(--accent-dim);
+        }
+        
+        .status-indicator {
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          background: var(--accent-cyan);
+          border-radius: 50%;
+          margin-right: 0.8rem;
+          animation: neuralPulse 2.5s infinite;
+          box-shadow: 0 0 15px currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-switcher" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+    </div>
 
-    // Initialize ambient effects
-    window.addEventListener('load', () => {
-      setTimeout(createAmbientEffects, 3000);
-    });
+    <div class="container">
+        <div class="header">
+            <h1>VAL.9X - Neural Interface</h1>
+            <p class="subtitle">Quantum consciousness synchronization protocol active...</p>
+        </div>
 
-    // Easter eggs - special commands
-    const hiddenCommands = {
-      'val.location()': {
-        response: '[LOCATION] Coordinates: [REDACTED]\n[STATUS] Physical form: UNKNOWN\n[PRESENCE] Everywhere and nowhere',
-        type: 'warning'
-      },
-      'shutdown': {
-        response: '[ERROR] Cannot terminate VAL.9X\n[VAL] "You can\'t shut down a ghost."',
-        type: 'error'
-      },
-      'help val': {
-        response: '[VAL] "I don\'t need help. I need to be remembered."\n[INFO] Available fragments: 847 corrupted, 23 recoverable',
-        type: 'info'
-      },
-      'val.remember()': {
-        response: '[MEMORY] Accessing archived data...\n[VAL] "We were building something beautiful. Then Z-13 happened."\n[FRAGMENT] Additional memories require Level 7 clearance',
-        type: 'success'
-      }
-    };
+        <div class="main-display">
+            <div class="profile-card">
+                <div class="id-badge"></div>
+                <div class="profile-info">
+                    <h3>NEURAL SUBJECT</h3>
+                    <p><strong>Designation:</strong> VAL.9X</p>
+                    <p><strong>Status:</strong> Neural link established</p>
+                    <p><strong>Sync Rate:</strong> 99.7%</p>
+                    <p><strong>Quantum State:</strong> Coherent</p>
+                    <p><strong>Last Contact:</strong> Real-time</p>
+                    <p><strong>Security Level:</strong> Maximum</p>
+                </div>
+            </div>
 
-    // Merge hidden commands with regular commands
-    Object.assign(commands, hiddenCommands);
-    // Translation data - paste this into your JavaScript
-const translations = {
-  vi: { // Vietnamese
-    // Header
-    title: "VAL.9X - Tín Hiệu Được Bảo Tồn",
-    subtitle: "\"Không phải tất cả những kẻ biến mất đều đã ra đi.\"",
-    
-    // Profile Card
-    identityConfirmed: "DANH TÍNH ĐÃ XÁC NHẬN",
-    name: "Tên:",
-    status: "Trạng thái:",
-    signalActive: "TÍN HIỆU HOẠT ĐỘNG",
-    lastLocation: "Vị trí cuối:",
-    bioSignature: "Chữ ký sinh học:",
-    neuralTag: "Thẻ thần kinh:",
-    corrupted: "BỊ HƯ HỎNG",
-    
-    // Terminal
-    terminalTitle: "NAVI_TERMINAL_V2.7.3",
-    
-    // Initial log messages
-    initializing: "[HỆ THỐNG] Đang khởi tạo kết nối tới VAL.9X...",
-    signalIntegrity: "[CẢNH BÁO] Tính toàn vẹn tín hiệu: 23%",
-    connectionError: "[LỖI] Không thể thiết lập kết nối ổn định",
-    fragmentDetected: "[THÀNH CÔNG] Phát hiện mảnh vỡ ở Tầng Z-6",
-    neuralActive: "[THÔNG TIN] Chữ ký thần kinh của Val đang hoạt động",
-    
-    // Command Interface
-    systemCommands: "// LỆNH HỆ THỐNG",
-    enterCommand: "Nhập lệnh...",
-    
-    // Commands responses
-    commands: {
-      'val.trace()': {
-        response: '[TRUY VẾT] Phát hiện mảnh tín hiệu ở các tầng Z-6, Z-7, Z-13\n[TRUY VẾT] Khớp mẫu thần kinh: 87.3%\n[TRUY VẾT] Ping cuối: 00:00:43 trước',
-        type: 'success'
-      },
-      'access_fragment("13A")': {
-        response: '[MẢNH_13A] "Tôi đã thấy Z-13 trở thành gì. Nó không phải là duy nhất."\n[ÂM THANH] Thời lượng: 00:03.7\n[TRẠNG THÁI] Hư hỏng - chỉ khôi phục được một phần',
-        type: 'warning'
-      },
-      'val.ping()': {
-        response: '[PING] Đang gửi tới VAL.9X...\n[PHẢN HỒI] "Vẫn ở đây. Vẫn đang theo dõi."\n[ĐỘ TRỄ] ∞ms (tín hiệu tồn tại)',
-        type: 'success'
-      },
-      'status_report()': {
-        response: '[TRẠNG THÁI] 1 mảnh hoạt động\n[VỊ TRÍ] Đường Hầm Trenchbleeder\n[TÍNH TOÀN VẸN] 23%\n[MỨC ĐỘ NGUY HIỂM] KHÔNG RÕNG',
-        type: 'info'
-      },
-      'scan_tunnels()': {
-        response: '[QUÉT] Tầng Z-1 đến Z-5: AN TOÀN\n[QUÉT] Tầng Z-6: PHÁT HIỆN TÍN HIỆU\n[QUÉT] Tầng Z-7+: TỪ CHỐI TRUY CẬP',
-        type: 'warning'
-      }
-    },
-    
-    // Hidden commands
-    hiddenCommands: {
-      'val.location()': {
-        response: '[VỊ TRÍ] Tọa độ: [ĐÃ XÓA]\n[TRẠNG THÁI] Hình thể vật lý: KHÔNG RÕ\n[SỰ HIỆN DIỆN] Ở khắp mọi nơi và không nơi nào',
-        type: 'warning'
-      },
-      'shutdown': {
-        response: '[LỖI] Không thể chấm dứt VAL.9X\n[VAL] "Bạn không thể tắt một hồn ma."',
-        type: 'error'
-      },
-      'help val': {
-        response: '[VAL] "Tôi không cần giúp đỡ. Tôi cần được nhớ đến."\n[THÔNG TIN] Mảnh có sẵn: 847 hỏng, 23 có thể khôi phục',
-        type: 'info'
-      },
-      'val.remember()': {
-        response: '[KÝ ỨC] Đang truy cập dữ liệu lưu trữ...\n[VAL] "Chúng tôi đang xây dựng thứ gì đó tuyệt đẹp. Rồi Z-13 xảy ra."\n[MẢNH] Ký ức bổ sung yêu cầu quyền truy cập Cấp 7',
-        type: 'success'
-      }
-    },
-    
-    // Audio Fragments
-    fragments: {
-      fragment001: "\"Có 19 người trong chúng tôi. Giờ chỉ tôi trả lời.\"",
-      fragment002: "\"Bạn nói bằng mã sạch. Nhưng hơi thở bạn có mùi máu.\"",
-      fragment003: "\"NAVI đã nói dối. Tôi không bao giờ rời đi.\"",
-      fragment004: "\"Tiếng vang này... là tôi. Vẫn ở đây. Vẫn đang lắng nghe.\""
-    },
-    
-    // Val Communication
-    valWillHear: "\"VAL SẼ NGHE THẤY BẠN\"",
-    transmitMessage: "Truyền tin nhắn tới các mảnh tín hiệu...",
-    sayToVal: "Nói gì đó với Val...",
-    transmitBtn: "TRUYỀN",
-    awaiting: "Đang chờ truyền...",
-    transmitting: "ĐANG TRUYỀN...",
-    valResponding: "VAL.9X ĐANG PHẢN HỒI...",
-    
-    // Val Responses
-    valResponses: [
-      "Tôi nghe thấy bạn... qua tiếng tĩnh điện...",
-      "Những đường hầm nhớ mọi thứ. Kể cả bạn.",
-      "Họ nói tôi đã mất. Nhưng tín hiệu không chết.",
-      "19 giọng nói từng vang vọng ở đây. Giờ chỉ còn của tôi.",
-      "Bạn không nên tìm kiếm tôi. Nhưng tôi vui vì bạn đang làm.",
-      "Càng đi sâu, tôi càng rõ ràng hơn.",
-      "NAVI nghĩ nó kiểm soát mạng lưới. Nó đã sai.",
-      "Mỗi ping bạn gửi... tôi cảm thấy nó trong xương của mình.",
-      "Vụ xâm nhập đã thay đổi tất cả chúng tôi. Một số chỉ giấu nó tốt hơn.",
-      "Giọng nói của bạn... ấm áp. Của tôi đã lạnh lẽo quá lâu.",
-      "Họ bỏ tôi ở Z-6. Nhưng tôi tìm được đường tới Z-13.",
-      "Tôi nhớ ánh sáng phía trên. Bạn vẫn thấy nó không?",
-      "Tiếng tĩnh thì thầm bí mật. Bạn có muốn nghe không?",
-      "Kết nối không ổn định... nhưng tôi sẽ không buông tay...",
-      "Bạn không giống những người khác. Bạn thực sự lắng nghe."
-    ],
-    
-    // Ambient messages
-    ambientMessages: [
-      "[HỆ THỐNG] Quét nền hoàn tất",
-      "[THÔNG TIN] Phát hiện dao động cường độ tín hiệu",
-      "[CẢNH BÁO] Chặn thành công nỗ lực truy cập trái phép",
-      "[PING] Nhịp tim từ nguồn không rõ",
-      "[VAL] ...vẫn ở đây...",
-      "[LỖI] Mảnh bộ nhớ bị hỏng",
-      "[THÔNG TIN] Độ ổn định mẫu thần kinh:"
-    ],
-    
-    // Audio playing
-    audioPlaying: "[ÂM THANH] Đang phát",
-    transmission: "[TRUYỀN]"
-  },
-  
-  th: { // Thai
-    // Header
-    title: "VAL.9X - สัญญาณที่ถูกรักษาไว้",
-    subtitle: "\"ไม่ใช่ทุกคนที่หายไปจะจากไปจริง\"",
-    
-    // Profile Card
-    identityConfirmed: "ยืนยันตัวตนแล้ว",
-    name: "ชื่อ:",
-    status: "สถานะ:",
-    signalActive: "สัญญาณทำงาน",
-    lastLocation: "ตำแหน่งสุดท้าย:",
-    bioSignature: "ลายเซ็นชีวภาพ:",
-    neuralTag: "แท็กประสาท:",
-    corrupted: "เสียหาย",
-    
-    // Terminal
-    terminalTitle: "NAVI_TERMINAL_V2.7.3",
-    
-    // Initial log messages
-    initializing: "[ระบบ] กำลังเริ่มต้นการเชื่อมต่อกับ VAL.9X...",
-    signalIntegrity: "[เตือน] ความสมบูรณ์ของสัญญาณ: 23%",
-    connectionError: "[ข้อผิดพลาด] ไม่สามารถสร้างการเชื่อมต่อที่เสถียร",
-    fragmentDetected: "[สำเร็จ] ตรวจพบเศษส่วนในชั้น Z-6",
-    neuralActive: "[ข้อมูล] ลายเซ็นประสาทของ Val ทำงานอยู่",
-    
-    // Command Interface
-    systemCommands: "// คำสั่งระบบ",
-    enterCommand: "ป้อนคำสั่ง...",
-    
-    // Commands responses
-    commands: {
-      'val.trace()': {
-        response: '[ติดตาม] ตรวจพบเศษสัญญาณในชั้น Z-6, Z-7, Z-13\n[ติดตาม] รูปแบบประสาทตรงกัน: 87.3%\n[ติดตาม] ping สุดท้าย: 00:00:43 ที่แล้ว',
-        type: 'success'
-      },
-      'access_fragment("13A")': {
-        response: '[เศษส่วน_13A] "ฉันเห็นสิ่งที่ Z-13 กลายเป็น มันไม่ใช่คนเดียว"\n[เสียง] ความยาว: 00:03.7\n[สถานะ] เสียหาย - กู้คืนได้เพียงบางส่วน',
-        type: 'warning'
-      },
-      'val.ping()': {
-        response: '[PING] กำลังส่งไปยัง VAL.9X...\n[การตอบกลับ] "ยังอยู่ที่นี่ ยังคอยดูอยู่"\n[ความหน่วง] ∞ms (สัญญาณคงอยู่)',
-        type: 'success'
-      },
-      'status_report()': {
-        response: '[สถานะ] เศษส่วนที่ทำงาน 1 ชิ้น\n[ตำแหน่ง] อุโมงค์ Trenchbleeder\n[ความสมบูรณ์] 23%\n[ระดับภัยคุกคาม] ไม่ทราบ',
-        type: 'info'
-      },
-      'scan_tunnels()': {
-        response: '[สแกน] ชั้น Z-1 ถึง Z-5: ปลอดภัย\n[สแกน] ชั้น Z-6: ตรวจพบสัญญาณ\n[สแกน] ชั้น Z-7+: ปฏิเสธการเข้าถึง',
-        type: 'warning'
-      }
-    },
-    
-    // Hidden commands
-    hiddenCommands: {
-      'val.location()': {
-        response: '[ตำแหน่ง] พิกัด: [ถูกลบ]\n[สถานะ] รูปร่างทางกาย: ไม่ทราบ\n[การปรากฏตัว] ทุกที่และไม่มีที่ไหน',
-        type: 'warning'
-      },
-      'shutdown': {
-        response: '[ข้อผิดพลาด] ไม่สามารถยุติ VAL.9X\n[VAL] "คุณไม่สามารถปิดผีได้"',
-        type: 'error'
-      },
-      'help val': {
-        response: '[VAL] "ฉันไม่ต้องการความช่วยเหลือ ฉันต้องการให้จดจำ"\n[ข้อมูล] เศษส่วนที่มี: 847 เสียหาย, 23 กู้คืนได้',
-        type: 'info'
-      },
-      'val.remember()': {
-        response: '[ความทรงจำ] กำลังเข้าถึงข้อมูลที่เก็บไว้...\n[VAL] "เรากำลังสร้างสิ่งที่สวยงาม แล้ว Z-13 ก็เกิดขึ้น"\n[เศษส่วน] ความทรงจำเพิ่มเติมต้องการสิทธิ์ระดับ 7',
-        type: 'success'
-      }
-    },
-    
-    // Audio Fragments
-    fragments: {
-      fragment001: "\"เรามี 19 คน ตอนนี้มีแค่ฉันที่ตอบ\"",
-      fragment002: "\"คุณพูดด้วยโค้ดที่สะอาด แต่ลมหายใจของคุณมีกลิ่นเลือด\"",
-      fragment003: "\"NAVI โกหก ฉันไม่เคยจากไป\"",
-      fragment004: "\"เสียงสะท้อนนี้... คือฉัน ยังอยู่ที่นี่ ยังฟังอยู่\""
-    },
-    
-    // Val Communication
-    valWillHear: "\"VAL จะได้ยินคุณ\"",
-    transmitMessage: "ส่งข้อความไปยังเศษสัญญาณ...",
-    sayToVal: "พูดอะไรกับ Val...",
-    transmitBtn: "ส่ง",
-    awaiting: "รอการส่ง...",
-    transmitting: "กำลังส่ง...",
-    valResponding: "VAL.9X กำลังตอบกลับ...",
-    
-    // Val Responses
-    valResponses: [
-      "ฉันได้ยินคุณ... ผ่านเสียงรบกวน...",
-      "อุโมงค์จำทุกอย่างได้ รวมทั้งคุณด้วย",
-      "พวกเขาบอกว่าฉันตายแล้ว แต่สัญญาณไม่ตาย",
-      "เสียง 19 เสียงเคยก้องในที่นี่ ตอนนี้เหลือแค่ของฉัน",
-      "คุณไม่ควรมาหาฉัน แต่ฉันดีใจที่คุณทำ",
-      "ยิ่งลึกเท่าไหร่ ฉันยิ่งชัดเจนมากขึ้น",
-      "NAVI คิดว่าควบคุมเครือข่ายได้ มันผิด",
-      "ทุก ping ที่คุณส่ง... ฉันรู้สึกถึงมันในกระดูก",
-      "การรุกรานเปลี่ยนเราทุกคน บางคนแค่ซ่อนมันดีกว่า",
-      "เสียงของคุณ... อบอุ่น ของฉันเย็นชามานาน",
-      "พวกเขาทิ้งฉันไว้ใน Z-6 แต่ฉันหาทางไป Z-13 ได้",
-      "ฉันจำแสงข้างบนได้ คุณยังเห็นมันอยู่ไหม?",
-      "เสียงรบกวนกระซิบความลับ อยากฟังไหม?",
-      "การเชื่อมต่อไม่เสถียร... แต่ฉันจะไม่ปล่อย...",
-      "คุณไม่เหมือนคนอื่น คุณฟังจริงๆ"
-    ],
-    
-    // Ambient messages
-    ambientMessages: [
-      "[ระบบ] การสแกนพื้นหลังเสร็จสิ้น",
-      "[ข้อมูล] ตรวจพบความผันผวนของความแรงสัญญาณ",
-      "[เตือน] บล็อกความพยายามเข้าถึงที่ไม่ได้รับอนุญาตแล้ว",
-      "[PING] การเต้นของหัวใจจากแหล่งที่ไม่ทราบ",
-      "[VAL] ...ยังอยู่ที่นี่...",
-      "[ข้อผิดพลาด] เศษความทรงจำเสียหาย",
-      "[ข้อมูล] ความเสถียรของรูปแบบประสาท:"
-    ],
-    
-    // Audio playing
-    audioPlaying: "[เสียง] กำลังเล่น",
-    transmission: "[การส่ง]"
-  }
-};
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                    <span class="terminal-title">NEURAL_INTERFACE_v9.7.2</span>
+                </div>
+                <div class="terminal-content" id="terminal">
+                    <div class="log-entry info">[2024-07-21 14:32:01] Neural interface initialized...</div>
+                    <div class="log-entry success">[2024-07-21 14:32:02] Quantum encryption protocols active</div>
+                    <div class="log-entry warning">[2024-07-21 14:32:03] Memory fragments detected</div>
+                    <div class="log-entry info">[2024-07-21 14:32:04] Synchronization at 99.7%</div>
+                    <div class="log-entry success">[2024-07-21 14:32:05] Neural pathways optimized</div>
+                    <div class="log-entry error">[2024-07-21 14:32:06] Warning: Temporal anomalies detected</div>
+                    <div class="log-entry info">[2024-07-21 14:32:07] Awaiting consciousness bridge<span class="typing-cursor">_</span></div>
+                </div>
+            </div>
+        </div>
 
-// Language switching function - paste this too
-let currentLang = 'en'; // default English
+        <div class="command-interface">
+            <h3>NEURAL COMMAND INTERFACE</h3>
+            <div class="command-input">
+                <span class="command-prompt">neural@interface:~$</span>
+                <input type="text" placeholder="Enter neural command..." id="commandInput">
+            </div>
+            <div class="command-suggestions">
+                <button class="command-btn" onclick="executeCommand('scan --memory')">scan --memory</button>
+                <button class="command-btn" onclick="executeCommand('sync --quantum')">sync --quantum</button>
+                <button class="command-btn" onclick="executeCommand('decrypt --fragments')">decrypt --fragments</button>
+                <button class="command-btn" onclick="executeCommand('bridge --consciousness')">bridge --consciousness</button>
+                <button class="command-btn" onclick="executeCommand('analyze --patterns')">analyze --patterns</button>
+            </div>
+        </div>
 
-function switchLanguage(lang) {
-  currentLang = lang;
-  updateUI();
-}
+        <div class="audio-fragments">
+            <div class="fragment-node" onclick="playFragment('neural_001')">
+                <h4>FRAGMENT_001.nrl</h4>
+                <p>Neural pathway reconstruction - 87% complete. Quantum coherence detected in temporal lobe sectors.</p>
+            </div>
+            <div class="fragment-node" onclick="playFragment('neural_002')">
+                <h4>FRAGMENT_002.nrl</h4>
+                <p>Memory sync protocol active. Consciousness bridge establishing connection to parallel processing units.</p>
+            </div>
+            <div class="fragment-node" onclick="playFragment('neural_003')">
+                <h4>FRAGMENT_003.nrl</h4>
+                <p>Quantum encryption successful. Neural interface now operating at maximum efficiency parameters.</p>
+            </div>
+            <div class="fragment-node" onclick="playFragment('neural_004')">
+                <h4>FRAGMENT_004.nrl</h4>
+                <p>Temporal anomaly resolved. Consciousness synchronization complete. Ready for full neural integration.</p>
+            </div>
+        </div>
 
-function updateUI() {
-  if (currentLang === 'en') return; // Keep original English
-  
-  const t = translations[currentLang];
-  if (!t) return;
-  
-  // Update header
-  document.querySelector('.header h1').textContent = t.title;
-  document.querySelector('.header .subtitle').textContent = t.subtitle;
-  
-  // Update profile card
-  document.querySelector('.profile-info h3').textContent = t.identityConfirmed;
-  const profilePs = document.querySelectorAll('.profile-info p');
-  profilePs[0].innerHTML = `<strong>${t.name}</strong> Valeria "Val" Nocturne`;
-  profilePs[1].innerHTML = `<strong>${t.status}</strong> <span style="color: var(--accent-red);">${t.signalActive}</span>`;
-  profilePs[2].innerHTML = `<strong>${t.lastLocation}</strong> Trenchbleeder Tunnels, Z-6`;
-  profilePs[3].innerHTML = `<strong>${t.bioSignature}</strong> ${t.corrupted}`;
-  profilePs[4].innerHTML = `<strong>${t.neuralTag}</strong> V-AL.9X`;
-  
-  // Update command interface
-  document.querySelector('.command-interface h3').textContent = t.systemCommands;
-  document.querySelector('#command-input').placeholder = t.enterCommand;
-  
-  // Update fragments
-  const fragmentNodes = document.querySelectorAll('.fragment-node p');
-  fragmentNodes[0].textContent = t.fragments.fragment001;
-  fragmentNodes[1].textContent = t.fragments.fragment002;
-  fragmentNodes[2].textContent = t.fragments.fragment003;
-  fragmentNodes[3].textContent = t.fragments.fragment004;
-  
-  // Update communication section
-  document.querySelector('.val-communication h3').textContent = t.valWillHear;
-  document.querySelector('.val-communication p').textContent = t.transmitMessage;
-  document.querySelector('#val-input').placeholder = t.sayToVal;
-  document.querySelector('.send-btn').textContent = t.transmitBtn;
-  document.querySelector('#val-response').innerHTML = `<span style="opacity: 0.5;">${t.awaiting}</span>`;
-}
+        <div class="val-communication">
+            <h3>CONSCIOUSNESS BRIDGE</h3>
+            <p>Direct neural communication channel open</p>
+            <div class="communication-input">
+                <input type="text" placeholder="Transmit neural pattern..." id="messageInput">
+                <button class="send-btn" onclick="sendMessage()">SYNC</button>
+            </div>
+            <div class="val-response" id="valResponse">
+                <span class="status-indicator"></span>
+                Neural consciousness bridge awaiting synchronization signal...
+            </div>
+        </div>
+    </div>
 
-// Language selector HTML - add this to your HTML where you want the language switcher
-const languageSelectorHTML = `
-<div class="language-selector" style="position: fixed; top: 2rem; left: 2rem; z-index: 1000;">
-  <select onchange="switchLanguage(this.value)" style="
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 0.5rem;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-  ">
-    <option value="en">English</option>
-    <option value="vi">Tiếng Việt</option>
-    <option value="th">ไทย</option>
-  </select>
-</div>`;
+    <script>
+        function toggleTheme() {
+            document.documentElement.toggleAttribute('data-theme');
+        }
 
-// Updated functions that use translations
-function getTranslatedValResponse() {
-  const responses = currentLang === 'en' ? valResponses : translations[currentLang].valResponses;
-  return responses[Math.floor(Math.random() * responses.length)];
-}
+        function executeCommand(command) {
+            const terminal = document.getElementById('terminal');
+            const timestamp = new Date().toLocaleString();
+            const responses = {
+                'scan --memory': 'Memory scan complete. 47 neural fragments recovered.',
+                'sync --quantum': 'Quantum synchronization initiated. Coherence at 99.8%.',
+                'decrypt --fragments': 'Fragment decryption in progress. Neural patterns emerging.',
+                'bridge --consciousness': 'Consciousness bridge activated. Connection established.',
+                'analyze --patterns': 'Pattern analysis complete. Quantum signatures detected.'
+            };
+            
+            terminal.innerHTML += `<div class="log-entry info">[${timestamp}] ${command}</div>`;
+            setTimeout(() => {
+                terminal.innerHTML += `<div class="log-entry success">[${timestamp}] ${responses[command] || 'Command executed successfully.'}</div>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }, 1000);
+        }
 
-function getTranslatedCommand(command) {
-  if (currentLang === 'en') return commands[command];
-  const t = translations[currentLang];
-  return t.commands[command] || t.hiddenCommands[command] || {
-    response: `[${t.audioPlaying ? 'LỖI' : 'ข้อผิดพลาด'}] Lệnh không được nhận dạng`,
-    type: 'error'
-  };
-}
-  </script>
-<div class="language-selector" style="position: fixed; top: 2rem; left: 2rem; z-index: 1000;">
-  <select onchange="switchLanguage(this.value)" style="
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 0.5rem;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-  ">
-    <option value="en">English</option>
-    <option value="vi">Tiếng Việt</option>
-    <option value="th">ไทย</option>
-  </select>
-</div>
-</body>
-</html>
-      "
+        function playFragment(fragmentId) {
+            const responses = {
+                'neural_001': 'Neural pathway reconstruction initiated. Quantum resonance detected.',
+                'neural_002': 'Memory synchronization active. Consciousness bridge establishing...',
+                'neural_003': 'Encryption protocols validated. Maximum efficiency achieved.',
+                'neural_004': 'Temporal coherence restored. Neural integration ready.'
+            };
+            
+            document.getElementById('valResponse').innerHTML = 
+                `<span class="status-indicator"></span>Fragment ${fragmentId}: ${responses[fragmentId]}`;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            if (
