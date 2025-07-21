@@ -1,284 +1,600 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+  <title>N.A.V.I Database - Val</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&subset=latin,vietnamese&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="val.css" />
   <title>VAL.9X - Signal Preserved | N.A.V.I Database</title>
-    <style>
-        :root {
-            --bg: #0a0a0f;
-            --card: #111116;
-            --accent: #0ea5e9;
-            --accent-glow: rgba(14, 165, 233, 0.4);
-            --text: #e0e0e0;
-            --text-dim: #888;
-            --entrance-white: #ffffff;
-            --entrance-red: #8b0000;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* Custom Cursor */
-        * { cursor: none; }
-        .cursor {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            animation: cursorPulse 2s infinite;
-        }
-
-        @keyframes cursorPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
-        }
-
-        /* Entrance Screen */
-        .entrance {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, var(--entrance-white), var(--entrance-red));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: opacity 1s ease;
-        }
-
-        .entrance.hidden { opacity: 0; pointer-events: none; }
-
-        .entrance-btn {
-            padding: 2rem 4rem;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            border: 3px solid var(--entrance-red);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: none;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .entrance-btn:hover {
-            background: var(--entrance-red);
-            box-shadow: 0 0 30px var(--entrance-red);
-            transform: scale(1.1);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(14, 165, 233, 0.02) 2px, rgba(14, 165, 233, 0.02) 4px);
-            pointer-events: none;
-            z-index: 1;
-            animation: staticMove 0.1s linear infinite;
-        }
-
-        @keyframes staticMove {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(4px); }
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-            animation: glitch 2s infinite;
-            position: relative;
-        }
-
-        .header h1::before {
-            content: 'VAL.9X - Blue Signal';
-            position: absolute;
-            left: 2px;
-            top: 0;
-            color: rgba(255, 0, 255, 0.7);
-            animation: glitchBefore 1.5s infinite;
-            z-index: -1;
-        }
-
-        @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); }
-            15% { transform: translate(-2px, 1px); }
-            25% { transform: translate(1px, -1px); }
-        }
-
-        @keyframes glitchBefore {
-            0%, 85%, 100% { opacity: 0; }
-            15%, 25% { opacity: 0.7; }
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid rgba(14, 165, 233, 0.3);
-            border-radius: 12px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 20px var(--accent-glow);
-            transition: all 0.3s ease;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(14, 165, 233, 0.1), transparent);
-            animation: scan 3s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes scan {
-            0% { transform: translateX(-100%) translateY(-100%); }
-            100% { transform: translateX(100%) translateY(100%); }
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px var(--accent-glow);
-        }
-
-        .card h3 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .terminal {
-            background: var(--card);
-            border: 1px solid rgba(14, 165, 233, 0.3);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 0 20px var(--accent-glow);
-            grid-column: span 2;
-        }
-
-        .terminal-header {
-            background: rgba(14, 165, 233, 0.1);
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .dot-red { background: #ef4444; }
-        .dot-yellow { background: #f59e0b; }
-        .dot-green { background: #10b981; }
-
-        .terminal-content {
-            padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            height: 300px;
-            overflow-y: auto;
-        }
-
-        .log-entry {
-            margin-bottom: 1rem;
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        .log-entry.info { color: var(--accent); }
-        .log-entry.error { color: #ef4444; }
-        .log-entry.success { color: #10b981; }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        input {
-            background: rgba(14, 165, 233, 0.1);
-            border: 1px solid rgba(14, 165, 233, 0.3);
-            color: var(--text);
-            padding: 0.8rem;
-            border-radius: 6px;
-            width: 100%;
-            font-family: 'JetBrains Mono', monospace;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        @media (max-width: 768px) {
-            .terminal { grid-column: span 1; }
-            .header h1 { font-size: 2rem; }
-        }
-    </style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Inter:wght@300;400;600&display=swap');
+    
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-tertiary: #1a1a1a;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --accent-red: #dc2626;
+      --accent-red-glow: rgba(220, 38, 38, 0.3);
+      --accent-red-dim: rgba(220, 38, 38, 0.1);
+      --border-color: rgba(220, 38, 38, 0.2);
+      --static-overlay: rgba(255, 255, 255, 0.02);
+    }
+    
+    [data-theme="light"] {
+      --bg-primary: #f5f5f5;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e5e5e5;
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a4a4a;
+      --text-muted: #888888;
+      --accent-red: #dc2626;
+      --accent-red-glow: rgba(220, 38, 38, 0.2);
+      --accent-red-dim: rgba(220, 38, 38, 0.05);
+      --border-color: rgba(220, 38, 38, 0.3);
+      --static-overlay: rgba(0, 0, 0, 0.03);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    /* Static overlay background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          var(--static-overlay) 2px,
+          var(--static-overlay) 4px
+        );
+      pointer-events: none;
+      z-index: 1;
+      animation: staticMove 0.1s linear infinite;
+    }
+    
+    @keyframes staticMove {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(4px); }
+    }
+    
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Theme Switcher */
+    .theme-switcher {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .theme-switcher:hover {
+      box-shadow: 0 0 15px var(--accent-red-glow);
+      transform: scale(1.05);
+    }
+    
+    .theme-switcher svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--text-primary);
+    }
+    
+    /* Glitched Header */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent-red);
+      margin-bottom: 0.5rem;
+      animation: glitchTitle 2s infinite;
+      position: relative;
+    }
+    
+    .header h1::before {
+      content: 'VAL.9X - Signal Preserved';
+      position: absolute;
+      left: 2px;
+      top: 0;
+      color: rgba(0, 255, 255, 0.7);
+      animation: glitchBefore 1.5s infinite;
+      z-index: -1;
+    }
+    
+    .header h1::after {
+      content: 'VAL.9X - Signal Preserved';
+      position: absolute;
+      left: -2px;
+      top: 0;
+      color: rgba(255, 255, 0, 0.7);
+      animation: glitchAfter 1.7s infinite;
+      z-index: -2;
+    }
+    
+    .header .subtitle {
+      font-style: italic;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      opacity: 0.8;
+      animation: flicker 3s infinite;
+    }
+    
+    @keyframes glitchTitle {
+      0%, 90%, 100% { transform: translate(0); }
+      15% { transform: translate(-2px, 1px); }
+      25% { transform: translate(1px, -1px); }
+      35% { transform: translate(-1px, 2px); }
+    }
+    
+    @keyframes glitchBefore {
+      0%, 85%, 100% { opacity: 0; }
+      15%, 25% { opacity: 0.7; }
+    }
+    
+    @keyframes glitchAfter {
+      0%, 80%, 100% { opacity: 0; }
+      20%, 30% { opacity: 0.7; }
+    }
+    
+    @keyframes flicker {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.3; }
+    }
+    
+    /* Main Display Split */
+    .main-display {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    @media (max-width: 1024px) {
+      .main-display {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+    
+    /* Profile Card */
+    .profile-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+    
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, var(--accent-red-dim), transparent);
+      animation: scanline 3s linear infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes scanline {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+    
+    .id-badge {
+      width: 200px;
+      height: 250px;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--accent-red);
+      border-radius: 8px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      overflow: hidden;
+      animation: badgeGlitch 4s infinite;
+    }
+    
+    .id-badge::before {
+      content: 'VAL.9X';
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      background: var(--accent-red);
+      color: white;
+      text-align: center;
+      font-weight: bold;
+      padding: 5px;
+      font-size: 0.8rem;
+    }
+    
+    .id-badge::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, var(--accent-red) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes badgeGlitch {
+      0%, 95%, 100% { filter: none; }
+      96%, 98% { filter: hue-rotate(90deg) contrast(1.5); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+    }
+    
+    .profile-info h3 {
+      color: var(--accent-red);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .profile-info p {
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    
+    /* Terminal */
+    .terminal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+    
+    .terminal-header {
+      background: var(--bg-tertiary);
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .dot-red { background: var(--accent-red); }
+    .dot-yellow { background: #fbbf24; }
+    .dot-green { background: #10b981; }
+    
+    .terminal-title {
+      margin-left: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .terminal-content {
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      height: 400px;
+      overflow-y: auto;
+    }
+    
+    .log-entry {
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeInLog 0.5s ease forwards;
+    }
+    
+    .log-entry.error { color: var(--accent-red); }
+    .log-entry.warning { color: #fbbf24; }
+    .log-entry.info { color: #3b82f6; }
+    .log-entry.success { color: #10b981; }
+    
+    @keyframes fadeInLog {
+      to { opacity: 1; }
+    }
+    
+    .typing-cursor {
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    /* Command Interface */
+    .command-interface {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+    
+    .command-interface h3 {
+      color: var(--accent-red);
+      margin-bottom: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .command-input {
+      display: flex;
+      align-items: center;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .command-prompt {
+      color: var(--accent-red);
+      font-family: 'JetBrains Mono', monospace;
+      margin-right: 0.5rem;
+    }
+    
+    .command-input input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+    
+    .command-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .command-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .command-btn:hover {
+      background: var(--accent-red);
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    /* Audio Fragments */
+    .audio-fragments {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .fragment-node {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .fragment-node::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--accent-red-glow), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .fragment-node:hover::before {
+      left: 100%;
+    }
+    
+    .fragment-node:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px var(--accent-red-glow);
+      border-color: var(--accent-red);
+    }
+    
+    .fragment-node h4 {
+      color: var(--accent-red);
+      margin-bottom: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .fragment-node p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    /* Val Communication */
+    .val-communication {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 0 20px var(--accent-red-glow);
+    }
+    
+    .val-communication h3 {
+      color: var(--accent-red);
+      margin-bottom: 1rem;
+      animation: flicker 4s infinite;
+    }
+    
+    .communication-input {
+      display: flex;
+      align-items: center;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    
+    .communication-input input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      outline: none;
+      font-size: 1rem;
+    }
+    
+    .send-btn {
+      background: var(--accent-red);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .send-btn:hover {
+      background: #b91c1c;
+      transform: scale(1.05);
+    }
+    
+    .val-response {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      color: var(--text-secondary);
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--accent-red);
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+  </style>
 </head>
 <body data-theme="dark">
+  <!-- Page Loader -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
   <div class="theme-switcher" onclick="toggleTheme()">
     <svg id="theme-icon" viewBox="0 0 24 24">
       <path d="M12 3V1M12 23V21M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22M12 7A5 5 0 1 0 12 17A5 5 0 1 0 12 7Z"/>
     </svg>
-  </div>
+</div>
 
+  <!-- Floating Orbs -->
+  <div class="floating-orb"></div>
+  <div class="floating-orb"></div>
+  <div class="floating-orb"></div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-container">
+      <div class="nav-buttons">
+        <a href="index.html" class="nav-btn interactive" title="Home">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6.5 6.5.708.708L2 7.707V14.5a.5.5 0 0 0 .5.5H6v-5h4v5h3.5a.5.5 0 0 0 .5-.5V7.707l.146.147.708-.708-6.5-6.5z"/>
+          </svg>
+        </a>
+        <a href="monsters2.html" class="nav-btn interactive" title="Monsters">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1 2a1 1 0 0 1 1-1h3.5v2H2v10h3.5v2H2a1 1 0 0 1-1-1V2zm13 0a1 1 0 0 0-1-1h-3.5v2H14v10h-3.5v2H13a1 1 0 0 0 1-1V2zM6.5 1.5h3v13h-3v-13z"/>
+          </svg>
+        </a>
+      </div>
+      <h1 class="logo glitch" data-text="N.A.V.I Database">N.A.V.I Database</h1>
+      <div class="controls">
+        <button class="control-btn interactive" onclick="toggleTheme()">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button class="control-btn interactive" onclick="toggleLanguage()">
+          <span id="langIcon">🇬🇧</span>
+        </button>
+      </div>
   <div class="container">
     <div class="header">
       <h1>VAL.9X - Signal Preserved</h1>
       <p class="subtitle">"Not all who vanish are gone."</p>
-    </div>
+</div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <main class="content">
+      <div class="quote-card scroll-reveal">
+        <div class="quote-text lang" 
+             data-en="&quot;Yeahhh, that was just unfair. Uhh, here. Free revive. On the house.&quot;"
+             data-vi="&quot;Ừm, cái đó thật sự không công bằng. Ờ, đây. Hồi sinh miễn phí. Tính vào tài khoản.&quot;">
+          "Yeahhh, that was just unfair. Uhh, here. Free revive. On the house."
 
     <div class="main-display">
       <div class="profile-card">
@@ -299,7 +615,11 @@
           <div class="terminal-dot dot-yellow"></div>
           <div class="terminal-dot dot-green"></div>
           <div class="terminal-title">NAVI_TERMINAL_V2.7.3</div>
-        </div>
+</div>
+        <div class="quote-author lang"
+             data-en="– Imaginary, after emotionally dying to Val"
+             data-vi="– Imaginary, sau khi chết về mặt cảm xúc vì Val">
+          – Imaginary, after emotionally dying to Val
         <div class="terminal-content" id="terminal-content">
           <div class="log-entry info">[SYSTEM] Initializing connection to VAL.9X...</div>
           <div class="log-entry warning">[WARN] Signal integrity: 23%</div>
@@ -307,23 +627,75 @@
           <div class="log-entry success">[SUCCESS] Fragment detected in Layer Z-6</div>
           <div class="log-entry info">[INFO] Val's neural signature active</div>
           <div class="log-entry">> <span class="typing-cursor">_</span></div>
-        </div>
-      </div>
+</div>
+</div>
     </div>
 
+      <h2 class="section-title scroll-reveal lang" data-en="Overview" data-vi="Tổng quan">Overview</h2>
+      <p class="content-text scroll-reveal lang" 
+         data-en="Val is a unique discord monster known for his emotional attacks and psychological minigames. Once engaged, he tests the player's patience and emotional resolve through carefully crafted challenges designed to push mental boundaries."
+         data-vi="Val là một quái vật discord đặc biệt, nổi bật với các đòn tấn công tâm lý và các minigame gây tổn thương cảm xúc. Một khi bị cuốn vào, anh ta thử thách sự kiên nhẫn và ý chí của người chơi thông qua những thử thách được thiết kế tinh vi để đẩy giới hạn tinh thần.">
+        Val is a unique discord monster known for his emotional attacks and psychological minigames...
+      </p>
+
+      <h2 class="section-title scroll-reveal lang" data-en="Mechanics" data-vi="Cơ chế">Mechanics</h2>
+      <p class="content-text scroll-reveal lang" 
+         data-en="While appearing calm and collected on the surface, Val initiates a brutal psychological minigame upon contact in discord..."
+         data-vi="Mặc dù trông có vẻ bình tĩnh và điềm đạm bên ngoài, Val kích hoạt một minigame tâm lý tàn bạo khi tiếp xúc trong discord...">
+        While appearing calm and collected...
+      </p>
+
+      <p class="content-text scroll-reveal lang"
+         data-en="This is what Val's victim will transform into:"
+         data-vi="Đây là những gì nạn nhân của Val sẽ biến thành:">
+        This is what Val's victim will transform into:
+      </p>
+
+      <img class="discord-image scroll-reveal interactive" 
+           src="discord.PNG" 
+           alt="Example of what Val's victim will turn out"
+           loading="lazy">
+    </main>
+
+    <aside class="character-card scroll-reveal">
+      <div class="card-header lang" data-en="Val" data-vi="Val">Val</div>
+      <div class="card-image-container">
+        <img class="card-image" src="val.PNG" alt="Val Character Image" loading="lazy">
+        <div class="image-overlay"></div>
     <div class="command-interface">
       <h3>// SYSTEM COMMANDS</h3>
       <div class="command-input">
         <span class="command-prompt">NAVI></span>
         <input type="text" id="command-input" placeholder="Enter command..." onkeypress="handleCommand(event)">
-      </div>
+</div>
+      <div class="card-caption lang" 
+           data-en="&quot;Good Luck&quot; – Val's Minigame Description"
+           data-vi="&quot;Chúc may mắn&quot; – Mô tả minigame của Val">
+        "Good Luck" – Val's Minigame Description
       <div class="command-suggestions">
         <button class="command-btn" onclick="executeCommand('val.trace()')">val.trace()</button>
         <button class="command-btn" onclick="executeCommand('access_fragment(\"13A\")')">access_fragment("13A")</button>
         <button class="command-btn" onclick="executeCommand('val.ping()')">val.ping()</button>
         <button class="command-btn" onclick="executeCommand('status_report()')">status_report()</button>
         <button class="command-btn" onclick="executeCommand('scan_tunnels()')">scan_tunnels()</button>
-      </div>
+</div>
+      <div class="card-body">
+        <div class="stat-row">
+          <span class="stat-label lang" data-en="Location" data-vi="Vị trí">Location</span>
+          <span class="stat-value">HQ (ink.game gang)</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label lang" data-en="Attack Pattern" data-vi="Kiểu tấn công">Attack Pattern</span>
+          <span class="stat-value lang" 
+                data-en="Texting back to [REDACTED] extremely slow, but fast enough to catch up to [REDACTED]."
+                data-vi="Nhắn tin trở lại cho [BỊ XÓA] cực chậm, nhưng đủ nhanh để bắt kịp [BỊ XÓA].">
+            Texting back to [REDACTED] extremely slow...
+          </span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label lang" data-en="Emotional Damage" data-vi="Tổn thương cảm xúc">Emotional Damage</span>
+          <span class="stat-value lang" data-en="Emotional Death" data-vi="Chết về mặt cảm xúc">Emotional Death</span>
+        </div>
     </div>
 
     <div class="audio-fragments">
@@ -358,10 +730,14 @@
       </div>
       <div class="val-response" id="val-response">
         <span style="opacity: 0.5;">Awaiting transmission...</span>
-      </div>
+</div>
+    </aside>
     </div>
-  </div>
+</div>
 
+  <!-- External JavaScript -->
+  <script src="val.js"></script>
+  <style src="val.css"></style>
   <script>
     // Theme switcher
     function toggleTheme() {
