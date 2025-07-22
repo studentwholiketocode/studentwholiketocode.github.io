@@ -1,342 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>N.A.V.I Database</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    :root {
-      --bg: #191724;
-      --glass: rgba(36, 37, 46, 0.7);
-      --glass-light: rgba(255,255,255,0.10);
-      --glass-hover: rgba(255,255,255,0.16);
-      --white: #f7f7fa;
-      --accent: linear-gradient(90deg, #8eaefc 0%, #a6c1ee 100%);
-      --accent-solid: #8eaefc;
-      --danger: #ff3d68;
-      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-      --border: rgba(255,255,255,0.13);
-    }
-
-    body {
-      margin: 0;
-      font-family: "Segoe UI", "Inter", Arial, sans-serif;
-      background: linear-gradient(135deg, #232946 0%, #191724 100%);
-      color: var(--white);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background 0.4s;
-      overflow-x: hidden;
-    }
-
-    .container {
-      width: 95%;
-      max-width: 1000px;
-      border-radius: 28px;
-      background: var(--glass);
-      border: 1.2px solid var(--border);
-      backdrop-filter: blur(28px) saturate(140%);
-      padding: 38px 30px 34px 30px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-      animation: fadein 0.7s cubic-bezier(.57,-0.03,.44,1.05);
-    }
-
-    @keyframes fadein {
-      from { opacity: 0; transform: translateY(40px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-    }
-
-    .top-left {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      background: var(--accent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .top-right {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-    }
-
-    /* Neomorphic Toggle */
-    .toggle-btn {
-      width: 48px; height: 26px; border-radius: 14px;
-      background: var(--glass-light);
-      position: relative;
-      cursor: pointer;
-      border: 1.5px solid var(--border);
-      transition: background 0.3s;
-      box-shadow: 0 2px 8px rgba(36, 37, 46, 0.1);
-      display: flex; align-items: center;
-    }
-    .toggle-btn:focus { outline: 2px solid var(--accent-solid); }
-    .toggle-switch {
-      position: absolute;
-      top: 2.4px; left: 3px;
-      width: 22px; height: 22px;
-      background: var(--white);
-      border-radius: 50%;
-      transition: 0.32s cubic-bezier(.63,1.57,.51,.99);
-      box-shadow: 0 2px 10px rgba(31,38,135,0.18);
-    }
-    body.dark .toggle-switch { transform: translateX(20px); background: #232946;}
-    .toggle-btn .fa-sun, .toggle-btn .fa-moon {
-      position: absolute; font-size: 1rem; top: 4px;
-      opacity: 0.7;
-      transition: color 0.2s;
-    }
-    .toggle-btn .fa-sun { left: 7px; color: #ffd86b; }
-    .toggle-btn .fa-moon { right: 7px; color: #8eaefc; }
-
-    /* Flags */
-    .flags { display: flex; gap: 6px; }
-    .flags img {
-      width: 24px; height: 16px; border-radius: 3px; cursor: pointer;
-      border: 1.2px solid transparent; transition: border 0.2s, transform 0.2s;
-      box-shadow: 0 1.5px 5px rgba(31,38,135,0.08);
-    }
-    .flags img.active, .flags img:focus {
-      border: 1.5px solid var(--accent-solid);
-      transform: scale(1.08);
-    }
-
-    .terminal-btn {
-      background: linear-gradient(90deg, #ff3d68 0%, #ff6a88 100%);
-      color: var(--white);
-      border: none;
-      border-radius: 9px;
-      padding: 7px 22px;
-      font-family: 'JetBrains Mono', 'Courier New', monospace;
-      font-weight: 600;
-      letter-spacing: 1px;
-      cursor: pointer;
-      box-shadow: 0 2px 14px #ff3d6840;
-      transition: background 0.25s, box-shadow 0.2s, color 0.15s;
-      margin-left: 10px;
-      display: flex; align-items: center; gap: 7px;
-    }
-    .terminal-btn:hover, .terminal-btn:focus {
-      background: #ff3355;
-      color: #fff;
-      box-shadow: 0 4px 24px #ff3d68a2;
-    }
-
-    .main-title {
-      text-align: center;
-      font-size: 2.7rem;
-      font-weight: 800;
-      margin-bottom: 36px;
-      letter-spacing: 1px;
-      background: var(--accent);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-    }
-
-    .feature-box {
-      background: var(--glass-light);
-      border: 1.5px solid var(--border);
-      border-radius: 18px;
-      padding: 28px 18px 28px 18px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.28s cubic-bezier(.63,1.57,.51,.99);
-      box-shadow: 0 2px 20px rgba(31,38,135,0.10);
-      position: relative;
-      overflow: hidden;
-      will-change: transform, box-shadow;
-      outline: none;
-    }
-    .feature-box:focus, .feature-box:hover {
-      background: var(--glass-hover);
-      box-shadow: 0 8px 32px rgba(138,174,252,0.16);
-      border: 2px solid #8eaefc;
-      transform: translateY(-6px) scale(1.038);
-    }
-    .feature-box:active { transform: scale(0.98); }
-
-    .feature-box i {
-      font-size: 2.3rem;
-      margin-bottom: 15px;
-      color: #a6c1ee;
-      display: block;
-      text-shadow: 0 2px 8px #8eaefc44;
-      transition: color 0.22s;
-    }
-    .feature-box h3 {
-      margin: 0;
-      font-size: 1.17rem;
-      font-weight: 600;
-      color: var(--white);
-      letter-spacing: 0.7px;
-      text-shadow: 0 2px 8px #23294622;
-      transition: color 0.22s;
-    }
-
-    /* Responsive */
-    @media screen and (max-width: 900px) {
-      .features { grid-template-columns: repeat(2, 1fr); }
-      .main-title { font-size: 2.05rem; }
-      .container { padding: 22px 8px 16px 8px;}
-    }
-    @media screen and (max-width: 650px) {
-      .features { grid-template-columns: 1fr; gap: 18px; }
-      .main-title { font-size: 1.35rem;}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAL1NTNE // Interface</title>
+    <meta name="description" content="VAL1NTNE Interface - Quantum anomaly research division">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container" role="main">
-    <div class="top-bar">
-      <div class="top-left" id="header-title">N.A.V.I Database</div>
-      <div class="top-right">
-        <div class="toggle-btn" tabindex="0" onclick="toggleDark()" aria-label="Toggle dark mode">
-          <i class="fa fa-sun"></i>
-          <i class="fa fa-moon"></i>
-          <div class="toggle-switch"></div>
-        </div>
-        <div class="flags">
-          <img src="https://flagcdn.com/w40/vn.png" onclick="switchLanguage('vn')" tabindex="0" title="Vietnamese" id="flag-vn"/>
-          <img src="https://flagcdn.com/w40/no.png" onclick="switchLanguage('en')" tabindex="0" title="English" id="flag-en"/>
-          <img src="https://flagcdn.com/w40/cn.png" onclick="switchLanguage('zh')" tabindex="0" title="Chinese" id="flag-zh"/>
-          <img src="https://flagcdn.com/w40/jp.png" onclick="switchLanguage('ja')" tabindex="0" title="Japanese" id="flag-ja"/>
-        </div>
-        <button class="terminal-btn" onclick="window.location.href='terminal.html'"><i class="fa fa-terminal"></i>Terminal</button>
-      </div>
+    <!-- Animated Background -->
+    <div class="background-layer">
+        <div class="gradient-overlay"></div>
+        <div class="top-line"></div>
     </div>
 
-    <div class="main-title" id="main-title">Main Menu</div>
-
-    <div class="features">
-      <div class="feature-box" id="box-home" tabindex="0" onclick="location.href='index.html'">
-        <i class="fas fa-home"></i>
-        <h3>Home</h3>
-      </div>
-      <div class="feature-box" id="box-monsters" tabindex="0" onclick="location.href='monsters2.html'">
-        <i class="fas fa-mask"></i>
-        <h3>Monsters</h3>
-      </div>
-      <div class="feature-box" id="box-characters" tabindex="0" onclick="location.href='nopermission.html'">
-        <i class="fas fa-user"></i>
-        <h3>Characters</h3>
-      </div>
-      <div class="feature-box" id="box-items" tabindex="0" onclick="location.href='nopermission.html'">
-        <i class="fas fa-cube"></i>
-        <h3>Items</h3>
-      </div>
-      <div class="feature-box" id="box-hazards" tabindex="0" onclick="location.href='nopermission.html'">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Hazards</h3>
-      </div>
-      <div class="feature-box" id="box-mechanics" tabindex="0" onclick="location.href='nopermission.html'">
-        <i class="fas fa-gear"></i>
-        <h3>Mechanics</h3>
-      </div>
+    <!-- Floating Particles -->
+    <div class="particles-container">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
-  </div>
 
-  <script>
-    function toggleDark() {
-      document.body.classList.toggle('dark');
-      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
-    }
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-    }
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="title-container">
+                <h1 id="main-title" class="main-title">VAL1NTNE</h1>
+                <div class="zap-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+            </div>
+            <div class="subtitle-container">
+                <p class="subtitle">"There is no death in the abyss — only rebirth." — Mr. Harrell</p>
+                <div class="status-indicators">
+                    <div class="status-item">
+                        <div class="status-dot green"></div>
+                        <span>SYSTEM ACTIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-water"></i>
+                        <span>ASGARD LINK</span>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-    const translations = {
-      en: {
-        "header-title": "N.A.V.I Database",
-        "main-title": "Main Menu",
-        "box-home": "Home",
-        "box-monsters": "Monsters",
-        "box-characters": "Characters",
-        "box-items": "Items",
-        "box-hazards": "Hazards",
-        "box-mechanics": "Mechanics"
-      },
-      vn: {
-        "header-title": "Cơ sở dữ liệu N.A.V.I",
-        "main-title": "Menu chính",
-        "box-home": "Trang chủ",
-        "box-monsters": "Quái vật",
-        "box-characters": "Nhân vật",
-        "box-items": "Vật phẩm",
-        "box-hazards": "Mối đe dọa",
-        "box-mechanics": "Cơ chế"
-      },
-      zh: {
-        "header-title": "N.A.V.I 数据库",
-        "main-title": "主菜单",
-        "box-home": "主页",
-        "box-monsters": "怪物",
-        "box-characters": "角色",
-        "box-items": "物品",
-        "box-hazards": "危险",
-        "box-mechanics": "机制"
-      },
-      ja: {
-        "header-title": "N.A.V.I データベース",
-        "main-title": "メインメニュー",
-        "box-home": "ホーム",
-        "box-monsters": "モンスター",
-        "box-characters": "キャラクター",
-        "box-items": "アイテム",
-        "box-hazards": "危険",
-        "box-mechanics": "メカニクス"
-      }
-    };
+        <!-- Scan Progress -->
+        <div class="scan-progress">
+            <div class="scan-header">
+                <span>BIOSCAN PROGRESS</span>
+                <span id="scan-percentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
 
-    function switchLanguage(lang) {
-      localStorage.setItem("language", lang);
-      const text = translations[lang] || translations["en"];
-      for (const id in text) {
-        const el = document.getElementById(id);
-        if (el && id.startsWith("box-")) {
-          el.querySelector("h3").textContent = text[id];
-        } else if (el) {
-          el.textContent = text[id];
-        }
-      }
-      // Highlight active flag
-      document.querySelectorAll('.flags img').forEach(img => img.classList.remove('active'));
-      let flag = document.getElementById('flag-' + lang);
-      if(flag) flag.classList.add('active');
-    }
+        <!-- Authentication Panel -->
+        <div class="auth-section">
+            <button id="auth-button" class="auth-button">
+                <i class="fas fa-lock"></i>
+                <span id="auth-text">AUTHENTICATION REQUIRED</span>
+                <i class="fas fa-exclamation-triangle auth-warning"></i>
+            </button>
+        </div>
 
-    // Keyboard accessibility for flags
-    document.querySelectorAll('.flags img').forEach(img => {
-      img.addEventListener('keydown', function(e) {
-        if(e.key === 'Enter' || e.key === ' ') {
-          img.click();
-        }
-      });
-    });
+        <!-- Main Sections -->
+        <div class="sections-grid">
+            <!-- About Section -->
+            <div class="section-card" data-section="about">
+                <div class="card-content">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-eye"></i>
+                            <span>🧬 Origin Protocol</span>
+                        </h2>
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="card-body">
+                        <p>Mr. Harrell, enigmatic founder of Innovaltion Inc, vanished during an undocumented oceanic descent in 2009. His return marked the discovery of ASGARD - a pressure-immune zone beneath the seabed housing Z-2, a biomechanical dreaming heart. The Ninth Site was constructed above this anomaly, birthing the N.A.V.I Division.</p>
+                    </div>
+                    <div class="expand-hint">
+                        <span>Click to expand</span>
+                        <div class="hint-dot"></div>
+                    </div>
+                </div>
+            </div>
 
-    const savedLang = localStorage.getItem("language") || "en";
-    switchLanguage(savedLang);
-  </script>
+            <!-- Terminal Section -->
+            <div class="section-card" data-section="terminal">
+                <div class="card-content">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-terminal"></i>
+                            <span>⚙️ Quantum Interface</span>
+                        </h2>
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="terminal-container">
+                            <pre id="terminal-text" class="terminal-text"></pre>
+                            <span class="cursor">█</span>
+                        </div>
+                    </div>
+                    <div class="expand-hint">
+                        <span>Click to expand</span>
+                        <div class="hint-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Access Section -->
+            <div class="section-card" data-section="access">
+                <div class="card-content">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>🔒 Security Matrix</span>
+                        </h2>
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="card-body">
+                        <p>CLEARANCE: LVL 6 — Black Directive<br>
+                        STATUS: UNCONFIRMED ENTITY<br>
+                        LAST AUTH: ██/██/2017<br>
+                        MEMO: Harrell's retinal signature persists in root systems. Physical presence unconfirmed since Incident Z.</p>
+                    </div>
+                    <div class="expand-hint">
+                        <span>Click to expand</span>
+                        <div class="hint-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Section -->
+            <div class="section-card" data-section="data">
+                <div class="card-content">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-database"></i>
+                            <span>📂 Data Fragments</span>
+                        </h2>
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="card-body">
+                        <p>• ORIGIN.vrl — Birth records: CLASSIFIED/MISSING<br>
+                        • Z-2_Heartbeat.json — Pulse: "Slower than time, faster than thought"<br>
+                        • ASGARD_BUILD.mp4 — Water crystallizing into static code<br>
+                        • FINAL_BREATH.wav — Whispered voice playing backward, no speakers detected</p>
+                    </div>
+                    <div class="expand-hint">
+                        <span>Click to expand</span>
+                        <div class="hint-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-status">
+                <div class="status-item">
+                    <div class="status-dot green"></div>
+                    <span>ALL SYSTEMS STABLE</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot blue"></div>
+                    <span>QUANTUM LINK ACTIVE</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot yellow"></div>
+                    <span>Z-2 MONITORING</span>
+                </div>
+            </div>
+            <p class="copyright">© 2025 VAL1NTNE SYSTEMS // NAVI DIVISION</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
