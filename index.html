@@ -1,201 +1,794 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VAL1NTNE // Interface</title>
-    <meta name="description" content="VAL1NTNE Interface - Quantum anomaly research division">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>N.A.V.I Holographic Database</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary-glow: #00ffff;
+      --secondary-glow: #ff00ff;
+      --accent-blue: #0099ff;
+      --accent-purple: #9933ff;
+      --bg-dark: #0a0a0f;
+      --bg-darker: #050508;
+      --glass-bg: rgba(0, 255, 255, 0.05);
+      --glass-border: rgba(0, 255, 255, 0.2);
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --hologram-blue: #00d4ff;
+      --hologram-pink: #ff0080;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg-darker);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 50%, var(--bg-darker) 100%);
+    }
+
+    .bg-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--primary-glow);
+      border-radius: 50%;
+      animation: float 6s infinite ease-in-out;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* Main Container */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding: 1.5rem 2rem;
+      background: rgba(0, 255, 255, 0.03);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 15px;
+      backdrop-filter: blur(20px);
+      box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 48%,
+        rgba(0, 255, 255, 0.05) 49%,
+        rgba(0, 255, 255, 0.05) 51%,
+        transparent 52%
+      );
+      animation: scan 3s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(0deg); }
+    }
+
+    .logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hologram-toggle {
+      width: 60px;
+      height: 30px;
+      background: rgba(0, 255, 255, 0.1);
+      border: 2px solid var(--primary-glow);
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .hologram-toggle::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background: var(--primary-glow);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .hologram-toggle.active::before {
+      transform: translateX(28px);
+      background: var(--secondary-glow);
+      box-shadow: 0 0 15px var(--secondary-glow);
+    }
+
+    .lang-selector {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .lang-flag {
+      width: 30px;
+      height: 22px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      object-fit: cover;
+      display: block;
+    }
+
+    .lang-flag:hover {
+      transform: scale(1.1);
+      border-color: var(--primary-glow);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+
+    .terminal-access {
+      background: linear-gradient(45deg, rgba(255, 0, 128, 0.2), rgba(0, 255, 255, 0.2));
+      border: 1px solid var(--hologram-pink);
+      color: var(--text-primary);
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .terminal-access::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .terminal-access:hover::before {
+      left: 100%;
+    }
+
+    .terminal-access:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(255, 0, 128, 0.3);
+    }
+
+    /* Main Title */
+    .main-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .main-title h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--hologram-blue), var(--hologram-pink), var(--hologram-blue));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: rainbow-text 3s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+      margin-bottom: 1rem;
+    }
+
+    @keyframes rainbow-text {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .main-title .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      opacity: 0.8;
+    }
+
+    /* Holographic Grid */
+    .holo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+
+    .holo-card {
+      background: rgba(0, 255, 255, 0.03);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      transform-style: preserve-3d;
+    }
+
+    .holo-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--hologram-blue), var(--hologram-pink), var(--hologram-blue));
+      z-index: -1;
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .holo-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .holo-card:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 
+        0 20px 40px rgba(0, 255, 255, 0.2),
+        0 0 50px rgba(0, 255, 255, 0.1);
+      border-color: var(--hologram-blue);
+    }
+
+    .holo-card:hover::before {
+      opacity: 1;
+    }
+
+    .holo-card:hover::after {
+      left: 100%;
+    }
+
+    .holo-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: var(--hologram-blue);
+      text-shadow: 0 0 20px var(--hologram-blue);
+      transition: all 0.3s ease;
+      display: block;
+    }
+    
+    .holo-icon i {
+      background: linear-gradient(45deg, var(--hologram-blue), var(--hologram-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+    }
+
+    .holo-card:hover .holo-icon {
+      transform: scale(1.1) rotateY(360deg);
+    }
+    
+    .holo-card:hover .holo-icon i {
+      filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+    }
+
+    .holo-card h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .holo-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    /* Status Indicator */
+    .status-indicator {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary-glow);
+      box-shadow: 0 0 15px var(--primary-glow);
+      animation: pulse 2s infinite;
+    }
+
+    .status-indicator.locked {
+      background: #ff4444;
+      box-shadow: 0 0 15px #ff4444;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* Floating Info Panels */
+    .floating-info {
+      position: fixed;
+      top: 50%;
+      right: 2rem;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 10;
+    }
+
+    .info-panel {
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 1rem;
+      backdrop-filter: blur(20px);
+      min-width: 200px;
+      animation: float-gentle 4s ease-in-out infinite;
+    }
+
+    .info-panel:nth-child(2) {
+      animation-delay: -1s;
+    }
+
+    .info-panel:nth-child(3) {
+      animation-delay: -2s;
+    }
+
+    @keyframes float-gentle {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .info-panel h4 {
+      font-family: 'Orbitron', monospace;
+      color: var(--hologram-blue);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .info-panel p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 1rem;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .main-title h1 {
+        font-size: 2.5rem;
+      }
+      
+      .holo-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .floating-info {
+        display: none;
+      }
+    }
+
+    /* Loading Animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-darker);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-spinner {
+      width: 80px;
+      height: 80px;
+      border: 3px solid rgba(0, 255, 255, 0.1);
+      border-top: 3px solid var(--primary-glow);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="background-layer">
-        <div class="gradient-overlay"></div>
-        <div class="top-line"></div>
+  <!-- Loading Screen -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Animated Background -->
+  <div class="bg-animation"></div>
+  <div class="bg-particles" id="particles"></div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo" id="headerTitle">N.A.V.I DATABASE</div>
+      <div class="header-controls">
+        <div class="hologram-toggle" id="holoToggle"></div>
+        <div class="lang-selector">
+          <img src="https://flagcdn.com/24x18/vn.png" class="lang-flag" onclick="switchLanguage('vn')" alt="Vietnamese" />
+          <img src="https://flagcdn.com/24x18/no.png" class="lang-flag" onclick="switchLanguage('en')" alt="English" />
+          <img src="https://flagcdn.com/24x18/cn.png" class="lang-flag" onclick="switchLanguage('zh')" alt="Chinese" />
+          <img src="https://flagcdn.com/24x18/jp.png" class="lang-flag" onclick="switchLanguage('ja')" alt="Japanese" />
+        </div>
+        <a href="terminal.html" class="terminal-access">
+          <i class="fas fa-terminal"></i>
+          TERMINAL
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Title -->
+    <div class="main-title">
+      <h1 id="mainTitle">QUANTUM DATABASE ACCESS</h1>
+      <p class="subtitle" id="subtitle">Advanced Neural Archive & Virtual Intelligence System</p>
     </div>
 
-    <!-- Floating Particles -->
-    <div class="particles-container">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+    <!-- Holographic Grid -->
+    <div class="holo-grid">
+      <div class="holo-card" data-module="home" onclick="navigateTo('index.html')">
+        <div class="status-indicator"></div>
+        <div class="holo-icon">
+          <i class="fas fa-home"></i>
+        </div>
+        <h3 id="cardHome">HOME BASE</h3>
+        <p>Central command and navigation hub</p>
+      </div>
+
+      <div class="holo-card" data-module="monsters" onclick="navigateTo('monsters2.html')">
+        <div class="status-indicator"></div>
+        <div class="holo-icon">
+          <i class="fas fa-skull"></i>
+        </div>
+        <h3 id="cardMonsters">ENTITY DATABASE</h3>
+        <p>Classified creature archives and threat assessments</p>
+      </div>
+
+      <div class="holo-card" data-module="characters" onclick="navigateTo('nopermission.html')">
+        <div class="status-indicator locked"></div>
+        <div class="holo-icon">
+          <i class="fas fa-user-astronaut"></i>
+        </div>
+        <h3 id="cardCharacters">PERSONNEL FILES</h3>
+        <p>Authorized personnel database - clearance required</p>
+      </div>
+
+      <div class="holo-card" data-module="items" onclick="navigateTo('nopermission.html')">
+        <div class="status-indicator locked"></div>
+        <div class="holo-icon">
+          <i class="fas fa-cube"></i>
+        </div>
+        <h3 id="cardItems">ARTIFACT CATALOG</h3>
+        <p>Equipment and technology inventory system</p>
+      </div>
+
+      <div class="holo-card" data-module="hazards" onclick="navigateTo('nopermission.html')">
+        <div class="status-indicator locked"></div>
+        <div class="holo-icon">
+          <i class="fas fa-radiation"></i>
+        </div>
+        <h3 id="cardHazards">THREAT ANALYSIS</h3>
+        <p>Environmental hazards and safety protocols</p>
+      </div>
+
+      <div class="holo-card" data-module="mechanics" onclick="navigateTo('nopermission.html')">
+        <div class="status-indicator locked"></div>
+        <div class="holo-icon">
+          <i class="fas fa-cogs"></i>
+        </div>
+        <h3 id="cardMechanics">SYSTEM CORE</h3>
+        <p>Advanced operational mechanics and algorithms</p>
+      </div>
     </div>
+  </div>
 
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="title-container">
-                <h1 id="main-title" class="main-title">VAL1NTNE</h1>
-                <div class="zap-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-            </div>
-            <div class="subtitle-container">
-                <p class="subtitle">"There is no death in the abyss — only rebirth." — Mr. Harrell</p>
-                <div class="status-indicators">
-                    <div class="status-item">
-                        <div class="status-dot green"></div>
-                        <span>SYSTEM ACTIVE</span>
-                    </div>
-                    <div class="status-item">
-                        <i class="fas fa-water"></i>
-                        <span>ASGARD LINK</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Scan Progress -->
-        <div class="scan-progress">
-            <div class="scan-header">
-                <span>BIOSCAN PROGRESS</span>
-                <span id="scan-percentage">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-        </div>
-
-        <!-- Authentication Panel -->
-        <div class="auth-section">
-            <button id="auth-button" class="auth-button">
-                <i class="fas fa-lock"></i>
-                <span id="auth-text">AUTHENTICATION REQUIRED</span>
-                <i class="fas fa-exclamation-triangle auth-warning"></i>
-            </button>
-        </div>
-
-        <!-- Main Sections -->
-        <div class="sections-grid">
-            <!-- About Section -->
-            <div class="section-card" data-section="about">
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-eye"></i>
-                            <span>🧬 Origin Protocol</span>
-                        </h2>
-                        <div class="status-dot"></div>
-                    </div>
-                    <div class="card-body">
-                        <p>Mr. Harrell, enigmatic founder of Innovaltion Inc, vanished during an undocumented oceanic descent in 2009. His return marked the discovery of ASGARD - a pressure-immune zone beneath the seabed housing Z-2, a biomechanical dreaming heart. The Ninth Site was constructed above this anomaly, birthing the N.A.V.I Division.</p>
-                    </div>
-                    <div class="expand-hint">
-                        <span>Click to expand</span>
-                        <div class="hint-dot"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Terminal Section -->
-            <div class="section-card" data-section="terminal">
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-terminal"></i>
-                            <span>⚙️ Quantum Interface</span>
-                        </h2>
-                        <div class="status-dot"></div>
-                    </div>
-                    <div class="card-body">
-                        <div class="terminal-container">
-                            <pre id="terminal-text" class="terminal-text"></pre>
-                            <span class="cursor">█</span>
-                        </div>
-                    </div>
-                    <div class="expand-hint">
-                        <span>Click to expand</span>
-                        <div class="hint-dot"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Access Section -->
-            <div class="section-card" data-section="access">
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>🔒 Security Matrix</span>
-                        </h2>
-                        <div class="status-dot"></div>
-                    </div>
-                    <div class="card-body">
-                        <p>CLEARANCE: LVL 6 — Black Directive<br>
-                        STATUS: UNCONFIRMED ENTITY<br>
-                        LAST AUTH: ██/██/2017<br>
-                        MEMO: Harrell's retinal signature persists in root systems. Physical presence unconfirmed since Incident Z.</p>
-                    </div>
-                    <div class="expand-hint">
-                        <span>Click to expand</span>
-                        <div class="hint-dot"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Data Section -->
-            <div class="section-card" data-section="data">
-                <div class="card-content">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-database"></i>
-                            <span>📂 Data Fragments</span>
-                        </h2>
-                        <div class="status-dot"></div>
-                    </div>
-                    <div class="card-body">
-                        <p>• ORIGIN.vrl — Birth records: CLASSIFIED/MISSING<br>
-                        • Z-2_Heartbeat.json — Pulse: "Slower than time, faster than thought"<br>
-                        • ASGARD_BUILD.mp4 — Water crystallizing into static code<br>
-                        • FINAL_BREATH.wav — Whispered voice playing backward, no speakers detected</p>
-                    </div>
-                    <div class="expand-hint">
-                        <span>Click to expand</span>
-                        <div class="hint-dot"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-status">
-                <div class="status-item">
-                    <div class="status-dot green"></div>
-                    <span>ALL SYSTEMS STABLE</span>
-                </div>
-                <div class="status-item">
-                    <div class="status-dot blue"></div>
-                    <span>QUANTUM LINK ACTIVE</span>
-                </div>
-                <div class="status-item">
-                    <div class="status-dot yellow"></div>
-                    <span>Z-2 MONITORING</span>
-                </div>
-            </div>
-            <p class="copyright">© 2025 VAL1NTNE SYSTEMS // NAVI DIVISION</p>
-        </footer>
+  <!-- Floating Info Panels -->
+  <div class="floating-info">
+    <div class="info-panel">
+      <h4>SYSTEM STATUS</h4>
+      <p>All systems operational</p>
     </div>
+    <div class="info-panel">
+      <h4>SECURITY LEVEL</h4>
+      <p>Clearance: ALPHA-7</p>
+    </div>
+    <div class="info-panel">
+      <h4>ACTIVE SESSIONS</h4>
+      <p>Connected: 1 user</p>
+    </div>
+  </div>
 
-    <script src="script.js"></script>
+  <script>
+    // Translations
+    const translations = {
+      en: {
+        "headerTitle": "N.A.V.I DATABASE",
+        "mainTitle": "QUANTUM DATABASE ACCESS",
+        "subtitle": "Advanced Neural Archive & Virtual Intelligence System",
+        "cardHome": "HOME BASE",
+        "cardMonsters": "ENTITY DATABASE",
+        "cardCharacters": "PERSONNEL FILES",
+        "cardItems": "ARTIFACT CATALOG",
+        "cardHazards": "THREAT ANALYSIS",
+        "cardMechanics": "SYSTEM CORE"
+      },
+      vn: {
+        "headerTitle": "CƠ SỞ DỮ LIỆU N.A.V.I",
+        "mainTitle": "TRUY CẬP CƠ SỞ DỮ LIỆU LƯỢNG TỬ",
+        "subtitle": "Hệ thống Lưu trữ Thần kinh & Trí tuệ Ảo Tiên tiến",
+        "cardHome": "CĂN CỨ CHÍNH",
+        "cardMonsters": "CƠ SỞ DỮ LIỆU THỰC THỂ",
+        "cardCharacters": "HỒ SƠ NHÂN SỰ",
+        "cardItems": "DANH MỤC CỔ VẬT",
+        "cardHazards": "PHÂN TÍCH MỐI ĐE DỌA",
+        "cardMechanics": "LÕII HỆ THỐNG"
+      },
+      zh: {
+        "headerTitle": "N.A.V.I 数据库",
+        "mainTitle": "量子数据库访问",
+        "subtitle": "先进神经档案与虚拟智能系统",
+        "cardHome": "主基地",
+        "cardMonsters": "实体数据库",
+        "cardCharacters": "人员档案",
+        "cardItems": "文物目录",
+        "cardHazards": "威胁分析",
+        "cardMechanics": "系统核心"
+      },
+      ja: {
+        "headerTitle": "N.A.V.I データベース",
+        "mainTitle": "量子データベースアクセス",
+        "subtitle": "高度神経アーカイブ・仮想知能システム",
+        "cardHome": "ホームベース",
+        "cardMonsters": "エンティティデータベース",
+        "cardCharacters": "人事ファイル",
+        "cardItems": "アーティファクトカタログ",
+        "cardHazards": "脅威分析",
+        "cardMechanics": "システムコア"
+      }
+    };
+
+    // Initialize particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Language switching
+    function switchLanguage(lang) {
+      localStorage.setItem("language", lang);
+      const text = translations[lang] || translations["en"];
+      
+      for (const id in text) {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = text[id];
+        }
+      }
+    }
+
+    // Navigation with smooth transition
+    function navigateTo(url) {
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        window.location.href = url;
+      }, 300);
+    }
+
+    // Hologram toggle
+    function toggleHologram() {
+      const toggle = document.getElementById('holoToggle');
+      const cards = document.querySelectorAll('.holo-card');
+      
+      toggle.classList.toggle('active');
+      
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transform = toggle.classList.contains('active') 
+            ? `translateY(-${Math.random() * 20 + 10}px) rotateX(${Math.random() * 10 - 5}deg) rotateY(${Math.random() * 10 - 5}deg)`
+            : '';
+        }, index * 100);
+      });
+    }
+
+    // Add interactive sound effects (visual feedback)
+    function addInteractionEffects() {
+      const cards = document.querySelectorAll('.holo-card');
+      
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.filter = 'brightness(1.2)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.filter = 'brightness(1)';
+        });
+        
+        card.addEventListener('click', () => {
+          card.style.transform += ' scale(0.95)';
+          setTimeout(() => {
+            card.style.transform = card.style.transform.replace(' scale(0.95)', '');
+          }, 150);
+        });
+      });
+    }
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hide loading screen
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loadingOverlay').style.display = 'none';
+        }, 500);
+      }, 2000);
+
+      // Create particles
+      createParticles();
+
+      // Set up interactions
+      addInteractionEffects();
+      
+      // Set up hologram toggle
+      document.getElementById('holoToggle').addEventListener('click', toggleHologram);
+
+      // Load saved language
+      const savedLang = localStorage.getItem("language") || "en";
+      switchLanguage(savedLang);
+
+      // Add entrance animations
+      const cards = document.querySelectorAll('.holo-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(50px)';
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 200 + 500);
+      });
+    });
+
+    // Add dynamic theme switching based on time
+    function updateThemeByTime() {
+      const hour = new Date().getHours();
+      const root = document.documentElement;
+      
+      if (hour >= 18 || hour <= 6) {
+        root.style.setProperty('--primary-glow', '#ff00ff');
+        root.style.setProperty('--secondary-glow', '#00ffff');
+      } else {
+        root.style.setProperty('--primary-glow', '#00ffff');
+        root.style.setProperty('--secondary-glow', '#ff00ff');
+      }
+    }
+
+    // Update theme every minute
+    updateThemeByTime();
+    setInterval(updateThemeByTime, 60000);
+  </script>
 </body>
 </html>
