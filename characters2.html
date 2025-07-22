@@ -1,156 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Characters</title>
-  <style>
-    :root {
-      --bg: #f5f5f5;
-      --text: #111;
-      --card: #fff;
-      --border: #ccc;
-    }
-
-    [data-theme="dark"] {
-      --bg: #1c1c1e;
-      --text: #f5f5f5;
-      --card: #2c2c2e;
-      --border: #3c3c3c;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      height: 100vh;
-    }
-
-    aside {
-      width: 220px;
-      background: var(--card);
-      border-right: 1px solid var(--border);
-      padding: 1rem;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .switch {
-      cursor: pointer;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 5px 10px;
-      color: var(--text);
-      background-color: transparent;
-    }
-
-    .content {
-      padding: 2rem;
-      overflow-y: auto;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 {
-      margin-top: 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: var(--text);
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-  </style>
-</head>
-<body data-theme="dark">
-  <aside>
-    <h2>Navigation</h2>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="monster.html">Monsters</a>
-      <a href="character.html">Characters</a>
-      <!-- Add more if needed -->
-    </nav>
-  </aside>
-
-  <main>
-    <header>
-      <h1 id="title">Characters</h1>
-      <div class="toolbar">
-        <button class="switch" onclick="toggleTheme()">🌗 Theme</button>
-        <button class="switch" onclick="switchLanguage()">🌐 VN/EN</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N.A.V.I Database - Characters</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="chr.css" />
+  </head>
+  <body data-theme="dark">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-database"></i>
+          N.A.V.I Database
+        </div>
+        <div class="subtitle">Neural Archive & Virtual Intelligence</div>
       </div>
-    </header>
-
-    <div class="content">
-      <div class="card">
-        <h2 id="section-title">Character Section</h2>
-        <p id="placeholder-text">[Insert your character descriptions here]</p>
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-section="dashboard">
+            <i class="fas fa-home"></i>
+            <span data-lang-key="dashboard">Dashboard</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link active" data-section="characters">
+            <i class="fas fa-users"></i>
+            <span data-lang-key="characters">Characters</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-section="monsters">
+            <i class="fas fa-dragon"></i>
+            <span data-lang-key="monsters">Monsters</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-section="locations">
+            <i class="fas fa-map-marker-alt"></i>
+            <span data-lang-key="locations">Locations</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="nav-link" data-section="archive">
+            <i class="fas fa-archive"></i>
+            <span data-lang-key="archive">Archive</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-content">
+          <h1 class="page-title" data-lang-key="characters">Characters</h1>
+          <div class="header-controls">
+            <button class="control-btn" id="themeToggle">
+              <i class="fas fa-moon"></i>
+              <span data-lang-key="theme">Theme</span>
+            </button>
+            <button class="control-btn" id="langToggle">
+              <i class="fas fa-globe"></i>
+              <span>VN/EN</span>
+            </button>
+            <button class="control-btn d-md-none" id="sidebarToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Content Area -->
+      <div class="content-area">
+        <div class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <span data-lang-key="database-online"
+            >N.A.V.I Database Online - All systems operational</span
+          >
+        </div>
+        <div class="character-grid" id="characterGrid">
+          <!-- Character cards will be populated by JavaScript -->
+        </div>
       </div>
     </div>
-  </main>
-
-  <script>
-    function toggleTheme() {
-      const html = document.querySelector('body');
-      html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
-    }
-
-    const translations = {
-      en: {
-        title: "Characters",
-        section: "Character Section",
-        placeholder: "[REDACTED]",
-      },
-      vi: {
-        title: "Nhân Vật",
-        section: "Mục Nhân Vật",
-        placeholder: "[ĐÃ BỊ XÓA]",
-      }
-    };
-
-    let currentLang = 'en';
-
-    function switchLanguage() {
-      currentLang = currentLang === 'en' ? 'vi' : 'en';
-      const t = translations[currentLang];
-      document.getElementById("title").innerText = t.title;
-      document.getElementById("section-title").innerText = t.section;
-      document.getElementById("placeholder-text").innerText = t.placeholder;
-    }
-  </script>
-</body>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="chr.js"></script>
+  </body>
 </html>
