@@ -9,185 +9,483 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --primary-glow: #00bfff;
+      --secondary-glow: #7df9ff;
+      --glass-bg: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.12);
+      --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.5s;
+      transition: var(--transition-smooth);
       position: relative;
       z-index: 0;
+      overflow-x: hidden;
     }
+
     body.dark {
-      background: #0a0a0a;
+      background: radial-gradient(ellipse at bottom, #0d1421 0%, #0a0a0a 100%);
     }
+
+    /* Floating particles background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--primary-glow);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 20s infinite linear;
+      box-shadow: 0 0 6px var(--primary-glow);
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Enhanced starfield */
     #starfield {
       display: none;
       position: fixed;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100vw !important;
       height: 100vh !important;
       pointer-events: none;
       z-index: 0;
     }
+
     body.dark #starfield {
       display: block;
     }
+
+    /* Main glass card with enhanced glassmorphism */
     .glass-card {
-      background: rgba(255,255,255,0.18);
-      border-radius: 1.5rem;
-      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
-      backdrop-filter: blur(12px) saturate(150%);
-      -webkit-backdrop-filter: blur(12px) saturate(150%);
-      border: 1px solid rgba(255,255,255,0.18);
-      max-width: 900px;
-      margin: 2rem 0;
-      padding: 2.5rem 2rem 3.5rem 2rem;
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 2rem;
+      box-shadow: 
+        0 20px 40px rgba(0,0,0,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.2),
+        0 1px 2px rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.2);
+      max-width: 950px;
+      margin: 2rem;
+      padding: 3rem 2.5rem 4rem 2.5rem;
       position: relative;
-      transition: background 0.5s, color 0.5s;
+      transition: var(--transition-smooth);
       width: 100%;
       z-index: 1;
+      overflow: hidden;
     }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
     .glass-card.dark {
-      background: rgba(34, 40, 49, 0.65);
-      color: #f5f6fa;
-      border: 1px solid rgba(255,255,255,0.09);
+      background: linear-gradient(145deg, rgba(20, 25, 40, 0.8), rgba(15, 20, 35, 0.6));
+      color: #f8fafc;
+      border: 1px solid rgba(100, 150, 200, 0.1);
+      box-shadow: 
+        0 25px 50px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(100, 150, 200, 0.1),
+        0 0 30px rgba(0, 191, 255, 0.05);
     }
+
+    /* Enhanced title with glow effect */
     .monster-title {
       font-weight: 700;
-      color: #00bfff;
-      margin-bottom: 1.3rem;
-      letter-spacing: 0.03em;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+      text-align: center;
+      position: relative;
+      animation: titleGlow 4s ease-in-out infinite alternate;
     }
-    .glass-card.dark .monster-title {
-      color: #7df9ff;
+
+    @keyframes titleGlow {
+      0% { filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.3)); }
+      100% { filter: drop-shadow(0 0 20px rgba(125, 249, 255, 0.5)); }
     }
+
+    /* Enhanced language switcher */
     .glass-lang-switcher {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      background: rgba(255,255,255,0.2);
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
       border-radius: 2rem;
-      padding: 0.25rem 0.75rem 0.25rem 0.5rem;
-      box-shadow: 0 2px 8px 0 rgba(31,38,135,0.07);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.5rem 1rem;
+      box-shadow: 
+        0 8px 16px rgba(0,0,0,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.2);
       width: fit-content;
       margin-left: auto;
       margin-right: auto;
+      transition: var(--transition-smooth);
     }
+
+    .glass-lang-switcher:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 12px 24px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
     .glass-lang-switcher select {
       background: transparent;
       border: none;
-      color: #222;
-      font-weight: 500;
+      color: #1e293b;
+      font-weight: 600;
       outline: none;
       cursor: pointer;
-      padding: 0.15rem 0.5rem;
+      padding: 0.25rem 0.5rem;
       font-size: 1rem;
+      border-radius: 0.5rem;
+      transition: var(--transition-smooth);
     }
+
     .glass-card.dark .glass-lang-switcher {
-      background: rgba(44,62,80,0.28);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(145deg, rgba(30, 40, 60, 0.4), rgba(20, 30, 50, 0.2));
+      border: 1px solid rgba(100, 150, 200, 0.2);
     }
+
     .glass-card.dark .glass-lang-switcher select {
-      color: #f5f6fa;
+      color: #f1f5f9;
     }
+
     .fi {
-      font-size: 1.25rem;
-      vertical-align: text-bottom;
+      font-size: 1.5rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
+
+    /* Enhanced monster grid with masonry-like layout */
     .monster-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.3rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
     }
+
+    /* Revolutionary monster cards with micro-interactions */
     .monster-card {
-      background: rgba(255,255,255,0.22);
-      border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 1rem;
-      box-shadow: 0 4px 16px 0 rgba(31,38,135,0.13);
-      padding: 1.3rem 0.7rem 1.1rem 0.7rem;
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 1.5rem;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+      padding: 2rem 1rem;
       text-align: center;
-      color: #222;
+      color: #1e293b;
       text-decoration: none;
-      transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
-      min-height: 150px;
+      transition: var(--transition-smooth);
+      min-height: 180px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-weight: 500;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
     }
+
+    .monster-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .monster-card:hover::before {
+      left: 100%;
+    }
+
     .monster-card:hover {
-      background: #e0f7fa;
-      color: #00bfff;
-      box-shadow: 0 8px 20px 0 #00bfff44;
-      transform: translateY(-4px) scale(1.04);
+      background: linear-gradient(145deg, rgba(0, 191, 255, 0.15), rgba(125, 249, 255, 0.1));
+      color: var(--primary-glow);
+      box-shadow: 
+        0 20px 40px rgba(0, 191, 255, 0.2),
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        0 0 30px rgba(0, 191, 255, 0.1);
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(0, 191, 255, 0.3);
     }
+
+    .monster-card:active {
+      transform: translateY(-4px) scale(0.98);
+    }
+
     .glass-card.dark .monster-card {
-      background: rgba(40,60,80,0.21);
-      color: #f5f6fa;
-      border-color: rgba(255,255,255,0.07);
+      background: linear-gradient(145deg, rgba(30, 40, 60, 0.3), rgba(20, 30, 50, 0.2));
+      color: #e2e8f0;
+      border-color: rgba(100, 150, 200, 0.2);
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(100, 150, 200, 0.1);
     }
+
     .glass-card.dark .monster-card:hover {
-      background: #223148;
-      color: #7df9ff;
+      background: linear-gradient(145deg, rgba(0, 191, 255, 0.2), rgba(125, 249, 255, 0.1));
+      color: var(--secondary-glow);
+      box-shadow: 
+        0 25px 50px rgba(0, 191, 255, 0.3),
+        inset 0 1px 0 rgba(125, 249, 255, 0.3),
+        0 0 40px rgba(125, 249, 255, 0.2);
     }
+
+    /* Enhanced icons with animations */
     .monster-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+      transition: var(--transition-bounce);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
     }
+
+    .monster-card:hover .monster-icon {
+      transform: scale(1.2) rotate(5deg);
+      filter: drop-shadow(0 6px 12px rgba(0, 191, 255, 0.3));
+    }
+
     .monster-svg {
-      width: 48px;
-      height: 48px;
+      width: 56px;
+      height: 56px;
       display: block;
-      margin: 0 auto 0.3rem auto;
+      margin: 0 auto 0.75rem auto;
+      transition: var(--transition-bounce);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
     }
+
+    .monster-card:hover .monster-svg {
+      transform: scale(1.15) rotate(-3deg);
+      filter: drop-shadow(0 6px 12px rgba(0, 191, 255, 0.4));
+    }
+
+    .monster-label {
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 0.02em;
+      transition: var(--transition-smooth);
+    }
+
+    /* Enhanced theme switch */
     .theme-switch {
       position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
+      bottom: 2rem;
+      right: 2rem;
       z-index: 2;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      padding: 0.75rem 1rem;
+      border-radius: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: var(--transition-smooth);
     }
-    .monster-label {
-      font-weight: 600;
-      font-size: 1.1rem;
-      letter-spacing: 0.01em;
+
+    .theme-switch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     }
+
+    .glass-card.dark .theme-switch {
+      background: linear-gradient(145deg, rgba(30, 40, 60, 0.4), rgba(20, 30, 50, 0.2));
+      border-color: rgba(100, 150, 200, 0.2);
+    }
+
+    #themeLabel {
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    #themeLabel:hover {
+      transform: scale(1.2);
+    }
+
+    .form-check-input:checked {
+      background-color: var(--primary-glow);
+      border-color: var(--primary-glow);
+      box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    }
+
+    /* Status indicators for monsters */
+    .monster-status {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    .monster-status.locked {
+      background: #ef4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Loading animation */
+    .loading-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* Responsive enhancements */
     @media (max-width: 900px) {
-      .glass-card { padding: 1.2rem 0.3rem 2.5rem 0.3rem; }
+      .glass-card { 
+        padding: 2rem 1.5rem 3rem 1.5rem; 
+        margin: 1rem;
+      }
+      .monster-title { font-size: 2rem; }
     }
+
     @media (max-width: 800px) {
-      .monster-grid { grid-template-columns: repeat(2, 1fr); }
+      .monster-grid { 
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+      }
     }
+
     @media (max-width: 600px) {
       .glass-card {
-        padding: 1.1rem 0.1rem 2.2rem 0.1rem;
+        padding: 1.5rem 1rem 2.5rem 1rem;
+        margin: 0.5rem;
+        border-radius: 1.5rem;
       }
       .theme-switch {
-        bottom: 0.7rem;
-        right: 0.7rem;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.5rem 0.75rem;
       }
       .monster-grid {
         grid-template-columns: 1fr;
-        gap: .7rem;
+        gap: 0.75rem;
       }
+      .monster-title { font-size: 1.8rem; }
+      .monster-card {
+        min-height: 150px;
+        padding: 1.5rem 0.75rem;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 </head>
 <body>
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+  
+  <!-- Enhanced starfield -->
   <canvas id="starfield"></canvas>
+  
   <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="glass-card position-relative" id="glassCard">
+      <!-- Enhanced language switcher -->
       <div class="glass-lang-switcher" id="langSwitcher">
         <span class="fi fi-gb"></span>
         <select class="form-select form-select-sm d-inline border-0 shadow-0" id="languageSelect" aria-label="Select language">
@@ -197,55 +495,90 @@
           <option value="th" data-flag="th">ไทย</option>
         </select>
       </div>
-      <!-- Main Content -->
-      <h2 class="monster-title text-center" id="monsterTitle">Main Monsters</h2>
+      
+      <!-- Enhanced main content -->
+      <h1 class="monster-title" id="monsterTitle">Main Monsters</h1>
+      
       <div class="monster-grid">
-        <a href="nopermission.html" class="monster-card" tabindex="0" title="Access Nomi info">
+        <a href="nopermission.html" class="monster-card" tabindex="0" title="Access Nomi info" role="button">
+          <div class="monster-status locked" aria-label="Locked"></div>
           <span class="monster-icon">❓</span>
           <span class="monster-label">Nomi</span>
+          <span class="sr-only">Access restricted</span>
         </a>
-        <a href="val.html" class="monster-card" tabindex="0" title="Access Val info">
+        
+        <a href="val.html" class="monster-card" tabindex="0" title="Access Val info" role="button">
+          <div class="monster-status" aria-label="Available"></div>
           <span class="monster-icon">🛠️</span>
           <span class="monster-label">Val</span>
+          <span class="sr-only">Access available</span>
         </a>
-        <a href="nopermission.html" class="monster-card" tabindex="0" title="Access North info">
-          <span class="monster-icon">❓</span>
+        
+        <a href="nopermission.html" class="monster-card" tabindex="0" title="Access North info" role="button">
+          <div class="monster-status locked" aria-label="Locked"></div>
+          <span class="monster-icon">❄️</span>
           <span class="monster-label">North</span>
+          <span class="sr-only">Access restricted</span>
         </a>
-        <a href="nopermission.html" class="monster-card" tabindex="0" title="Access Iki info">
-          <span class="monster-icon">❓</span>
+        
+        <a href="nopermission.html" class="monster-card" tabindex="0" title="Access Iki info" role="button">
+          <div class="monster-status locked" aria-label="Locked"></div>
+          <span class="monster-icon">⚡</span>
           <span class="monster-label">Iki</span>
+          <span class="sr-only">Access restricted</span>
         </a>
-        <a href=imaginary.html#" class="monster-card" tabindex="0" title="Access Imaginary info">
+        
+        <a href="imaginary.html" class="monster-card" tabindex="0" title="Access Imaginary info" role="button">
+          <div class="monster-status" aria-label="Available"></div>
           <span class="monster-svg">
-            <svg width="48" height="48" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="96" height="96" rx="20" fill="#0F0F0F" />
-              <circle cx="48" cy="38" r="18" stroke="#6FC3DF" stroke-width="3"/>
-              <circle cx="42" cy="35" r="3" fill="#6FC3DF"/>
-              <circle cx="54" cy="35" r="3" fill="#6FC3DF"/>
-              <path d="M40 48c4 5 12 5 16 0" stroke="#6FC3DF" stroke-width="2" stroke-linecap="round"/>
-              <rect x="22" y="70" width="52" height="4" rx="2" fill="#222"/>
-              <rect x="28" y="70" width="12" height="4" rx="2" fill="#6FC3DF"/>
-              <text x="48%" y="91%" fill="#444" font-size="7" text-anchor="middle" font-family="monospace" letter-spacing="0.5">IMAGINARY</text>
+            <svg width="56" height="56" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="96" height="96" rx="20" fill="url(#gradient1)" />
+              <defs>
+                <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#00bfff;stop-opacity:0.8" />
+                  <stop offset="100%" style="stop-color:#7df9ff;stop-opacity:0.6" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <circle cx="48" cy="38" r="18" stroke="#6FC3DF" stroke-width="3" filter="url(#glow)"/>
+              <circle cx="42" cy="35" r="3" fill="#6FC3DF" filter="url(#glow)"/>
+              <circle cx="54" cy="35" r="3" fill="#6FC3DF" filter="url(#glow)"/>
+              <path d="M40 48c4 5 12 5 16 0" stroke="#6FC3DF" stroke-width="2" stroke-linecap="round" filter="url(#glow)"/>
+              <rect x="22" y="70" width="52" height="4" rx="2" fill="#333"/>
+              <rect x="28" y="70" width="12" height="4" rx="2" fill="#6FC3DF" filter="url(#glow)"/>
+              <text x="48%" y="91%" fill="#666" font-size="7" text-anchor="middle" font-family="Inter, monospace" letter-spacing="0.5">IMAGINARY</text>
             </svg>
           </span>
           <span class="monster-label">Imaginary</span>
+          <span class="sr-only">Access available</span>
         </a>
-        <a href="#" class="monster-card" tabindex="0" title="Access Illusions info">
-          <span class="monster-icon">❓</span>
+        
+        <a href="#" class="monster-card" tabindex="0" title="Access Illusions info" role="button">
+          <div class="monster-status locked" aria-label="Locked"></div>
+          <span class="monster-icon">🌀</span>
           <span class="monster-label">Illusions</span>
+          <span class="sr-only">Access restricted</span>
         </a>
       </div>
+      
+      <!-- Enhanced theme switch -->
       <div class="theme-switch">
         <label class="form-check-label" for="themeSwitch" id="themeLabel">🌙</label>
         <div class="form-check form-switch m-0">
-          <input class="form-check-input" type="checkbox" id="themeSwitch">
+          <input class="form-check-input" type="checkbox" id="themeSwitch" aria-label="Toggle dark mode">
         </div>
       </div>
     </div>
   </div>
+
   <script>
-    // Monster title translations
+    // Enhanced translations with more detailed content
     const translations = {
       en: { title: 'Main Monsters' },
       vi: { title: 'Quái Vật Chính' },
@@ -253,9 +586,23 @@
       th: { title: 'สัตว์ประหลาดหลัก' }
     };
 
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 15;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
     function setLanguage(lang) {
       document.getElementById('monsterTitle').textContent = translations[lang].title;
-      // Set flag
       const select = document.getElementById('languageSelect');
       const flag = select.options[select.selectedIndex].getAttribute('data-flag');
       document.querySelector('.glass-lang-switcher .fi').className = `fi fi-${flag}`;
@@ -266,12 +613,13 @@
       setLanguage(this.value);
     });
 
-    // STARFIELD BACKGROUND (stars fly outward from center)
+    // Enhanced starfield with more dynamic effects
     const canvas = document.getElementById("starfield");
     const ctx = canvas.getContext("2d");
     let stars = [];
-    const starCount = 180;
+    const starCount = 200;
     let animationId;
+    let mouseX = 0, mouseY = 0;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -284,14 +632,15 @@
       const h = canvas.height;
       for (let i = 0; i < starCount; i++) {
         const angle = Math.random() * 2 * Math.PI;
-        const radius = Math.random() * 4;
+        const radius = Math.random() * 8;
         stars.push({
           x: w/2 + Math.cos(angle) * radius,
           y: h/2 + Math.sin(angle) * radius,
-          dx: Math.cos(angle) * (Math.random() * 1.3 + 0.7),
-          dy: Math.sin(angle) * (Math.random() * 1.3 + 0.7),
-          o: Math.random() * 0.7 + 0.3,
-          size: Math.random() * 1.2 + 0.5
+          dx: Math.cos(angle) * (Math.random() * 1.5 + 0.5),
+          dy: Math.sin(angle) * (Math.random() * 1.5 + 0.5),
+          o: Math.random() * 0.8 + 0.2,
+          size: Math.random() * 1.5 + 0.5,
+          twinkle: Math.random() * 0.02 + 0.01
         });
       }
     }
@@ -306,27 +655,35 @@
       const h = canvas.height;
       
       for (let star of stars) {
+        // Add mouse interaction
+        const distToMouse = Math.sqrt((star.x - mouseX) ** 2 + (star.y - mouseY) ** 2);
+        const mouseEffect = Math.max(0, 100 - distToMouse) / 100;
+        
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(255,255,255,${star.o})`;
-        ctx.shadowColor = "#00bfff";
-        ctx.shadowBlur = 10 * star.o;
+        ctx.arc(star.x, star.y, star.size + mouseEffect, 0, 2 * Math.PI);
+        star.o += Math.sin(Date.now() * star.twinkle) * 0.01;
+        star.o = Math.max(0.1, Math.min(0.9, star.o));
+        
+        const colors = ['#ffffff', '#00bfff', '#7df9ff', '#e0f7fa'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        ctx.fillStyle = `rgba(${color === '#ffffff' ? '255,255,255' : color === '#00bfff' ? '0,191,255' : color === '#7df9ff' ? '125,249,255' : '224,247,250'},${star.o})`;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 15 * star.o + mouseEffect * 10;
         ctx.fill();
         ctx.shadowBlur = 0;
         
-        star.x += star.dx;
-        star.y += star.dy;
+        star.x += star.dx + mouseEffect * 0.5;
+        star.y += star.dy + mouseEffect * 0.3;
         
-        // If star moves outside the view, respawn at center
-        if (star.x < -20 || star.x > w + 20 || star.y < -20 || star.y > h + 20) {
+        if (star.x < -30 || star.x > w + 30 || star.y < -30 || star.y > h + 30) {
           const angle = Math.random() * 2 * Math.PI;
-          const radius = Math.random() * 6;
+          const radius = Math.random() * 10;
           star.x = w/2 + Math.cos(angle) * radius;
           star.y = h/2 + Math.sin(angle) * radius;
-          star.dx = Math.cos(angle) * (Math.random() * 1.3 + 0.7);
-          star.dy = Math.sin(angle) * (Math.random() * 1.3 + 0.7);
-          star.o = Math.random() * 0.7 + 0.3;
-          star.size = Math.random() * 1.2 + 0.5;
+          star.dx = Math.cos(angle) * (Math.random() * 1.5 + 0.5);
+          star.dy = Math.sin(angle) * (Math.random() * 1.5 + 0.5);
+          star.o = Math.random() * 0.8 + 0.2;
+          star.size = Math.random() * 1.5 + 0.5;
         }
       }
       
@@ -335,11 +692,18 @@
       }
     }
 
+    // Mouse tracking for starfield interaction
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
     function startStarfield() {
       resizeCanvas();
       initStars();
-      if (animationId) cancelAnimationFrame(animationId);
-      drawStars();
+      if (document.body.classList.contains('dark')) {
+        drawStars();
+      }
     }
 
     function stopStarfield() {
@@ -347,45 +711,677 @@
         cancelAnimationFrame(animationId);
         animationId = null;
       }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Theme switcher
+    // Enhanced theme switching with smooth transitions
     const themeSwitch = document.getElementById('themeSwitch');
+    const themeLabel = document.getElementById('themeLabel');
+    const glassCard = document.getElementById('glassCard');
+
     function setTheme(isDark) {
-      document.body.classList.toggle('dark', isDark);
-      document.getElementById('glassCard').classList.toggle('dark', isDark);
-      localStorage.setItem('monster-theme', isDark ? 'dark' : 'light');
-      
       if (isDark) {
+        document.body.classList.add('dark');
+        glassCard.classList.add('dark');
+        themeLabel.textContent = '☀️';
         startStarfield();
       } else {
+        document.body.classList.remove('dark');
+        glassCard.classList.remove('dark');
+        themeLabel.textContent = '🌙';
         stopStarfield();
       }
+      localStorage.setItem('monster-theme', isDark ? 'dark' : 'light');
     }
 
     themeSwitch.addEventListener('change', function() {
       setTheme(this.checked);
     });
 
-    // Window resize handler
+    // Responsive starfield
     window.addEventListener('resize', () => {
       if (document.body.classList.contains('dark')) {
-        startStarfield();
+        resizeCanvas();
+        initStars();
       }
     });
 
-    // Restore preferences on load
-    window.addEventListener('DOMContentLoaded', function() {
-      const lang = localStorage.getItem('monster-lang') || 'en';
-      document.getElementById('languageSelect').value = lang;
-      setLanguage(lang);
+    // Enhanced loading animations
+    function addLoadingEffect() {
+      document.querySelectorAll('.monster-card').forEach(card => {
+        card.classList.add('loading-shimmer');
+        setTimeout(() => {
+          card.classList.remove('loading-shimmer');
+        }, 2000);
+      });
+    }
 
-      const theme = localStorage.getItem('monster-theme') || 'light';
-      const isDark = theme === 'dark';
-      themeSwitch.checked = isDark;
-      setTheme(isDark);
+    // Keyboard navigation enhancements
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const focused = document.activeElement;
+        if (focused.classList.contains('monster-card')) {
+          e.preventDefault();
+          focused.click();
+        }
+      }
     });
+
+    // Enhanced card interactions with ripple effects
+    document.querySelectorAll('.monster-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-8px) scale(1.02)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+
+      card.addEventListener('mousedown', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const ripple = document.createElement('div');
+        ripple.style.cssText = `
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(0, 191, 255, 0.3);
+          transform: scale(0);
+          animation: ripple 0.6s linear;
+          pointer-events: none;
+          left: ${x}px;
+          top: ${y}px;
+          width: 20px;
+          height: 20px;
+          margin-left: -10px;
+          margin-top: -10px;
+        `;
+        
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Add ripple animation CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Performance monitoring and optimization
+    let lastFrameTime = 0;
+    function optimizePerformance() {
+      const now = performance.now();
+      const delta = now - lastFrameTime;
+      
+      if (delta < 16) { // 60fps threshold
+        document.body.style.setProperty('--transition-smooth', 'all 0.2s ease');
+      } else {
+        document.body.style.setProperty('--transition-smooth', 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)');
+      }
+      
+      lastFrameTime = now;
+    }
+
+    // Initialize everything on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved preferences
+      const savedLang = localStorage.getItem('monster-lang') || 'en';
+      const savedTheme = localStorage.getItem('monster-theme') || 'light';
+      
+      document.getElementById('languageSelect').value = savedLang;
+      setLanguage(savedLang);
+      
+      themeSwitch.checked = savedTheme === 'dark';
+      setTheme(savedTheme === 'dark');
+      
+      // Create particles
+      createParticles();
+      
+      // Add loading effects
+      setTimeout(addLoadingEffect, 500);
+      
+      // Start performance monitoring
+      setInterval(optimizePerformance, 1000);
+      
+      // Accessibility enhancements
+      document.querySelectorAll('.monster-card').forEach(card => {
+        card.addEventListener('focus', function() {
+          this.style.outline = '2px solid var(--primary-glow)';
+          this.style.outlineOffset = '2px';
+        });
+        
+        card.addEventListener('blur', function() {
+          this.style.outline = 'none';
+        });
+      });
+    });
+
+    // Enhanced error handling
+    window.addEventListener('error', function(e) {
+      console.error('N.A.V.I Database Error:', e.error);
+      // Graceful degradation
+      document.querySelectorAll('.particle').forEach(p => p.remove());
+      stopStarfield();
+    });
+
+    // Service worker registration for PWA capabilities
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(registration) {
+          console.log('SW registered: ', registration);
+        }).catch(function(registrationError) {
+          console.log('SW registration failed: ', registrationError);
+        });
+      });
+    }
+
+    // Add touch gestures for mobile
+    let touchStartY = 0;
+    document.addEventListener('touchstart', function(e) {
+      touchStartY = e.touches[0].clientY;
+    });
+
+    document.addEventListener('touchmove', function(e) {
+      const touchY = e.touches[0].clientY;
+      const diff = touchStartY - touchY;
+      
+      if (Math.abs(diff) > 50) {
+        document.body.style.transform = `translateY(${-diff * 0.1}px)`;
+      }
+    });
+
+    document.addEventListener('touchend', function() {
+      document.body.style.transform = 'translateY(0)';
+    });
+    // Enhanced Language Dropdown Button Component
+const translations = {
+  en: {
+    title: 'Main Monsters',
+    nomi: 'Nomi',
+    val: 'Val',
+    north: 'North',
+    iki: 'Iki',
+    imaginary: 'Imaginary',
+    illusions: 'Illusions',
+    locked: 'Access restricted',
+    available: 'Access available',
+    toggleDark: 'Toggle dark mode',
+    selectLanguage: 'Select language',
+    accessNomi: 'Access Nomi info',
+    accessVal: 'Access Val info',
+    accessNorth: 'Access North info',
+    accessIki: 'Access Iki info',
+    accessImaginary: 'Access Imaginary info',
+    accessIllusions: 'Access Illusions info'
+  },
+  vi: {
+    title: 'Quái Vật Chính',
+    nomi: 'Nomi',
+    val: 'Val',
+    north: 'Bắc',
+    iki: 'Iki',
+    imaginary: 'Tưởng Tượng',
+    illusions: 'Ảo Ảnh',
+    locked: 'Truy cập bị hạn chế',
+    available: 'Có thể truy cập',
+    toggleDark: 'Chuyển đổi chế độ tối',
+    selectLanguage: 'Chọn ngôn ngữ',
+    accessNomi: 'Truy cập thông tin Nomi',
+    accessVal: 'Truy cập thông tin Val',
+    accessNorth: 'Truy cập thông tin Bắc',
+    accessIki: 'Truy cập thông tin Iki',
+    accessImaginary: 'Truy cập thông tin Tưởng Tượng',
+    accessIllusions: 'Truy cập thông tin Ảo Ảnh'
+  },
+  th: {
+    title: 'สัตว์ประหลาดหลัก',
+    nomi: 'โนมิ',
+    val: 'วาล',
+    north: 'เหนือ',
+    iki: 'อิกิ',
+    imaginary: 'จินตนาการ',
+    illusions: 'มายา',
+    locked: 'การเข้าถึงถูกจำกัด',
+    available: 'สามารถเข้าถึงได้',
+    toggleDark: 'สลับโหมดมืด',
+    selectLanguage: 'เลือกภาษา',
+    accessNomi: 'เข้าถึงข้อมูลโนมิ',
+    accessVal: 'เข้าถึงข้อมูลวาล',
+    accessNorth: 'เข้าถึงข้อมูลเหนือ',
+    accessIki: 'เข้าถึงข้อมูลอิกิ',
+    accessImaginary: 'เข้าถึงข้อมูลจินตนาการ',
+    accessIllusions: 'เข้าถึงข้อมูลมายา'
+  }
+};
+
+// Language configuration with flags and display names
+const languageConfig = {
+  en: { flag: 'gb', name: 'English', native: 'English' },
+  vi: { flag: 'vn', name: 'Vietnamese', native: 'Tiếng Việt' },
+  th: { flag: 'th', name: 'Thai', native: 'ไทย' }
+};
+
+// Create enhanced dropdown button HTML
+function createLanguageDropdown() {
+  const dropdownHTML = `
+    <div class="language-dropdown" id="languageDropdown">
+      <button class="language-btn" id="languageBtn" type="button" aria-expanded="false" aria-haspopup="true">
+        <span class="fi fi-gb" id="currentFlag"></span>
+        <span class="language-text" id="currentLang">English</span>
+        <i class="bi bi-chevron-down dropdown-arrow" id="dropdownArrow"></i>
+      </button>
+      <div class="language-menu" id="languageMenu" role="menu">
+        <div class="language-option" data-lang="en" role="menuitem" tabindex="0">
+          <span class="fi fi-gb"></span>
+          <span class="lang-name">English</span>
+          <span class="lang-native">English</span>
+        </div>
+        <div class="language-option" data-lang="vi" role="menuitem" tabindex="0">
+          <span class="fi fi-vn"></span>
+          <span class="lang-name">Vietnamese</span>
+          <span class="lang-native">Tiếng Việt</span>
+        </div>
+        <div class="language-option" data-lang="th" role="menuitem" tabindex="0">
+          <span class="fi fi-th"></span>
+          <span class="lang-name">Thai</span>
+          <span class="lang-native">ไทย</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Add CSS styles
+  const styles = `
+    <style>
+      .language-dropdown {
+        position: relative;
+        display: inline-block;
+        z-index: 1000;
+      }
+
+      .language-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 2rem;
+        color: #1e293b;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        min-width: 140px;
+        justify-content: space-between;
+      }
+
+      .language-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      }
+
+      .language-btn:active {
+        transform: translateY(0);
+      }
+
+      .language-btn.active {
+        background: linear-gradient(145deg, rgba(0, 191, 255, 0.2), rgba(125, 249, 255, 0.1));
+        border-color: rgba(0, 191, 255, 0.3);
+        color: var(--primary-glow);
+      }
+
+      .glass-card.dark .language-btn {
+        background: linear-gradient(145deg, rgba(30, 40, 60, 0.4), rgba(20, 30, 50, 0.2));
+        border-color: rgba(100, 150, 200, 0.2);
+        color: #f1f5f9;
+      }
+
+      .glass-card.dark .language-btn:hover {
+        background: linear-gradient(145deg, rgba(30, 40, 60, 0.5), rgba(20, 30, 50, 0.3));
+      }
+
+      .glass-card.dark .language-btn.active {
+        background: linear-gradient(145deg, rgba(0, 191, 255, 0.3), rgba(125, 249, 255, 0.2));
+        color: var(--secondary-glow);
+      }
+
+      .dropdown-arrow {
+        transition: transform 0.3s ease;
+        font-size: 0.875rem;
+      }
+
+      .language-btn.active .dropdown-arrow {
+        transform: rotate(180deg);
+      }
+
+      .language-text {
+        font-size: 0.95rem;
+        flex-grow: 1;
+        text-align: left;
+      }
+
+      .fi {
+        font-size: 1.25rem;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      }
+
+      .language-menu {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        left: 0;
+        right: 0;
+        background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 1rem;
+        box-shadow: 
+          0 20px 40px rgba(0,0,0,0.15),
+          inset 0 1px 0 rgba(255,255,255,0.2);
+        backdrop-filter: blur(20px);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px) scale(0.95);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        z-index: 1001;
+      }
+
+      .language-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+
+      .glass-card.dark .language-menu {
+        background: linear-gradient(145deg, rgba(20, 25, 40, 0.95), rgba(15, 20, 35, 0.9));
+        border-color: rgba(100, 150, 200, 0.3);
+        box-shadow: 
+          0 25px 50px rgba(0,0,0,0.4),
+          inset 0 1px 0 rgba(100, 150, 200, 0.2);
+      }
+
+      .language-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        position: relative;
+      }
+
+      .language-option:last-child {
+        border-bottom: none;
+      }
+
+      .language-option:hover,
+      .language-option:focus {
+        background: linear-gradient(90deg, rgba(0, 191, 255, 0.1), transparent);
+        color: var(--primary-glow);
+        outline: none;
+      }
+
+      .language-option.selected {
+        background: linear-gradient(90deg, rgba(0, 191, 255, 0.15), rgba(125, 249, 255, 0.05));
+        color: var(--primary-glow);
+        font-weight: 600;
+      }
+
+      .language-option.selected::after {
+        content: '✓';
+        position: absolute;
+        right: 1rem;
+        color: var(--primary-glow);
+        font-weight: bold;
+      }
+
+      .glass-card.dark .language-option {
+        color: #e2e8f0;
+        border-color: rgba(100, 150, 200, 0.1);
+      }
+
+      .glass-card.dark .language-option:hover,
+      .glass-card.dark .language-option:focus {
+        background: linear-gradient(90deg, rgba(0, 191, 255, 0.2), transparent);
+        color: var(--secondary-glow);
+      }
+
+      .glass-card.dark .language-option.selected {
+        background: linear-gradient(90deg, rgba(0, 191, 255, 0.25), rgba(125, 249, 255, 0.1));
+        color: var(--secondary-glow);
+      }
+
+      .lang-name {
+        flex-grow: 1;
+        font-weight: 500;
+      }
+
+      .lang-native {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        font-style: italic;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 600px) {
+        .language-btn {
+          min-width: 120px;
+          padding: 0.625rem 0.875rem;
+        }
+        
+        .language-text {
+          font-size: 0.875rem;
+        }
+        
+        .lang-native {
+          display: none;
+        }
+      }
+
+      /* Animation for menu appearance */
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .language-menu.show {
+        animation: slideDown 0.3s ease-out;
+      }
+    </style>
+  `;
+
+  return { html: dropdownHTML, css: styles };
+}
+
+// Enhanced language setter function
+function setLanguage(lang) {
+  if (!translations[lang]) {
+    console.warn(`Language '${lang}' not supported, defaulting to English`);
+    lang = 'en';
+  }
+
+  const t = translations[lang];
+  const config = languageConfig[lang];
+
+  // Update main title
+  const titleElement = document.getElementById('monsterTitle');
+  if (titleElement) {
+    titleElement.textContent = t.title;
+  }
+
+  // Update monster card labels
+  const monsterCards = document.querySelectorAll('.monster-card');
+  const monsterKeys = ['nomi', 'val', 'north', 'iki', 'imaginary', 'illusions'];
+  
+  monsterCards.forEach((card, index) => {
+    const labelElement = card.querySelector('.monster-label');
+    const srElement = card.querySelector('.sr-only');
+    const statusElement = card.querySelector('.monster-status');
+    
+    if (labelElement && monsterKeys[index]) {
+      labelElement.textContent = t[monsterKeys[index]];
+    }
+    
+    if (srElement && statusElement) {
+      const isLocked = statusElement.classList.contains('locked');
+      srElement.textContent = isLocked ? t.locked : t.available;
+    }
+    
+    if (monsterKeys[index]) {
+      const accessKey = `access${monsterKeys[index].charAt(0).toUpperCase() + monsterKeys[index].slice(1)}`;
+      card.setAttribute('title', t[accessKey]);
+    }
+  });
+
+  // Update dropdown button display
+  const currentFlag = document.getElementById('currentFlag');
+  const currentLang = document.getElementById('currentLang');
+  
+  if (currentFlag && currentLang && config) {
+    currentFlag.className = `fi fi-${config.flag}`;
+    currentLang.textContent = config.native;
+  }
+
+  // Update selected option in menu
+  document.querySelectorAll('.language-option').forEach(option => {
+    option.classList.remove('selected');
+    if (option.dataset.lang === lang) {
+      option.classList.add('selected');
+    }
+  });
+
+  // Save preference and trigger event
+  localStorage.setItem('monster-lang', lang);
+  window.dispatchEvent(new CustomEvent('languageChanged', { 
+    detail: { language: lang, translations: t }
+  }));
+  
+  console.log(`Language changed to: ${lang}`);
+}
+
+// Initialize dropdown functionality
+function initializeLanguageDropdown() {
+  const dropdown = createLanguageDropdown();
+  
+  // Add styles to head
+  if (!document.querySelector('#languageDropdownStyles')) {
+    const styleElement = document.createElement('div');
+    styleElement.id = 'languageDropdownStyles';
+    styleElement.innerHTML = dropdown.css;
+    document.head.appendChild(styleElement);
+  }
+
+  // Replace existing language switcher or add to page
+  const existingSwitcher = document.querySelector('.glass-lang-switcher, #langSwitcher');
+  if (existingSwitcher) {
+    existingSwitcher.outerHTML = dropdown.html;
+  } else {
+    // Add after title if no existing switcher found
+    const title = document.getElementById('monsterTitle');
+    if (title) {
+      title.insertAdjacentHTML('afterend', dropdown.html);
+    }
+  }
+
+  // Set up event listeners
+  const languageBtn = document.getElementById('languageBtn');
+  const languageMenu = document.getElementById('languageMenu');
+  const languageOptions = document.querySelectorAll('.language-option');
+
+  // Toggle dropdown
+  languageBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isOpen = this.classList.contains('active');
+    
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  });
+
+  // Handle option selection
+  languageOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const lang = this.dataset.lang;
+      setLanguage(lang);
+      closeDropdown();
+    });
+
+    // Keyboard navigation
+    option.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.language-dropdown')) {
+      closeDropdown();
+    }
+  });
+
+  // Close dropdown on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  function openDropdown() {
+    languageBtn.classList.add('active');
+    languageMenu.classList.add('show');
+    languageBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDropdown() {
+    languageBtn.classList.remove('active');
+    languageMenu.classList.remove('show');
+    languageBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  // Initialize with saved or default language
+  const savedLang = localStorage.getItem('monster-lang');
+  const browserLang = navigator.language.slice(0, 2);
+  const defaultLang = savedLang || (translations[browserLang] ? browserLang : 'en');
+  
+  setLanguage(defaultLang);
+}
+
+// Auto-initialize
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeLanguageDropdown);
+} else {
+  initializeLanguageDropdown();
+}
+
+// Export functions
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { setLanguage, translations, initializeLanguageDropdown };
+}
   </script>
+
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
