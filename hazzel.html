@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N.A.V.I. - Neural Archive Visualization Interface</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap');
+        
+        :root {
+            --primary-cyan: #00ffff;
+            --secondary-red: #ff0040;
+            --dark-bg: #0a0a0f;
+            --panel-bg: rgba(20, 25, 35, 0.8);
+            --glass-border: rgba(0, 255, 255, 0.3);
+            --neural-blue: #4da6ff;
+            --warning-orange: #ff8c00;
+            --success-green: #00ff80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Courier Prime', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Neural Network Background */
+        .neural-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #001122 0%, #000508 100%);
+        }
+
+        .neural-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.6;
+        }
+
+        /* Scanlines & Grid Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 4px
+            );
+            animation: scanline-move 2s linear infinite;
+        }
+
+        @keyframes scanline-move {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes grid-pulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Holographic Title */
+        .holographic-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            background: linear-gradient(45deg, #00ffff, #ff0040, #00ff80, #ffff00);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: hologram-shift 3s ease-in-out infinite;
+        }
+
+        @keyframes hologram-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .orbital-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid var(--primary-cyan);
+            border-radius: 50%;
+            animation: orbital-rotation 8s linear infinite;
+        }
+
+        .ring-1 { width: 150px; height: 150px; opacity: 0.6; }
+        .ring-2 { width: 200px; height: 200px; opacity: 0.4; animation-duration: 12s; }
+        .ring-3 { width: 250px; height: 250px; opacity: 0.2; animation-duration: 16s; }
+
+        @keyframes orbital-rotation {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Glassmorphism Panels */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            position: relative;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+            animation: border-scan 3s linear infinite;
+        }
+
+        @keyframes border-scan {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Terminal Interface */
+        .terminal-container {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--primary-cyan);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .terminal-header {
+            background: linear-gradient(90deg, var(--primary-cyan), var(--secondary-red));
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: between;
+        }
+
+        .terminal-body {
+            padding: 1rem;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier Prime', monospace;
+            line-height: 1.4;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: var(--primary-cyan);
+            outline: none;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .terminal-line {
+            margin: 0.2rem 0;
+            animation: type-in 0.5s ease-out;
+        }
+
+        @keyframes type-in {
+            from { opacity: 0; width: 0; }
+            to { opacity: 1; width: 100%; }
+        }
+
+        .typing-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 14px;
+            background: var(--primary-cyan);
+            animation: cursor-blink 1s infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* File Transfer Simulation */
+        .file-transfer {
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid var(--neural-blue);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.5);
+            height: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-cyan), var(--success-green));
+            border-radius: 15px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progress-shine 2s infinite;
+        }
+
+        @keyframes progress-shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Security Clearance Matrix */
+        .clearance-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .clearance-level {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clearance-level:hover {
+            border-color: var(--primary-cyan);
+            transform: scale(1.05);
+        }
+
+        .clearance-level.active {
+            border-color: var(--success-green);
+            background: rgba(0, 255, 128, 0.1);
+        }
+
+        .clearance-level.denied {
+            border-color: var(--secondary-red);
+            background: rgba(255, 0, 64, 0.1);
+        }
+
+        .security-scanner {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+            animation: security-scan 2s infinite;
+        }
+
+        @keyframes security-scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Quantum Loader */
+        .quantum-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            margin: 2rem 0;
+        }
+
+        .quantum-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-cyan);
+            margin: 0 3px;
+            animation: quantum-pulse 1.5s infinite ease-in-out;
+        }
+
+        .quantum-dot:nth-child(1) { animation-delay: -0.32s; }
+        .quantum-dot:nth-child(2) { animation-delay: -0.16s; }
+        .quantum-dot:nth-child(3) { animation-delay: 0; }
+        .quantum-dot:nth-child(4) { animation-delay: 0.16s; }
+        .quantum-dot:nth-child(5) { animation-delay: 0.32s; }
+
+        @keyframes quantum-pulse {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: status-pulse 2s infinite;
+        }
+
+        .status-online { background: var(--success-green); }
+        .status-warning { background: var(--warning-orange); }
+        .status-critical { background: var(--secondary-red); }
+        .status-unknown { background: #666; }
+
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+        }
+
+        .notification {
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--primary-cyan);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transform: translateX(400px);
+            animation: slide-in 0.5s forwards;
+        }
+
+        @keyframes slide-in {
+            to { transform: translateX(0); }
+        }
+
+        .notification.slide-out {
+            animation: slide-out 0.5s forwards;
+        }
+
+        @keyframes slide-out {
+            to { transform: translateX(400px); }
+        }
+
+        /* Emergency Override */
+        .emergency-mode {
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, var(--dark-bg) 70%);
+            animation: emergency-pulse 1s infinite;
+        }
+
+        @keyframes emergency-pulse {
+            0%, 100% { background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, var(--dark-bg) 70%); }
+            50% { background: radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, var(--dark-bg) 70%); }
+        }
+
+        .emergency-alert {
+            color: var(--secondary-red);
+            font-weight: bold;
+            animation: text-flash 0.5s infinite;
+        }
+
+        @keyframes text-flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Profile Image Enhancement */
+        .profile-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .profile-img {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--secondary-red), #ff6666);
+            color: black;
+            font-weight: bold;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--secondary-red);
+            border-radius: 12px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
+        }
+
+        .profile-img::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: profile-scan 3s infinite;
+        }
+
+        @keyframes profile-scan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* System Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            border-color: var(--primary-cyan);
+            transform: translateY(-3px);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-cyan);
+            margin: 0.5rem 0;
+        }
+
+        .redacted {
+            background: var(--secondary-red);
+            color: black;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            animation: redacted-flicker 3s infinite;
+        }
+
+        @keyframes redacted-flicker {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.7; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .holographic-title {
+                font-size: 2rem;
+            }
+            
+            .glass-panel {
+                padding: 1rem;
+                margin: 0.5rem 0;
+            }
+            
+            .profile-img {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .clearance-matrix {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+
+        /* Matrix Mode */
+        .matrix-mode {
+            filter: hue-rotate(120deg) saturate(1.5);
+        }
+
+        .matrix-mode .holographic-title {
+            background: linear-gradient(45deg, #00ff00, #004400, #00ff00, #008800);
+        }
+    </style>
+</head>
+<body>
+    <!-- Neural Network Background -->
+    <div class="neural-bg">
+        <canvas class="neural-canvas" id="neuralCanvas"></canvas>
+    </div>
+    
+    <!-- Scanlines & Grid Overlay -->
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+    
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+    
+    <div class="container-fluid">
+        <!-- Holographic Title with Orbital Rings -->
+        <div class="holographic-title">
+            N.A.V.I. DATABASE
+            <div class="orbital-ring ring-1"></div>
+            <div class="orbital-ring ring-2"></div>
+            <div class="orbital-ring ring-3"></div>
+        </div>
+        
+        <!-- System Status Bar -->
+        <div class="glass-panel">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5><i class="fas fa-shield-alt"></i> System Status</h5>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="systemLoad">87%</div>
+                            <small>System Load</small>
+                            <div class="status-indicator status-warning"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="networkStatus">ONLINE</div>
+                            <small>Network Status</small>
+                            <div class="status-indicator status-online"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="securityLevel">OMEGA</div>
+                            <small>Security Level</small>
+                            <div class="status-indicator status-critical"></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="activeUsers">3</div>
+                            <small>Active Users</small>
+                            <div class="status-indicator status-online"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Control Matrix -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-key"></i> Security Clearance Matrix</h5>
+            <div class="clearance-matrix">
+                <div class="clearance-level active" data-level="OMEGA">
+                    <div class="security-scanner"></div>
+                    <strong>OMEGA</strong><br>
+                    <small>Z-2 Access</small>
+                </div>
+                <div class="clearance-level denied" data-level="ALPHA">
+                    <div class="security-scanner"></div>
+                    <strong>ALPHA</strong><br>
+                    <small>Restricted</small>
+                </div>
+                <div class="clearance-level" data-level="BETA">
+                    <div class="security-scanner"></div>
+                    <strong>BETA</strong><br>
+                    <small>Limited</small>
+                </div>
+                <div class="clearance-level active" data-level="GAMMA">
+                    <div class="security-scanner"></div>
+                    <strong>GAMMA</strong><br>
+                    <small>Authorized</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Personnel File -->
+        <div class="glass-panel">
+            <h2><i class="fas fa-user-secret"></i> Personnel File: Mr. Eryas Harrell</h2>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="profile-container">
+                        <div class="profile-img">
+                            [CLASSIFIED]
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <strong class="text-warning">Clearance Level:</strong> 
+                        <span class="redacted">OMEGA-PRIME</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-info">Division:</strong> 
+                        Caelus Vanta / Haven Exploration Protocol
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-success">Special Access:</strong> 
+                        Z-2, Haven Core, Null Floor Chamber, Temporal Lab-7
+                    </div>
+                    <div class="mb-3">
+                        <strong class="text-danger">Anomaly Resistance:</strong> 
+                        <span class="status-indicator status-online"></span> Class-IX Neural Shielding
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bio Summary -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-dna"></i> Bio Summary</h5>
+            <p class="lead">
+                Eryas Harrell, considered one of the most elusive and influential figures within the foundation of N.A.V.I., 
+                is the only known person to directly interface with <span class="text-danger">Anomaly Z-2</span> and return with 
+                measurable cognition intact. His methods remain undocumented and often appear instinctive. 
+                Dr. Harrell has exhibited unexplainable resistance to cognitive anomalies and temporal destabilization.
+            </p>
+        </div>
+
+        <!-- File Transfer Simulation -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-download"></i> File Transfer Status</h5>
+            <div class="file-transfer">
+                <div class="d-flex justify-content-between">
+                    <span>Neural_Scan_EH_2024.dat</span>
+                    <span id="transferPercent">67%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 67%"></div>
+                </div>
+                <small class="text-muted">Estimated time remaining: <span id="timeRemaining">2m 34s</span></small>
+            </div>
+            
+            <div class="file-transfer">
+                <div class="d-flex justify-content-between">
+                    <span>Incident_Report_Z2_Skyline.enc</span>
+                    <span class="text-success">Complete</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%"></div>
+                </div>
+                <small class="text-success">Transfer completed successfully</small>
+            </div>
+        </div>
+
+        <!-- Terminal Interface -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-terminal"></i> N.A.V.I. Terminal Interface</h5>
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <span>NAVI-TERM v3.7.2 | User: HARRELL_E | Session: OMEGA-7742</span>
+                    <div class="ms-auto">
+                        <button class="btn btn-sm btn-outline-danger" id="emergencyBtn">EMERGENCY</button>
+                        <button class="btn btn-sm btn-outline-info" id="matrixBtn">MATRIX</button>
+                    </div>
+                </div>
+                <div class="terminal-body" id="terminalBody">
+                    <div class="terminal-line">N.A.V.I. Neural Archive Visualization Interface v3.7.2</div>
+                    <div class="terminal-line">Copyright © 2024 Caelus Vanta Corporation</div>
+                    <div class="terminal-line">WARNING: Unauthorized access is prohibited</div>
+                    <div class="terminal-line">---</div>
+                    <div class="terminal-line">System initialized. Quantum encryption active.</div>
+                    <div class="terminal-line">Anomaly Z-2 containment status: <span class="text-warning">FLUCTUATING</span></div>
+                    <div class="terminal-line">---</div>
+                    <div class="terminal-line">$ <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." autocomplete="off"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Known Incidents -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-exclamation-triangle"></i> Known Incidents</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="status-indicator status-critical"></span>
+                            <strong>Black Dive Expedition</strong><br>
+                            <small>Led expedition into the Abyss Trench - 23 casualties</small>
+                        </li>
+                        <li class="mb-2">
+                            <span class="status-indicator status-warning"></span>
+                            <strong>Harrell Neural Lattice Interface</strong><br>
+                            <small>Designed breakthrough cognitive protection system</small>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <span class="status-indicator status-unknown"></span>
+                            <strong>Memory Cycle Exemption</strong><br>
+                            <small>Unique immunity to standard protocols</small>
+                        </li>
+                        <li class="mb-2">
+                            <span class="status-indicator status-critical"></span>
+                            <strong>Event Z2-Skyline</strong><br>
+                            <small>Witnessed Z-2 pulse event - temporal anomalies detected</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Psychological Evaluation -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-brain"></i> Psychological Evaluation</h5>
+            <p>
+                Subject exhibits <span class="text-warning">paradoxical behavior patterns</span>, memory loops, 
+                and occasional communication in ancient dialects unknown to Earth-originating civilizations. 
+                Claims to have witnessed the <span class="text-info">"original form of the universe before breath"</span>. 
+                Cognitive resistance tests show <span class="redacted">CLASSIFIED</span> level anomaly interaction.
+            </p>
+            
+            <div class="quantum-loader" id="quantumLoader">
+                <div class="quantum-dot"></div>
+                <div class="quantum-dot"></div>
+                <div class="quantum-dot"></div>
+                <div class="quantum-dot"></div>
+                <div class="quantum-dot"></div>
+            </div>
+        </div>
+
+        <!-- Current Status -->
+        <div class="glass-panel">
+            <h5><i class="fas fa-satellite-dish"></i> Current Status</h5>
+            <div class="alert alert-danger">
+                <strong>Status:</strong> <span class="redacted">LOCATION UNKNOWN</span><br>
+                <strong>Last Known Position:</strong> Site-09 Level Omega Floor<br>
+                <strong>Surveillance:</strong> <span class="emergency-alert">DISABLED 3.2s POST-ARRIVAL</span><br>
+                <strong>Temporal Signature:</strong> <span class="text-warning">UNSTABLE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Neural Network Background Animation
+        class NeuralNetwork {
+            constructor() {
+                this.canvas = document.getElementById('neuralCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.nodes = [];
+                this.connections = [];
+                this.mousePos = { x: 0, y: 0 };
+                
+                this.init();
+                this.animate();
+                this.setupEventListeners();
+            }
+            
+            init() {
+                this.resize();
+                this.createNodes();
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createNodes() {
+                this.nodes = [];
+                const nodeCount = Math.floor((this.canvas.width * this.canvas.height) / 10000);
+                
+                for (let i = 0; i < nodeCount; i++) {
+                    this.nodes.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.random() * 2 + 1
+                    });
+                }
+            }
+            
+            updateNodes() {
+                this.nodes.forEach(node => {
+                    node.x += node.vx;
+                    node.y += node.vy;
+                    
+                    if (node.x < 0 || node.x > this.canvas.width) node.vx *= -1;
+                    if (node.y < 0 || node.y > this.canvas.height) node.vy *= -1;
+                });
+            }
+            
+            drawConnections() {
+                const maxDistance = 120;
+                this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
+                this.ctx.lineWidth = 0.5;
+                
+                for (let i = 0; i < this.nodes.length; i++) {
+                    for (let j = i + 1; j < this.nodes.length; j++) {
+                        const dx = this.nodes[i].x - this.nodes[j].x;
+                        const dy = this.nodes[i].y - this.nodes[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < maxDistance) {
+                            const opacity = (1 - distance / maxDistance) * 0.2;
+                            this.ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(this.nodes[i].x, this.nodes[i].y);
+                            this.ctx.lineTo(this.nodes[j].x, this.nodes[j].y);
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            drawNodes() {
+                this.ctx.fillStyle = '#00ffff';
+                this.nodes.forEach(node => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+            }
+            
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.updateNodes();
+                this.drawConnections();
+                this.drawNodes();
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            setupEventListeners() {
+                window.addEventListener('resize', () => {
+                    this.resize();
+                    this.createNodes();
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    this.mousePos.x = e.clientX;
+                    this.mousePos.y = e.clientY;
+                });
+            }
+        }
+        
+        // Terminal Interface
+        class Terminal {
+            constructor() {
+                this.input = document.getElementById('terminalInput');
+                this.body = document.getElementById('terminalBody');
+                this.history = [];
+                this.historyIndex = -1;
+                this.commands = {
+                    'help': 'Available commands: status, scan, access, files, clear, matrix, emergency',
+                    'status': 'System Status: OPERATIONAL | Anomaly Z-2: CONTAINED | Security: OMEGA',
+                    'scan': 'Scanning neural patterns... Subject: E.HARRELL | Status: ANOMALOUS',
+                    'access': 'Access Level: OMEGA-PRIME | Clearance: Z-2 AUTHORIZED',
+                    'files': 'Loading file directory... [CLASSIFIED] [REDACTED] [ENCRYPTED]',
+                    'clear': null,
+                    'matrix': 'Entering Matrix Mode...',
+                    'emergency': 'EMERGENCY PROTOCOL ACTIVATED'
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+            }
+            
+            handleKeydown(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const command = this.input.value.trim().toLowerCase();
+                    this.executeCommand(command);
+                    this.input.value = '';
+                    this.addToHistory(command);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    this.navigateHistory(-1);
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    this.navigateHistory(1);
+                }
+            }
+            
+            handleInput(e) {
+                // Auto-complete functionality
+                const value = e.target.value.toLowerCase();
+                const matches = Object.keys(this.commands).filter(cmd => cmd.startsWith(value));
+                // Could implement dropdown here
+            }
+            
+            executeCommand(command) {
+                this.addLine(`$ ${command}`);
+                
+                if (command === 'clear') {
+                    this.clearTerminal();
+                    return;
+                }
+                
+                if (this.commands[command]) {
+                    if (command === 'matrix') {
+                        this.toggleMatrixMode();
+                    } else if (command === 'emergency') {
+                        this.activateEmergency();
+                    }
+                    this.addLine(this.commands[command]);
+                } else if (command) {
+                    this.addLine(`Command not found: ${command}. Type 'help' for available commands.`);
+                }
+                
+                this.addLine('$ <input type="text" class="terminal-input" placeholder="Enter command..." autocomplete="off">');
+                this.setupNewInput();
+            }
+            
+            addLine(text) {
+                const line = document.createElement('div');
+                line.className = 'terminal-line';
+                line.innerHTML = text;
+                this.body.insertBefore(line, this.body.lastElementChild);
+                this.body.scrollTop = this.body.scrollHeight;
+            }
+            
+            clearTerminal() {
+                this.body.innerHTML = '<div class="terminal-line">Terminal cleared.</div><div class="terminal-line">$ <input type="text" class="terminal-input" placeholder="Enter command..." autocomplete="off"></div>';
+                this.setupNewInput();
+            }
+            
+            setupNewInput() {
+                const newInput = this.body.querySelector('.terminal-input:last-of-type');
+                if (newInput) {
+                    newInput.addEventListener('keydown', (e) => this.handleKeydown(e));
+                    newInput.addEventListener('input', (e) => this.handleInput(e));
+                    newInput.focus();
+                    this.input = newInput;
+                }
+            }
+            
+            addToHistory(command) {
+                if (command && !this.history.includes(command)) {
+                    this.history.push(command);
+                }
+                this.historyIndex = this.history.length;
+            }
+            
+            navigateHistory(direction) {
+                if (direction === -1 && this.historyIndex > 0) {
+                    this.historyIndex--;
+                    this.input.value = this.history[this.historyIndex];
+                } else if (direction === 1 && this.historyIndex < this.history.length - 1) {
+                    this.historyIndex++;
+                    this.input.value = this.history[this.historyIndex];
+                } else if (direction === 1 && this.historyIndex === this.history.length - 1) {
+                    this.historyIndex = this.history.length;
+                    this.input.value = '';
+                }
+            }
+            
+            toggleMatrixMode() {
+                document.body.classList.toggle('matrix-mode');
+                NotificationSystem.show('Matrix Mode ' + (document.body.classList.contains('matrix-mode') ? 'Activated' : 'Deactivated'), 'info');
+            }
+            
+            activateEmergency() {
+                document.body.classList.toggle('emergency-mode');
+                NotificationSystem.show('EMERGENCY PROTOCOL ACTIVATED', 'error');
+            }
+        }
+        
+        // Notification System
+        class NotificationSystem {
+            static show(message, type = 'info', duration = 4000) {
+                const container = document.getElementById('notificationContainer');
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                
+                const iconMap = {
+                    'info': 'fa-info-circle',
+                    'warning': 'fa-exclamation-triangle',
+                    'error': 'fa-times-circle',
+                    'success': 'fa-check-circle'
+                };
+                
+                const colorMap = {
+                    'info': '#00ffff',
+                    'warning': '#ff8c00',
+                    'error': '#ff0040',
+                    'success': '#00ff80'
+                };
+                
+                notification.innerHTML = `
+                    <i class="fas ${iconMap[type]}" style="color: ${colorMap[type]}; margin-right: 0.5rem;"></i>
+                    ${message}
+                `;
+                
+                notification.style.borderColor = colorMap[type];
+                
+                container.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('slide-out');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 500);
+                }, duration);
+            }
+        }
+        
+        // File Transfer Simulation
+        class FileTransfer {
+            constructor() {
+                this.progressBar = document.getElementById('progressBar');
+                this.transferPercent = document.getElementById('transferPercent');
+                this.timeRemaining = document.getElementById('timeRemaining');
+                this.currentProgress = 67;
+                this.targetProgress = 100;
+                
+                this.init();
+            }
+            
+            init() {
+                setInterval(() => {
+                    if (this.currentProgress < this.targetProgress) {
+                        this.currentProgress += Math.random() * 2;
+                        this.currentProgress = Math.min(this.currentProgress, this.targetProgress);
+                        
+                        this.progressBar.style.width = this.currentProgress + '%';
+                        this.transferPercent.textContent = Math.floor(this.currentProgress) + '%';
+                        
+                        const remaining = Math.ceil((100 - this.currentProgress) * 2);
+                        this.timeRemaining.textContent = this.formatTime(remaining);
+                        
+                        if (this.currentProgress >= 100) {
+                            this.transferPercent.textContent = 'Complete';
+                            this.transferPercent.className = 'text-success';
+                            this.timeRemaining.textContent = 'Transfer completed';
+                            NotificationSystem.show('File transfer completed successfully', 'success');
+                        }
+                    }
+                }, 1000);
+            }
+            
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}m ${secs}s`;
+            }
+        }
+        
+        // System Metrics Animation
+        class SystemMetrics {
+            constructor() {
+                this.metrics = {
+                    systemLoad: document.getElementById('systemLoad'),
+                    networkStatus: document.getElementById('networkStatus'),
+                    securityLevel: document.getElementById('securityLevel'),
+                    activeUsers: document.getElementById('activeUsers')
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                setInterval(() => {
+                    // Fluctuate system load
+                    const load = 80 + Math.random() * 20;
+                    this.metrics.systemLoad.textContent = Math.floor(load) + '%';
+                    
+                    // Occasionally change network status
+                    if (Math.random() < 0.1) {
+                        const statuses = ['ONLINE', 'SYNCING', 'SECURED'];
+                        this.metrics.networkStatus.textContent = statuses[Math.floor(Math.random() * statuses.length)];
+                    }
+                    
+                    // Random user count changes
+                    if (Math.random() < 0.2) {
+                        const users = 1 + Math.floor(Math.random() * 5);
+                        this.metrics.activeUsers.textContent = users;
+                    }
+                }, 3000);
+            }
+        }
+        
+        // Clearance Matrix Interaction
+        class ClearanceMatrix {
+            constructor() {
+                this.levels = document.querySelectorAll('.clearance-level');
+                this.init();
+            }
+            
+            init() {
+                this.levels.forEach(level => {
+                    level.addEventListener('click', () => this.toggleClearance(level));
+                    level.addEventListener('mouseenter', () => this.scanLevel(level));
+                });
+            }
+            
+            toggleClearance(level) {
+                const isActive = level.classList.contains('active');
+                const isDenied = level.classList.contains('denied');
+                
+                level.classList.remove('active', 'denied');
+                
+                if (!isActive && !isDenied) {
+                    if (Math.random() > 0.3) {
+                        level.classList.add('active');
+                        NotificationSystem.show(`Clearance ${level.dataset.level} granted`, 'success');
+                    } else {
+                        level.classList.add('denied');
+                        NotificationSystem.show(`Access denied: ${level.dataset.level}`, 'error');
+                    }
+                }
+            }
+            
+            scanLevel(level) {
+                const scanner = level.querySelector('.security-scanner');
+                scanner.style.animationDuration = '0.5s';
+                setTimeout(() => {
+                    scanner.style.animationDuration = '2s';
+                }, 1000);
+            }
+        }
+        
+        // Initialize all systems
+        document.addEventListener('DOMContentLoaded', () => {
+            new NeuralNetwork();
+            new Terminal();
+            new FileTransfer();
+            new SystemMetrics();
+            new ClearanceMatrix();
+            
+            // Emergency and Matrix mode buttons
+            document.getElementById('emergencyBtn').addEventListener('click', () => {
+                document.body.classList.toggle('emergency-mode');
+                const isActive = document.body.classList.contains('emergency-mode');
+                NotificationSystem.show(
+                    isActive ? 'EMERGENCY PROTOCOL ACTIVATED' : 'Emergency mode deactivated', 
+                    isActive ? 'error' : 'info'
+                );
+            });
+            
+            document.getElementById('matrixBtn').addEventListener('click', () => {
+                document.body.classList.toggle('matrix-mode');
+                const isActive = document.body.classList.contains('matrix-mode');
+                NotificationSystem.show(
+                    `Matrix Mode ${isActive ? 'Activated' : 'Deactivated'}`, 
+                    'info'
+                );
+            });
+            
+            // Initial notifications
+            setTimeout(() => {
+                NotificationSystem.show('N.A.V.I. Database initialized', 'success');
+            }, 1000);
+            
+            setTimeout(() => {
+                NotificationSystem.show('Anomaly Z-2 status: Fluctuating', 'warning');
+            }, 3000);
+            
+            setTimeout(() => {
+                NotificationSystem.show('Neural scan in progress...', 'info');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
