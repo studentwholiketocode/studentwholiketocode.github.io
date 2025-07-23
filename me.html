@@ -4,198 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Val - Young Developer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            /* Golden Ratio Constants */
-            --phi: 1.618;
-            --phi-inverse: 0.618;
-            
-            /* Light Mode Colors */
-            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --bg-secondary: rgba(255, 255, 255, 0.95);
-            --bg-section: linear-gradient(135deg, #f8f9ff, #e8f2ff);
-            --bg-card: #ffffff;
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --accent-primary: #667eea;
-            --accent-secondary: #764ba2;
-            --border-color: rgba(102, 126, 234, 0.2);
-            --shadow-light: rgba(0, 0, 0, 0.1);
-            --shadow-medium: rgba(0, 0, 0, 0.15);
-            --backdrop-blur: blur(20px);
-            
-            /* Spacing based on Golden Ratio */
-            --space-xs: 0.5rem;     /* 8px */
-            --space-s: 0.809rem;    /* ~13px (8 * φ^0.5) */
-            --space-m: 1.309rem;    /* ~21px (13 * φ) */
-            --space-l: 2.118rem;    /* ~34px (21 * φ) */
-            --space-xl: 3.427rem;   /* ~55px (34 * φ) */
-            --space-xxl: 5.545rem;  /* ~89px (55 * φ) */
-            
-            /* Typography Scale */
-            --text-xs: 0.75rem;     /* 12px */
-            --text-s: 0.875rem;     /* 14px */
-            --text-m: 1rem;         /* 16px */
-            --text-l: 1.125rem;     /* 18px */
-            --text-xl: 1.25rem;     /* 20px */
-            --text-xxl: 1.5rem;     /* 24px */
-            --text-display: 2.5rem; /* 40px */
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            --bg-secondary: rgba(26, 26, 46, 0.95);
-            --bg-section: linear-gradient(135deg, #252547, #1e1e3f);
-            --bg-card: #2a2a4a;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --accent-primary: #7c9aff;
-            --accent-secondary: #9b7dd4;
-            --border-color: rgba(124, 154, 255, 0.3);
-            --shadow-light: rgba(0, 0, 0, 0.3);
-            --shadow-medium: rgba(0, 0, 0, 0.4);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --bg-light: #ffffff;
+            --bg-dark: #0f172a;
+            --surface-light: #f8fafc;
+            --surface-dark: #1e293b;
+            --text-light: #0f172a;
+            --text-dark: #f1f5f9;
+            --text-muted-light: #64748b;
+            --text-muted-dark: #94a3b8;
+            --border-light: #e2e8f0;
+            --border-dark: #334155;
+            --shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 1rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Light theme (default) */
+        :root {
+            --bg: var(--bg-light);
+            --surface: var(--surface-light);
+            --text: var(--text-light);
+            --text-muted: var(--text-muted-light);
+            --border: var(--border-light);
+        }
+
+        /* Dark theme */
+        [data-theme="dark"] {
+            --bg: var(--bg-dark);
+            --surface: var(--surface-dark);
+            --text: var(--text-dark);
+            --text-muted: var(--text-muted-dark);
+            --border: var(--border-dark);
+            --shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-m);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
             overflow-x: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .theme-toggle {
             position: fixed;
-            top: var(--space-m);
-            right: var(--space-m);
-            width: 60px;
-            height: 32px;
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
+            top: 2rem;
+            right: 2rem;
+            width: 3rem;
+            height: 3rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
             z-index: 1000;
-            backdrop-filter: var(--backdrop-blur);
-            box-shadow: 0 4px 20px var(--shadow-light);
+            font-size: 1.2rem;
+            color: var(--text);
         }
 
         .theme-toggle:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 25px var(--shadow-medium);
-        }
-
-        .theme-toggle::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 50%;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px var(--shadow-light);
-        }
-
-        [data-theme="dark"] .theme-toggle::before {
-            transform: translateX(28px);
-        }
-
-        .theme-toggle::after {
-            content: '☀️';
-            position: absolute;
-            top: 50%;
-            left: 8px;
-            transform: translateY(-50%);
-            font-size: 14px;
-            opacity: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="dark"] .theme-toggle::after {
-            content: '🌙';
-            left: 38px;
+            box-shadow: var(--shadow-lg);
         }
 
         .container {
-            background: var(--bg-secondary);
-            backdrop-filter: var(--backdrop-blur);
-            border-radius: var(--space-m);
-            padding: calc(var(--space-xxl) * var(--phi-inverse));
-            max-width: calc(800px * var(--phi));
-            width: 100%;
-            box-shadow: 
-                0 20px 40px var(--shadow-light),
-                0 0 0 1px var(--border-color);
-            position: relative;
-            overflow: hidden;
-            animation: containerAppear 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(
-                90deg, 
-                var(--accent-primary), 
-                var(--accent-secondary),
-                #4ecdc4, 
-                #96ceb4
-            );
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes containerAppear {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes shimmer {
-            0%, 100% { background-position: -200% 0; }
-            50% { background-position: 200% 0; }
-        }
-
-        .header {
+        .hero {
             text-align: center;
-            margin-bottom: calc(var(--space-xl) * var(--phi));
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .avatar {
-            width: calc(120px * var(--phi-inverse));
-            height: calc(120px * var(--phi-inverse));
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
-            margin: 0 auto var(--space-m);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: calc(48px * var(--phi-inverse));
+            font-size: 3rem;
             color: white;
             font-weight: 700;
-            animation: avatarPulse 4s ease-in-out infinite;
+            margin: 0 auto 2rem;
             position: relative;
             overflow: hidden;
         }
@@ -203,432 +121,288 @@
         .avatar::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            inset: 0;
             background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: avatarShine 3s ease-in-out infinite;
-        }
-
-        @keyframes avatarPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes avatarShine {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            animation: shine 3s ease-in-out infinite;
         }
 
         h1 {
-            font-size: var(--text-display);
-            color: var(--text-primary);
-            margin-bottom: var(--space-s);
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: 800;
+            margin-bottom: 1rem;
             letter-spacing: -0.02em;
-            line-height: 1.2;
         }
 
         .tagline {
-            font-size: var(--text-l);
-            color: var(--text-secondary);
-            margin-bottom: var(--space-xl);
-            line-height: var(--phi);
-            font-weight: 400;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
         }
 
-        .content {
+        .grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: calc(var(--space-l) * var(--phi-inverse));
-            margin-bottom: var(--space-xl);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
-        .section {
-            background: var(--bg-section);
-            padding: calc(var(--space-l) * var(--phi-inverse));
-            border-radius: var(--space-m);
-            border-left: 4px solid var(--accent-primary);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .section:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px var(--shadow-medium);
-        }
-
-        .section:hover::before {
-            left: 100%;
-        }
-
-        .section:active {
-            transform: translateY(-4px) scale(1.01);
-        }
-
-        .section h3 {
-            font-size: var(--text-xl);
-            color: var(--text-primary);
-            margin-bottom: var(--space-m);
-            display: flex;
-            align-items: center;
-            gap: var(--space-s);
-            font-weight: 600;
-        }
-
-        .icon {
-            font-size: calc(var(--text-xl) * var(--phi));
-            filter: drop-shadow(0 2px 4px var(--shadow-light));
-        }
-
-        .section p {
-            color: var(--text-secondary);
-            line-height: var(--phi);
-            font-weight: 400;
-        }
-
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-s);
-            margin-top: var(--space-m);
-        }
-
-        .skill-tag {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            padding: var(--space-xs) var(--space-m);
-            border-radius: calc(var(--space-m) * var(--phi));
-            font-size: var(--text-s);
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
         }
 
-        .skill-tag::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .skill-tag:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 20px var(--shadow-medium);
-        }
-
-        .skill-tag:hover::before {
-            left: 100%;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--space-m);
-            margin-top: var(--space-xl);
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            padding: calc(var(--space-l) * var(--phi-inverse));
-            border-radius: var(--space-m);
-            text-align: center;
-            box-shadow: 
-                0 8px 24px var(--shadow-light),
-                0 0 0 1px var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
+        .card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             transform: scaleX(0);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left;
+            transition: var(--transition);
         }
 
-        .stat-card:hover {
-            transform: translateY(-6px) scale(1.05);
-            box-shadow: 0 16px 32px var(--shadow-medium);
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
         }
 
-        .stat-card:hover::before {
+        .card:hover::before {
             transform: scaleX(1);
         }
 
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: var(--primary);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
         .stat-number {
-            font-size: calc(var(--text-display) * var(--phi-inverse));
+            font-size: 3rem;
             font-weight: 800;
-            color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             display: block;
             line-height: 1;
         }
 
         .stat-label {
-            color: var(--text-secondary);
-            font-size: var(--text-s);
-            margin-top: var(--space-xs);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
             font-weight: 500;
         }
 
         .cta {
             text-align: center;
-            margin-top: calc(var(--space-xl) * var(--phi));
+            margin-top: 3rem;
         }
 
-        .cta-button {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: var(--space-m) calc(var(--space-l) * var(--phi));
+            padding: 1rem 2rem;
             border: none;
-            border-radius: calc(var(--space-xl) * var(--phi-inverse));
-            font-size: var(--text-l);
+            border-radius: 3rem;
+            font-size: 1.125rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            display: inline-block;
+            transition: var(--transition);
+            margin-bottom: 2rem;
             position: relative;
             overflow: hidden;
-            margin-bottom: var(--space-m);
-            box-shadow: 0 8px 24px var(--shadow-light);
         }
 
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
-        .cta-button:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 16px 32px var(--shadow-medium);
-        }
-
-        .cta-button:hover::before {
-            left: 100%;
-        }
-
-        .cta-button:active {
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        .social-buttons {
+        .social-links {
             display: flex;
             justify-content: center;
-            gap: var(--space-m);
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
-        .social-button {
+        .social-btn {
+            padding: 0.75rem 1.5rem;
             border: none;
-            padding: var(--space-s) var(--space-l);
-            border-radius: calc(var(--space-l) * var(--phi));
-            font-size: var(--text-m);
+            border-radius: 3rem;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: var(--space-xs);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px var(--shadow-light);
+            gap: 0.5rem;
+            font-size: 0.875rem;
         }
 
-        .social-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
-        .social-button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 24px var(--shadow-medium);
-        }
-
-        .social-button:hover::before {
-            left: 100%;
-        }
-
-        .discord-button {
-            background: #5865F2;
+        .social-btn.discord {
+            background: #5865f2;
             color: white;
         }
 
-        .discord-button:hover {
-            background: #4752C4;
-        }
-
-        .github-button {
+        .social-btn.github {
             background: #24292e;
             color: white;
         }
 
-        [data-theme="dark"] .github-button {
+        [data-theme="dark"] .social-btn.github {
             background: #f0f6fc;
-            color: #24292f;
+            color: #24292e;
         }
 
-        .github-button:hover {
-            background: #1b1f23;
+        .social-btn.translate {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
 
-        [data-theme="dark"] .github-button:hover {
-            background: #e6edf3;
-        }
-
-        .translate-button {
-            background: #ff6b6b;
+        .notification {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            transform: translateX(100%);
+            transition: var(--transition);
+            z-index: 1000;
+            font-weight: 500;
         }
 
-        .translate-button:hover {
-            background: #ee5a52;
+        .notification.show {
+            transform: translateX(0);
         }
 
-        .social-icon {
-            width: 20px;
-            height: 20px;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
-        }
-
-        /* Floating Background Elements */
-        .floating-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: var(--border-color);
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .shape:nth-child(1) {
-            width: calc(60px * var(--phi-inverse));
-            height: calc(60px * var(--phi-inverse));
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: calc(40px * var(--phi-inverse));
-            height: calc(40px * var(--phi-inverse));
-            top: 60%;
-            right: 15%;
-            animation-delay: 2.5s;
-        }
-
-        .shape:nth-child(3) {
-            width: calc(80px * var(--phi-inverse));
-            height: calc(80px * var(--phi-inverse));
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 5s;
-        }
-
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(0) rotate(0deg) scale(1); 
-                opacity: 0.6;
-            }
-            33% { 
-                transform: translateY(-20px) rotate(120deg) scale(1.1); 
-                opacity: 0.8;
-            }
-            66% { 
-                transform: translateY(10px) rotate(240deg) scale(0.9); 
-                opacity: 0.4;
-            }
-        }
-
-        /* Language transition styles */
         .fade-transition {
             opacity: 0;
-            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.3s ease;
         }
 
         .fade-in {
             opacity: 1;
         }
 
-        /* Responsive Design */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
         @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-            
             .container {
-                padding: var(--space-l);
-                margin: var(--space-s);
+                padding: 1rem;
             }
             
-            h1 {
-                font-size: calc(var(--text-display) * 0.8);
+            .grid {
+                grid-template-columns: 1fr;
             }
             
             .stats {
                 grid-template-columns: repeat(2, 1fr);
             }
-
-            .social-buttons {
+            
+            .social-links {
                 flex-direction: column;
                 align-items: center;
             }
-
+            
+            .social-btn {
+                width: 200px;
+                justify-content: center;
+            }
+            
             .theme-toggle {
-                top: var(--space-s);
-                right: var(--space-s);
+                top: 1rem;
+                right: 1rem;
             }
         }
 
@@ -636,378 +410,260 @@
             .stats {
                 grid-template-columns: 1fr;
             }
-            
-            .social-button {
-                width: 100%;
-                justify-content: center;
-                max-width: 200px;
-            }
         }
 
-        /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
         }
-
-        /* Focus states for better accessibility */
-        .theme-toggle:focus,
-        .section:focus,
-        .skill-tag:focus,
-        .stat-card:focus,
-        .cta-button:focus,
-        .social-button:focus {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
-        }
     </style>
 </head>
 <body>
-    <div class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode" tabindex="0"></div>
-    
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="fas fa-sun" id="theme-icon"></i>
+    </button>
 
-    <div class="container">
-        <div class="header">
+    <main class="container">
+        <section class="hero">
             <div class="avatar">V</div>
             <h1 id="main-title">Hi, I'm Val! 👋</h1>
             <p class="tagline" id="tagline">14-year-old self-taught developer passionate about creating amazing digital experiences</p>
-        </div>
+        </section>
 
-        <div class="content">
-            <div class="section" tabindex="0">
-                <h3><span class="icon">🚀</span> <span id="about-title">About Me</span></h3>
-                <p id="about-text">I'm a young developer who discovered the magic of coding and fell in love with it! I spend my time learning new technologies, building cool projects, and exploring the endless possibilities of programming. Every line of code is a step toward turning my ideas into reality.</p>
-            </div>
+        <section class="grid">
+            <article class="card">
+                <i class="card-icon fas fa-rocket"></i>
+                <h3 id="about-title">About Me</h3>
+                <p id="about-text">I'm a young developer who discovered the magic of coding and fell in love with it! I spend my time learning new technologies, building cool projects, and exploring the endless possibilities of programming.</p>
+            </article>
 
-            <div class="section" tabindex="0">
-                <h3><span class="icon">💡</span> <span id="journey-title">My Journey</span></h3>
-                <p id="journey-text">Started coding out of curiosity and quickly became obsessed with problem-solving through code. I believe age is just a number when it comes to creativity and innovation. Self-taught and always eager to learn more!</p>
-            </div>
-        </div>
+            <article class="card">
+                <i class="card-icon fas fa-lightbulb"></i>
+                <h3 id="journey-title">My Journey</h3>
+                <p id="journey-text">Started coding out of curiosity and quickly became obsessed with problem-solving through code. I believe age is just a number when it comes to creativity and innovation.</p>
+            </article>
+        </section>
 
-        <div class="section" tabindex="0">
-            <h3><span class="icon">🛠️</span> <span id="skills-title">Skills & Technologies</span></h3>
-            <p id="skills-text">Here are some of the technologies I've been learning and working with:</p>
-            <div class="skills">
-                <span class="skill-tag" tabindex="0">HTML & CSS</span>
-                <span class="skill-tag" tabindex="0">JavaScript</span>
-                <span class="skill-tag" tabindex="0">Python</span>
-                <span class="skill-tag" tabindex="0">React</span>
-                <span class="skill-tag" tabindex="0">Node.js</span>
-                <span class="skill-tag" tabindex="0">Git & GitHub</span>
-                <span class="skill-tag" tabindex="0">Responsive Design</span>
-                <span class="skill-tag" tabindex="0">Problem Solving</span>
-            </div>
-        </div>
+        <section class="card">
+            <i class="card-icon fas fa-code"></i>
+            <h3 id="skills-title">Skills & Technologies</h3>
+            <p id="skills-text">Technologies I've been learning and working with:</p>
+            <nav class="skills" aria-label="Skills">
+                <span class="skill-tag">HTML & CSS</span>
+                <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">Node.js</span>
+                <span class="skill-tag">Git & GitHub</span>
+                <span class="skill-tag">Responsive Design</span>
+                <span class="skill-tag">Problem Solving</span>
+            </nav>
+        </section>
 
-        <div class="stats">
-            <div class="stat-card" tabindex="0">
+        <section class="stats">
+            <div class="stat-card">
                 <span class="stat-number">2+</span>
                 <div class="stat-label" id="years-label">Years Coding</div>
             </div>
-            <div class="stat-card" tabindex="0">
+            <div class="stat-card">
                 <span class="stat-number">10+</span>
                 <div class="stat-label" id="projects-label">Projects Built</div>
             </div>
-            <div class="stat-card" tabindex="0">
+            <div class="stat-card">
                 <span class="stat-number">∞</span>
                 <div class="stat-label" id="ideas-label">Ideas to Code</div>
             </div>
-        </div>
+        </section>
 
-        <div class="cta">
-            <button class="cta-button" id="connect-btn" onclick="showConnectOptions()">
-                Let's Connect! 🌟
+        <section class="cta">
+            <button class="btn-primary" id="connect-btn" onclick="showConnectOptions()">
+                Let's Connect! ✨
             </button>
-            <div class="social-buttons">
-                <button class="social-button discord-button" onclick="copyDiscordUsername()">
-                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026 13.83 13.83 0 0 0 1.226-1.963.074.074 0 0 0-.041-.104 13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.246.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.311-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.209 0 2.176 1.077 2.157 2.38 0 1.311-.948 2.38-2.157 2.38z"/>
-                    </svg>
+            <nav class="social-links" aria-label="Social media links">
+                <button class="social-btn discord" onclick="copyDiscord()">
+                    <i class="fab fa-discord"></i>
                     Discord
                 </button>
-                <button class="social-button github-button" onclick="window.open('https://github.com/val1ntne', '_blank')">
-                    <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                       <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.652.242 2.873.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
+                <button class="social-btn github" onclick="window.open('https://github.com/val1ntne', '_blank')">
+                    <i class="fab fa-github"></i>
                     GitHub
                 </button>
-                <button class="social-button translate-button" onclick="toggleLanguage()">
-                    <span id="translate-icon">🌐</span>
+                <button class="social-btn translate" onclick="toggleLanguage()">
+                    <i class="fas fa-globe" id="translate-icon"></i>
                     <span id="translate-text">Translate</span>
                 </button>
-            </div>
-        </div>
-    </div>
+            </nav>
+        </section>
+    </main>
+
+    <div class="notification" id="notification"></div>
 
     <script>
-        // Theme Management
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Initialize theme from localStorage or system preference
-        function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        }
-
-        // Language Management
-        let currentLanguage = 'en';
+        let currentLang = 'en';
         
         const translations = {
             en: {
                 title: "Hi, I'm Val! 👋",
                 tagline: "14-year-old self-taught developer passionate about creating amazing digital experiences",
                 aboutTitle: "About Me",
-                aboutText: "I'm a young developer who discovered the magic of coding and fell in love with it! I spend my time learning new technologies, building cool projects, and exploring the endless possibilities of programming. Every line of code is a step toward turning my ideas into reality.",
-                journeyTitle: "My Journey",
-                journeyText: "Started coding out of curiosity and quickly became obsessed with problem-solving through code. I believe age is just a number when it comes to creativity and innovation. Self-taught and always eager to learn more!",
+                aboutText: "I'm a young developer who discovered the magic of coding and fell in love with it! I spend my time learning new technologies, building cool projects, and exploring the endless possibilities of programming.",
+                journeyTitle: "My Journey", 
+                journeyText: "Started coding out of curiosity and quickly became obsessed with problem-solving through code. I believe age is just a number when it comes to creativity and innovation.",
                 skillsTitle: "Skills & Technologies",
-                skillsText: "Here are some of the technologies I've been learning and working with:",
+                skillsText: "Technologies I've been learning and working with:",
                 yearsLabel: "Years Coding",
-                projectsLabel: "Projects Built",
+                projectsLabel: "Projects Built", 
                 ideasLabel: "Ideas to Code",
-                connectBtn: "Let's Connect! 🌟",
+                connectBtn: "Let's Connect! ✨",
                 translateText: "Translate"
             },
             vi: {
                 title: "Xin chào, tôi là Val! 👋",
                 tagline: "Nhà phát triển tự học 14 tuổi đam mê tạo ra những trải nghiệm số tuyệt vời",
                 aboutTitle: "Về Tôi",
-                aboutText: "Tôi là một nhà phát triển trẻ đã khám phá ra sự kỳ diệu của lập trình và yêu thích nó! Tôi dành thời gian học các công nghệ mới, xây dựng các dự án thú vị và khám phá những khả năng vô tận của lập trình. Mỗi dòng code là một bước tiến để biến ý tưởng thành hiện thực.",
-                journeyTitle: "Hành Trình Của Tôi",
-                journeyText: "Bắt đầu lập trình từ sự tò mò và nhanh chóng trở nên say mê với việc giải quyết vấn đề thông qua code. Tôi tin rằng tuổi tác chỉ là con số khi nói đến sáng tạo và đổi mới. Tự học và luôn háo hức học hỏi thêm!",
-                skillsTitle: "Kỹ Năng & Công Nghệ",
-                skillsText: "Đây là những công nghệ tôi đã học và làm việc cùng:",
+                aboutText: "Tôi là một nhà phát triển trẻ đã khám phá ra sự kỳ diệu của lập trình và yêu thích nó! Tôi dành thời gian học các công nghệ mới, xây dựng các dự án thú vị.",
+                journeyTitle: "Hành Trình",
+                journeyText: "Bắt đầu lập trình từ sự tò mò và nhanh chóng trở nên say mê với việc giải quyết vấn đề thông qua code. Tôi tin rằng tuổi tác chỉ là con số.",
+                skillsTitle: "Kỹ Năng & Công Nghệ", 
+                skillsText: "Những công nghệ tôi đã học và làm việc cùng:",
                 yearsLabel: "Năm Lập Trình",
                 projectsLabel: "Dự Án Đã Xây",
                 ideasLabel: "Ý Tưởng Để Code",
-                connectBtn: "Hãy Kết Nối! 🌟",
+                connectBtn: "Hãy Kết Nối! ✨",
                 translateText: "Dịch"
             }
         };
 
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Update icon
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            
+            // Save to localStorage
+            localStorage.setItem('theme', newTheme);
+            
+            console.log('Theme toggled to:', newTheme); // Debug log
+        }
+
+        function initTheme() {
+            // Check for saved theme preference or default to light
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // Update icon
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            
+            console.log('Theme initialized to:', theme); // Debug log
+        }
+
         function toggleLanguage() {
-            currentLanguage = currentLanguage === 'en' ? 'vi' : 'en';
+            currentLang = currentLang === 'en' ? 'vi' : 'en';
             updateLanguage();
         }
 
         function updateLanguage() {
-            const lang = translations[currentLanguage];
-            const elements = document.querySelectorAll('[id]');
+            const t = translations[currentLang];
             
-            // Add fade transition
-            elements.forEach(el => el.classList.add('fade-transition'));
+            // Update all translatable elements
+            const elements = {
+                'main-title': t.title,
+                'tagline': t.tagline,
+                'about-title': t.aboutTitle,
+                'about-text': t.aboutText,
+                'journey-title': t.journeyTitle,
+                'journey-text': t.journeyText,
+                'skills-title': t.skillsTitle,
+                'skills-text': t.skillsText,
+                'years-label': t.yearsLabel,
+                'projects-label': t.projectsLabel,
+                'ideas-label': t.ideasLabel,
+                'connect-btn': t.connectBtn,
+                'translate-text': t.translateText
+            };
             
-            setTimeout(() => {
-                document.getElementById('main-title').textContent = lang.title;
-                document.getElementById('tagline').textContent = lang.tagline;
-                document.getElementById('about-title').textContent = lang.aboutTitle;
-                document.getElementById('about-text').textContent = lang.aboutText;
-                document.getElementById('journey-title').textContent = lang.journeyTitle;
-                document.getElementById('journey-text').textContent = lang.journeyText;
-                document.getElementById('skills-title').textContent = lang.skillsTitle;
-                document.getElementById('skills-text').textContent = lang.skillsText;
-                document.getElementById('years-label').textContent = lang.yearsLabel;
-                document.getElementById('projects-label').textContent = lang.projectsLabel;
-                document.getElementById('ideas-label').textContent = lang.ideasLabel;
-                document.getElementById('connect-btn').textContent = lang.connectBtn;
-                document.getElementById('translate-text').textContent = lang.translateText;
-                
-                // Remove fade transition and add fade-in
-                elements.forEach(el => {
-                    el.classList.remove('fade-transition');
-                    el.classList.add('fade-in');
-                });
-                
-                setTimeout(() => {
-                    elements.forEach(el => el.classList.remove('fade-in'));
-                }, 300);
-            }, 150);
-        }
-
-        // Social Media Functions
-        function showConnectOptions() {
-            const button = document.getElementById('connect-btn');
-            const originalText = button.textContent;
-            
-            button.textContent = '✨ Check out my socials below! ✨';
-            button.style.background = 'linear-gradient(135deg, #ff6b6b, #feca57)';
-            
-            // Animate social buttons
-            const socialButtons = document.querySelectorAll('.social-button');
-            socialButtons.forEach((btn, index) => {
-                setTimeout(() => {
-                    btn.style.transform = 'scale(1.1) translateY(-5px)';
+            Object.entries(elements).forEach(([id, text]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.classList.add('fade-transition');
                     setTimeout(() => {
-                        btn.style.transform = '';
-                    }, 200);
-                }, index * 100);
-            });
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = '';
-            }, 3000);
-        }
-
-        function copyDiscordUsername() {
-            const discordUsername = 'val1ntne';
-            
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(discordUsername).then(() => {
-                    showNotification('Discord username copied to clipboard! 📋');
-                });
-            } else {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = discordUsername;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showNotification('Discord username copied to clipboard! 📋');
-                } catch (err) {
-                    showNotification('Please copy manually: ' + discordUsername);
+                        element.textContent = text;
+                        element.classList.remove('fade-transition');
+                        element.classList.add('fade-in');
+                        setTimeout(() => element.classList.remove('fade-in'), 300);
+                    }, 150);
                 }
-                document.body.removeChild(textArea);
-            }
+            });
         }
 
         function showNotification(message) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 10px;
-                box-shadow: 0 10px 30px var(--shadow-medium);
-                z-index: 1000;
-                font-weight: 600;
-                transform: translateX(100%);
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                backdrop-filter: blur(10px);
-            `;
+            const notification = document.getElementById('notification');
             notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+
+        function showConnectOptions() {
+            const btn = document.getElementById('connect-btn');
+            const original = btn.textContent;
+            btn.textContent = '✨ Check out my socials below! ✨';
+            btn.style.background = 'linear-gradient(135deg, #ff6b6b, #feca57)';
             
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Animate out and remove
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
+            document.querySelectorAll('.social-btn').forEach((btn, i) => {
                 setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
+                    btn.style.transform = 'scale(1.1) translateY(-5px)';
+                    setTimeout(() => btn.style.transform = '', 200);
+                }, i * 100);
+            });
+            
+            setTimeout(() => {
+                btn.textContent = original;
+                btn.style.background = '';
             }, 3000);
         }
 
-        // Keyboard Navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                const focused = document.activeElement;
-                if (focused.classList.contains('theme-toggle')) {
-                    e.preventDefault();
-                    toggleTheme();
-                } else if (focused.classList.contains('skill-tag') || 
-                          focused.classList.contains('section') || 
-                          focused.classList.contains('stat-card')) {
-                    e.preventDefault();
-                    focused.click();
-                }
-            }
-        });
-
-        // Add click animations to interactive elements
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize theme
-            initializeTheme();
-            
-            // Add ripple effect to buttons
-            const buttons = document.querySelectorAll('.cta-button, .social-button, .skill-tag');
-            buttons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    const ripple = document.createElement('span');
-                    const rect = this.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height);
-                    const x = e.clientX - rect.left - size / 2;
-                    const y = e.clientY - rect.top - size / 2;
-                    
-                    ripple.style.cssText = `
-                        position: absolute;
-                        width: ${size}px;
-                        height: ${size}px;
-                        left: ${x}px;
-                        top: ${y}px;
-                        background: rgba(255, 255, 255, 0.3);
-                        border-radius: 50%;
-                        transform: scale(0);
-                        animation: ripple 0.6s ease-out;
-                        pointer-events: none;
-                    `;
-                    
-                    this.style.position = 'relative';
-                    this.style.overflow = 'hidden';
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        if (ripple.parentNode) {
-                            ripple.parentNode.removeChild(ripple);
-                        }
-                    }, 600);
+        function copyDiscord() {
+            const username = 'val1ntne';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(username).then(() => {
+                    showNotification('Discord username copied! 📋');
+                }).catch(() => {
+                    showNotification('Discord: ' + username);
                 });
-            });
-        });
-
-        // Add ripple animation keyframes
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(2);
-                    opacity: 0;
-                }
+            } else {
+                // Fallback for older browsers
+                showNotification('Discord: ' + username);
             }
-        `;
-        document.head.appendChild(style);
-
-        // Listen for system theme changes
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                if (!localStorage.getItem('theme')) {
-                    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-                }
-            });
         }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            
+            // Listen for system theme changes
+            if (window.matchMedia) {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                    // Only auto-switch if user hasn't manually set a theme
+                    if (!localStorage.getItem('theme')) {
+                        const theme = e.matches ? 'dark' : 'light';
+                        document.documentElement.setAttribute('data-theme', theme);
+                        document.getElementById('theme-icon').className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
