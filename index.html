@@ -595,6 +595,16 @@
         <h3 id="cardMechanics">SYSTEM CORE</h3>
         <p>Advanced operational mechanics and algorithms</p>
       </div>
+
+      <!-- About Me Button -->
+      <div class="holo-card" data-module="about" onclick="navigateTo('me.html')">
+        <div class="status-indicator"></div>
+        <div class="holo-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <h3 id="cardAbout">ABOUT ME</h3>
+        <p>Developer profile and project information</p>
+      </div>
     </div>
   </div>
 
@@ -626,8 +636,8 @@
         "cardCharacters": "PERSONNEL FILES",
         "cardItems": "ARTIFACT CATALOG",
         "cardHazards": "THREAT ANALYSIS",
-        "cardMechanics": "SYSTEM CORE"
-        "cardAbout": "ABOUT ME"   
+        "cardMechanics": "SYSTEM CORE",
+        "cardAbout": "ABOUT ME"
       },
       vn: {
         "headerTitle": "CƠ SỞ DỮ LIỆU N.A.V.I",
@@ -638,8 +648,8 @@
         "cardCharacters": "HỒ SƠ NHÂN SỰ",
         "cardItems": "DANH MỤC CỔ VẬT",
         "cardHazards": "PHÂN TÍCH MỐI ĐE DỌA",
-        "cardMechanics": "LÕII HỆ THỐNG"
-        "cardAbout": "VỀ TÔI"   
+        "cardMechanics": "LÕII HỆ THỐNG",
+        "cardAbout": "VỀ TÔI"
       },
       zh: {
         "headerTitle": "N.A.V.I 数据库",
@@ -650,8 +660,8 @@
         "cardCharacters": "人员档案",
         "cardItems": "文物目录",
         "cardHazards": "威胁分析",
-        "cardMechanics": "系统核心"
-        "cardAbout": "关于我"   
+        "cardMechanics": "系统核心",
+        "cardAbout": "关于我"
       },
       ja: {
         "headerTitle": "N.A.V.I データベース",
@@ -662,8 +672,8 @@
         "cardCharacters": "人事ファイル",
         "cardItems": "アーティファクトカタログ",
         "cardHazards": "脅威分析",
-        "cardMechanics": "システムコア"
-        "cardAbout": "私について" 
+        "cardMechanics": "システムコア",
+        "cardAbout": "私について"
       }
     };
 
@@ -794,14 +804,5 @@
     updateThemeByTime();
     setInterval(updateThemeByTime, 60000);
   </script>
-  <!-- About Me Button -->
-<div class="holo-card" data-module="about" onclick="navigateTo('me.html')">
-  <div class="status-indicator"></div>
-  <div class="holo-icon">
-    <i class="fas fa-user-circle"></i>
-  </div>
-  <h3 id="cardAbout">ABOUT ME</h3>
-  <p>Developer profile and project information</p>
-</div>
 </body>
 </html>
