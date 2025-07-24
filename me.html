@@ -16,10 +16,16 @@
             --primary: #6366f1;
             --primary-dark: #4f46e5;
             --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --bg-light: #ffffff;
             --bg-dark: #0f172a;
+            --bg-midnight: #020617;
             --surface-light: #f8fafc;
             --surface-dark: #1e293b;
+            --surface-midnight: #0f172a;
             --text-light: #0f172a;
             --text-dark: #f1f5f9;
             --text-muted-light: #64748b;
@@ -32,7 +38,7 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Light theme (default) */
+        /* Theme Variables */
         :root {
             --bg: var(--bg-light);
             --surface: var(--surface-light);
@@ -41,7 +47,7 @@
             --border: var(--border-light);
         }
 
-        /* Dark theme */
+        /* Dark Theme */
         [data-theme="dark"] {
             --bg: var(--bg-dark);
             --surface: var(--surface-dark);
@@ -52,6 +58,67 @@
             --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
+        /* Midnight Theme */
+        [data-theme="midnight"] {
+            --bg: var(--bg-midnight);
+            --surface: var(--surface-midnight);
+            --text: var(--text-dark);
+            --text-muted: var(--text-muted-dark);
+            --border: var(--border-dark);
+            --shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Cyberpunk Theme */
+        [data-theme="cyberpunk"] {
+            --primary: #00ff9f;
+            --secondary: #ff0080;
+            --accent: #00d4ff;
+            --bg: #0a0a0a;
+            --surface: #1a1a1a;
+            --text: #00ff9f;
+            --text-muted: #888888;
+            --border: #333333;
+            --shadow: 0 0 20px rgba(0, 255, 159, 0.2);
+            --shadow-lg: 0 0 40px rgba(0, 255, 159, 0.3);
+        }
+
+        /* Ocean Theme */
+        [data-theme="ocean"] {
+            --primary: #0ea5e9;
+            --secondary: #06b6d4;
+            --accent: #0284c7;
+            --bg: #f0f9ff;
+            --surface: #e0f2fe;
+            --text: #0c4a6e;
+            --text-muted: #0369a1;
+            --border: #bae6fd;
+        }
+
+        /* Sunset Theme */
+        [data-theme="sunset"] {
+            --primary: #f97316;
+            --secondary: #f59e0b;
+            --accent: #ef4444;
+            --bg: #fef7ed;
+            --surface: #fed7aa;
+            --text: #9a3412;
+            --text-muted: #c2410c;
+            --border: #fdba74;
+        }
+
+        /* Forest Theme */
+        [data-theme="forest"] {
+            --primary: #16a34a;
+            --secondary: #15803d;
+            --accent: #059669;
+            --bg: #f0fdf4;
+            --surface: #dcfce7;
+            --text: #14532d;
+            --text-muted: #166534;
+            --border: #bbf7d0;
+        }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg);
@@ -59,6 +126,156 @@
             line-height: 1.6;
             transition: var(--transition);
             overflow-x: hidden;
+        }
+
+        /* Layout Styles */
+        .layout-minimal .container { max-width: 800px; }
+        .layout-wide .container { max-width: 1400px; }
+        .layout-sidebar .container { 
+            display: grid; 
+            grid-template-columns: 300px 1fr; 
+            gap: 3rem; 
+            max-width: 1200px;
+        }
+
+        /* UI Style Variations */
+        .ui-rounded { --radius: 2rem; }
+        .ui-sharp { --radius: 0.25rem; }
+        .ui-glassmorphism .card,
+        .ui-glassmorphism .theme-toggle,
+        .ui-glassmorphism .style-switcher {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .ui-neumorphism .card {
+            background: var(--surface);
+            box-shadow: 
+                8px 8px 16px rgba(0, 0, 0, 0.1),
+                -8px -8px 16px rgba(255, 255, 255, 0.1);
+            border: none;
+        }
+
+        /* Style Switcher */
+        .style-switcher {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            min-width: 280px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            transform: translateX(-100%);
+        }
+
+        .style-switcher.open {
+            transform: translateX(0);
+        }
+
+        .style-switcher h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .switcher-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .switcher-section h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .option-grid.single {
+            grid-template-columns: 1fr;
+        }
+
+        .option-btn {
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: calc(var(--radius) * 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .theme-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .theme-light { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        .theme-dark { background: linear-gradient(135deg, #1e293b, #0f172a); }
+        .theme-midnight { background: linear-gradient(135deg, #020617, #0f172a); }
+        .theme-cyberpunk { background: linear-gradient(135deg, #00ff9f, #ff0080); }
+        .theme-ocean { background: linear-gradient(135deg, #0ea5e9, #06b6d4); }
+        .theme-sunset { background: linear-gradient(135deg, #f97316, #f59e0b); }
+        .theme-forest { background: linear-gradient(135deg, #16a34a, #059669); }
+
+        .toggle-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            width: 3rem;
+            height: 3rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.05);
         }
 
         .theme-toggle {
@@ -94,6 +311,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            transition: var(--transition);
         }
 
         .hero {
@@ -116,6 +334,7 @@
             margin: 0 auto 2rem;
             position: relative;
             overflow: hidden;
+            transition: var(--transition);
         }
 
         .avatar::before {
@@ -149,6 +368,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
+            transition: var(--transition);
         }
 
         .card {
@@ -322,7 +542,8 @@
             color: white;
         }
 
-        [data-theme="dark"] .social-btn.github {
+        [data-theme="dark"] .social-btn.github,
+        [data-theme="midnight"] .social-btn.github {
             background: #f0f6fc;
             color: #24292e;
         }
@@ -377,6 +598,7 @@
             50% { transform: rotate(180deg); }
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -404,6 +626,23 @@
                 top: 1rem;
                 right: 1rem;
             }
+
+            .toggle-btn {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .style-switcher {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                width: auto;
+                min-width: auto;
+            }
+
+            .layout-sidebar .container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -422,6 +661,106 @@
     </style>
 </head>
 <body>
+    <button class="toggle-btn" onclick="toggleStyleSwitcher()" aria-label="Toggle style switcher">
+        <i class="fas fa-palette"></i>
+    </button>
+
+    <div class="style-switcher" id="styleSwitcher">
+        <h3><i class="fas fa-magic"></i> Style Customizer</h3>
+        
+        <div class="switcher-section">
+            <h4>Themes</h4>
+            <div class="option-grid">
+                <button class="option-btn active" data-theme="light" onclick="setTheme('light')">
+                    <div class="theme-preview theme-light"></div>
+                    Light
+                </button>
+                <button class="option-btn" data-theme="dark" onclick="setTheme('dark')">
+                    <div class="theme-preview theme-dark"></div>
+                    Dark
+                </button>
+                <button class="option-btn" data-theme="midnight" onclick="setTheme('midnight')">
+                    <div class="theme-preview theme-midnight"></div>
+                    Midnight
+                </button>
+                <button class="option-btn" data-theme="cyberpunk" onclick="setTheme('cyberpunk')">
+                    <div class="theme-preview theme-cyberpunk"></div>
+                    Cyberpunk
+                </button>
+                <button class="option-btn" data-theme="ocean" onclick="setTheme('ocean')">
+                    <div class="theme-preview theme-ocean"></div>
+                    Ocean
+                </button>
+                <button class="option-btn" data-theme="sunset" onclick="setTheme('sunset')">
+                    <div class="theme-preview theme-sunset"></div>
+                    Sunset
+                </button>
+                <button class="option-btn" data-theme="forest" onclick="setTheme('forest')">
+                    <div class="theme-preview theme-forest"></div>
+                    Forest
+                </button>
+            </div>
+        </div>
+
+        <div class="switcher-section">
+            <h4>Layout</h4>
+            <div class="option-grid single">
+                <button class="option-btn active" data-layout="default" onclick="setLayout('default')">
+                    <i class="fas fa-th-large"></i>
+                    Default
+                </button>
+                <button class="option-btn" data-layout="minimal" onclick="setLayout('minimal')">
+                    <i class="fas fa-compress"></i>
+                    Minimal
+                </button>
+                <button class="option-btn" data-layout="wide" onclick="setLayout('wide')">
+                    <i class="fas fa-expand"></i>
+                    Wide
+                </button>
+            </div>
+        </div>
+
+        <div class="switcher-section">
+            <h4>UI Style</h4>
+            <div class="option-grid">
+                <button class="option-btn active" data-ui="default" onclick="setUIStyle('default')">
+                    <i class="fas fa-circle"></i>
+                    Default
+                </button>
+                <button class="option-btn" data-ui="rounded" onclick="setUIStyle('rounded')">
+                    <i class="fas fa-circle-dot"></i>
+                    Rounded
+                </button>
+                <button class="option-btn" data-ui="sharp" onclick="setUIStyle('sharp')">
+                    <i class="fas fa-square"></i>
+                    Sharp
+                </button>
+                <button class="option-btn" data-ui="glassmorphism" onclick="setUIStyle('glassmorphism')">
+                    <i class="fas fa-eye"></i>
+                    Glass
+                </button>
+                <button class="option-btn" data-ui="neumorphism" onclick="setUIStyle('neumorphism')">
+                    <i class="fas fa-adjust"></i>
+                    Neuro
+                </button>
+            </div>
+        </div>
+
+        <div class="switcher-section">
+            <h4>Actions</h4>
+            <div class="option-grid single">
+                <button class="option-btn" onclick="resetStyles()">
+                    <i class="fas fa-undo"></i>
+                    Reset All
+                </button>
+                <button class="option-btn" onclick="randomizeStyles()">
+                    <i class="fas fa-random"></i>
+                    Surprise Me!
+                </button>
+            </div>
+        </div>
+    </div>
+
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <i class="fas fa-sun" id="theme-icon"></i>
     </button>
@@ -503,6 +842,9 @@
 
     <script>
         let currentLang = 'en';
+        let currentTheme = 'light';
+        let currentLayout = 'default';
+        let currentUIStyle = 'default';
         
         const translations = {
             en: {
@@ -524,144 +866,196 @@
                 title: "Xin chào, tôi là Val! 👋",
                 tagline: "Nhà phát triển tự học 14 tuổi đam mê tạo ra những trải nghiệm số tuyệt vời",
                 aboutTitle: "Về Tôi",
-                aboutText: "Tôi là một nhà phát triển trẻ đã khám phá ra sự kỳ diệu của lập trình và yêu thích nó! Tôi dành thời gian học các công nghệ mới, xây dựng các dự án thú vị.",
-                journeyTitle: "Hành Trình",
-                journeyText: "Bắt đầu lập trình từ sự tò mò và nhanh chóng trở nên say mê với việc giải quyết vấn đề thông qua code. Tôi tin rằng tuổi tác chỉ là con số.",
-                skillsTitle: "Kỹ Năng & Công Nghệ", 
-                skillsText: "Những công nghệ tôi đã học và làm việc cùng:",
+                aboutText: "Tôi là một nhà phát triển trẻ đã khám phá ra sự kỳ diệu của lập trình và yêu thích nó! Tôi dành thời gian học các công nghệ mới, xây dựng các dự án thú vị và khám phá những khả năng vô tận của lập trình.",
+                journeyTitle: "Hành Trình Của Tôi",
+                journeyText: "Bắt đầu lập trình từ sự tò mò và nhanh chóng bị ám ảnh bởi việc giải quyết vấn đề thông qua code. Tôi tin rằng tuổi tác chỉ là con số khi nói đến sự sáng tạo và đổi mới.",
+                skillsTitle: "Kỹ Năng & Công Nghệ",
+                skillsText: "Các công nghệ tôi đã học và làm việc cùng:",
                 yearsLabel: "Năm Lập Trình",
-                projectsLabel: "Dự Án Đã Xây",
+                projectsLabel: "Dự Án Đã Xây Dựng",
                 ideasLabel: "Ý Tưởng Để Code",
                 connectBtn: "Hãy Kết Nối! ✨",
                 translateText: "Dịch"
             }
         };
 
+        // Theme management
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.body.setAttribute('data-theme', theme);
+            updateActiveButtons('theme', theme);
+            updateThemeIcon();
+            showNotification(`Theme changed to ${theme}!`);
+        }
+
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            
-            // Update icon
-            const themeIcon = document.getElementById('theme-icon');
-            themeIcon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-            
-            // Save to localStorage
-            localStorage.setItem('theme', newTheme);
-            
-            console.log('Theme toggled to:', newTheme); // Debug log
+            const themes = ['light', 'dark', 'midnight', 'cyberpunk', 'ocean', 'sunset', 'forest'];
+            const currentIndex = themes.indexOf(currentTheme);
+            const nextTheme = themes[(currentIndex + 1) % themes.length];
+            setTheme(nextTheme);
         }
 
-        function initTheme() {
-            // Check for saved theme preference or default to light
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-            
-            document.documentElement.setAttribute('data-theme', theme);
-            
-            // Update icon
-            const themeIcon = document.getElementById('theme-icon');
-            themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-            
-            console.log('Theme initialized to:', theme); // Debug log
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'vi' : 'en';
-            updateLanguage();
-        }
-
-        function updateLanguage() {
-            const t = translations[currentLang];
-            
-            // Update all translatable elements
-            const elements = {
-                'main-title': t.title,
-                'tagline': t.tagline,
-                'about-title': t.aboutTitle,
-                'about-text': t.aboutText,
-                'journey-title': t.journeyTitle,
-                'journey-text': t.journeyText,
-                'skills-title': t.skillsTitle,
-                'skills-text': t.skillsText,
-                'years-label': t.yearsLabel,
-                'projects-label': t.projectsLabel,
-                'ideas-label': t.ideasLabel,
-                'connect-btn': t.connectBtn,
-                'translate-text': t.translateText
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            const icons = {
+                light: 'fas fa-sun',
+                dark: 'fas fa-moon',
+                midnight: 'fas fa-star',
+                cyberpunk: 'fas fa-robot',
+                ocean: 'fas fa-water',
+                sunset: 'fas fa-cloud-sun',
+                forest: 'fas fa-tree'
             };
-            
-            Object.entries(elements).forEach(([id, text]) => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.classList.add('fade-transition');
-                    setTimeout(() => {
-                        element.textContent = text;
-                        element.classList.remove('fade-transition');
-                        element.classList.add('fade-in');
-                        setTimeout(() => element.classList.remove('fade-in'), 300);
-                    }, 150);
-                }
+            icon.className = icons[currentTheme] || 'fas fa-sun';
+        }
+
+        // Layout management
+        function setLayout(layout) {
+            currentLayout = layout;
+            document.body.className = document.body.className.replace(/layout-\w+/g, '');
+            if (layout !== 'default') {
+                document.body.classList.add(`layout-${layout}`);
+            }
+            updateActiveButtons('layout', layout);
+            showNotification(`Layout changed to ${layout}!`);
+        }
+
+        // UI Style management
+        function setUIStyle(style) {
+            currentUIStyle = style;
+            document.body.className = document.body.className.replace(/ui-\w+/g, '');
+            if (style !== 'default') {
+                document.body.classList.add(`ui-${style}`);
+            }
+            updateActiveButtons('ui', style);
+            showNotification(`UI style changed to ${style}!`);
+        }
+
+        // Style switcher management
+        function toggleStyleSwitcher() {
+            const switcher = document.getElementById('styleSwitcher');
+            switcher.classList.toggle('open');
+        }
+
+        function updateActiveButtons(type, value) {
+            const buttons = document.querySelectorAll(`[data-${type}]`);
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute(`data-${type}`) === value);
             });
         }
 
+        // Utility functions
+        function resetStyles() {
+            setTheme('light');
+            setLayout('default');
+            setUIStyle('default');
+            showNotification('All styles reset to default!');
+        }
+
+        function randomizeStyles() {
+            const themes = ['light', 'dark', 'midnight', 'cyberpunk', 'ocean', 'sunset', 'forest'];
+            const layouts = ['default', 'minimal', 'wide'];
+            const uiStyles = ['default', 'rounded', 'sharp', 'glassmorphism', 'neumorphism'];
+            
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            const randomLayout = layouts[Math.floor(Math.random() * layouts.length)];
+            const randomUI = uiStyles[Math.floor(Math.random() * uiStyles.length)];
+            
+            setTheme(randomTheme);
+            setLayout(randomLayout);
+            setUIStyle(randomUI);
+            showNotification('Surprise! Random styles applied! 🎉');
+        }
+
+        // Language management
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'vi' : 'en';
+            updateLanguage();
+            showNotification(`Language changed to ${currentLang === 'en' ? 'English' : 'Vietnamese'}!`);
+        }
+
+        function updateLanguage() {
+            const lang = translations[currentLang];
+            
+            document.getElementById('main-title').textContent = lang.title;
+            document.getElementById('tagline').textContent = lang.tagline;
+            document.getElementById('about-title').textContent = lang.aboutTitle;
+            document.getElementById('about-text').textContent = lang.aboutText;
+            document.getElementById('journey-title').textContent = lang.journeyTitle;
+            document.getElementById('journey-text').textContent = lang.journeyText;
+            document.getElementById('skills-title').textContent = lang.skillsTitle;
+            document.getElementById('skills-text').textContent = lang.skillsText;
+            document.getElementById('years-label').textContent = lang.yearsLabel;
+            document.getElementById('projects-label').textContent = lang.projectsLabel;
+            document.getElementById('ideas-label').textContent = lang.ideasLabel;
+            document.getElementById('connect-btn').textContent = lang.connectBtn;
+            document.getElementById('translate-text').textContent = lang.translateText;
+        }
+
+        // Social functions
+        function copyDiscord() {
+            navigator.clipboard.writeText('val1ntne').then(() => {
+                showNotification('Discord username copied to clipboard! 📋');
+            }).catch(() => {
+                showNotification('Discord: val1ntne');
+            });
+        }
+
+        function showConnectOptions() {
+            showNotification('Click Discord to copy username or GitHub to visit profile! 🚀');
+        }
+
+        // Notification system
         function showNotification(message) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.classList.add('show');
-            setTimeout(() => notification.classList.remove('show'), 3000);
-        }
-
-        function showConnectOptions() {
-            const btn = document.getElementById('connect-btn');
-            const original = btn.textContent;
-            btn.textContent = '✨ Check out my socials below! ✨';
-            btn.style.background = 'linear-gradient(135deg, #ff6b6b, #feca57)';
-            
-            document.querySelectorAll('.social-btn').forEach((btn, i) => {
-                setTimeout(() => {
-                    btn.style.transform = 'scale(1.1) translateY(-5px)';
-                    setTimeout(() => btn.style.transform = '', 200);
-                }, i * 100);
-            });
             
             setTimeout(() => {
-                btn.textContent = original;
-                btn.style.background = '';
+                notification.classList.remove('show');
             }, 3000);
         }
 
-        function copyDiscord() {
-            const username = 'val1ntne';
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(username).then(() => {
-                    showNotification('Discord username copied! 📋');
-                }).catch(() => {
-                    showNotification('Discord: ' + username);
-                });
-            } else {
-                // Fallback for older browsers
-                showNotification('Discord: ' + username);
-            }
-        }
-
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            initTheme();
+        // Close style switcher when clicking outside
+        document.addEventListener('click', (e) => {
+            const switcher = document.getElementById('styleSwitcher');
+            const toggleBtn = document.querySelector('.toggle-btn');
             
-            // Listen for system theme changes
-            if (window.matchMedia) {
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                    // Only auto-switch if user hasn't manually set a theme
-                    if (!localStorage.getItem('theme')) {
-                        const theme = e.matches ? 'dark' : 'light';
-                        document.documentElement.setAttribute('data-theme', theme);
-                        document.getElementById('theme-icon').className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-                    }
-                });
+            if (!switcher.contains(e.target) && !toggleBtn.contains(e.target)) {
+                switcher.classList.remove('open');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateThemeIcon();
+            updateActiveButtons('theme', currentTheme);
+            updateActiveButtons('layout', currentLayout);
+            updateActiveButtons('ui', currentUIStyle);
+            
+            // Welcome message
+            setTimeout(() => {
+                showNotification('Welcome! Try customizing the theme and layout! 🎨');
+            }, 1000);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 't':
+                        e.preventDefault();
+                        toggleTheme();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        toggleLanguage();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        toggleStyleSwitcher();
+                        break;
+                }
             }
         });
     </script>
